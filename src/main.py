@@ -1,5 +1,5 @@
 """
-Name: Gabriel Engberg
+Name: Gabriel Engberg, Viggo Rubin
 Date: 28-02-2022
 Info: Main running file for this application
 """
