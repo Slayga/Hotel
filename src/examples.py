@@ -14,12 +14,12 @@ def test_basic_json():
 
     dict_data = {"name": "bob"}  # data to store (a dict)
     # ? Writing data with context manager // automatically closes file... f.close(), '(__exit__)'
-    with open("src/example.json", "w") as f:
+    with open("src/json/example.json", "w") as f:
         json.dump(dict_data, f)  # dumps the data into the file...
         #! note the mode in open("...", "w") -> "w" will overwrite the current content of file
 
     # ? Reading data with context manager...
-    with open("src/bobdump.json") as f:
+    with open("src/json/bobdump.json") as f:
         json_content = json.load(f)  # json.loads(<file>) will return the dict
         # No need to pass mode in open() as default is "r" (read)
 
@@ -30,13 +30,13 @@ def test_basic_json():
 def test_empty_json():
     import json
 
-    with open("src/example.json", "w") as f:
+    with open("src/json/example.json", "w") as f:
         json.dump({}, f)
-    with open("src/example.json") as f:
+    with open("src/json/example.json") as f:
         empty_json = json.load(f)
     print(empty_json)
 
 
 if __name__ == "__main__":
-    # test_basic_json()
+    test_basic_json()
     test_empty_json()
