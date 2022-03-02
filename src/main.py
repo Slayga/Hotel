@@ -8,19 +8,21 @@ Info: Main running file for this application
 # Tkinter...imgui? https://github.com/pyimgui/pyimgui/pull/264
 
 import json
-from typing import Iterable
 
 # Todo: Be implemented in HotelManager?
 class DataHandling:
     # Should just be extracted from the class and be standalone function instead of method...
     @staticmethod
-    def create_file(path: str, ext: str = "json"):
-        json.dump(open(str(path + ext), "w")).close()
+    def create_file(path: str, ext: str = ".json"):
+        path = path if path.endswith(ext) else path + ext
+        # Creates a empty file with empty dict
+        with open(str(path + ext), "w") as f:
+            json.dump({}, f)
         return 1
 
     # Should just be extracted from the class and be standalone function instead of method...
     @staticmethod
-    def pack_data(data: Iterable, path: str, mode: str = "w") -> bool:
+    def pack_data(data: dict, path: str, mode: str = "w") -> bool:
         ...
 
     # Should just be extracted from the class and be standalone function instead of method...
@@ -38,16 +40,17 @@ class DataHandling:
 
 class HotelManager:
     def __init__(self, path, auto_load: bool = True):
+        self.path = path
         # Will automatically load data from given json file...
         if auto_load:
             # Tries to unpack data from file
-            self.data = DataHandling().unpack_data()
+            self.data = DataHandling().unpack_data(self.path)
             # Incase no file was found at path
             if self.data == -1:
                 # Create file
                 DataHandling().create_file(path)
                 # Retry unpacking
-                self.data = DataHandling().unpack_data()
+                self.data = DataHandling().unpack_data(self.path)
                 # If still failing to load raise an exception
                 if self.data == -1:
                     raise Exception(
