@@ -8,20 +8,6 @@ Info: Main running file for this application
 # Tkinter...imgui? https://github.com/pyimgui/pyimgui/pull/264
 
 import json
-
-# Writing data with context manager...
-dict_data = {"name": "bob"}
-with open("src/bobdump.json", "w") as f:
-    json.dump(dict_data, f)
-
-# Reading data with context manager...
-with open("src/bobdump.json") as f:
-    json_content = json.load(f)
-
-print(json_content, type(json_content))
-
-# Pack & unpack data?
-import json
 from typing import Iterable
 
 # Todo: Be implemented in HotelManager?
