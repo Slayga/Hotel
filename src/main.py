@@ -5,7 +5,7 @@ Info: Main running file for this application
 """
 
 # Pickle or Json dump...
-# Tkinter...imgui? https://github.com/pyimgui/pyimgui/pull/264
+# Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
 import json
 
@@ -59,6 +59,10 @@ class HotelManager:
                         )
                     )
                 else:
+                    # Basically if the json file has saved data already
+                    # it assigns the values (dicts) to the attribute if
+                    # the key is in the data... see below:
+                    # data_a = data["a"] if "a" in data else dict()
                     self.users = (
                         self.data["users"] if "users" in self.data else dict()
                     )
@@ -75,6 +79,8 @@ class HotelManager:
                         if "old_books" in self.data
                         else dict()
                     )
+        # Should just load data automatically...remove the implementation of
+        # auto_load and always load file on init. As it creates file when no file...
         else:
             self.users = dict()
             self.rooms = dict()
