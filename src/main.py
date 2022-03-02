@@ -5,7 +5,7 @@ Info: Main running file for this application
 """
 
 # Pickle or Json dump...
-# Tkinter...imgui? dev2.2 version
+# Tkinter...imgui? https://github.com/pyimgui/pyimgui/pull/264
 """
 import json
 
@@ -53,9 +53,44 @@ import json
 from typing import Iterable
 
 
-def pack_data(data: Iterable, path, mode="w"):
-    ...
+class DataHandling:
+    def __init__(self):
+        ...
+
+    def pack_data(self, data: Iterable, path: str, mode: str = "w") -> bool:
+        ...
+
+    def unpack_data(self) -> Iterable:
+        ...
 
 
-def unpack_data():
-    ...
+class HotelManager:
+    def __init__(self):
+        ...
+
+    def check_in(self):
+        ...
+
+    def check_out(self):
+        ...
+
+    def add_booking(self):
+        ...
+
+    def remove_booking(self):
+        ...
+
+    def edit_booking(self):
+        ...
+
+    def show_bookings(self):
+        ...
+
+    def add_room(self):
+        ...
+
+    def remove_room(self):
+        ...
+
+    def edit_room(self):
+        ...
