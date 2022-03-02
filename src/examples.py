@@ -37,6 +37,26 @@ def test_empty_json():
     print(empty_json)
 
 
+def test_pretty_print():
+    # How to read and pretty-print the dicts.
+    import json
+
+    with open("src/json/bobdump.json") as f:
+        json_content = json.load(f)
+
+    for k, v in json_content.items():
+        print(k)
+        print("  |")
+        if isinstance(v, dict):
+            for k2, v2 in v.items():
+                print(k2)
+                print("    |")
+                print("  ", v2)
+        else:
+            print("  ==", v)
+
+
 if __name__ == "__main__":
-    test_basic_json()
-    test_empty_json()
+    # test_basic_json()
+    # test_empty_json()
+    test_pretty_print()

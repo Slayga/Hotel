@@ -54,7 +54,7 @@ class HotelManager:
                 # If still failing to load raise an exception
                 if self.data == -1:
                     raise Exception(
-                        "Unexpected error in unpacking file: path:%s".format(
+                        "Unexpected error in unpacking file: path:'{}'".format(
                             path
                         )
                     )
@@ -112,4 +112,7 @@ class HotelManager:
         ...
 
     def edit_room(self):
+        ...
+
+    def _pretty_print(self):
         ...
