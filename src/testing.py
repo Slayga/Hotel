@@ -5,6 +5,7 @@ Info:
 Keep track of how to handle certain issues and 
 example solutions//general direction to the solution.
 """
+import json
 
 
 def test_basic_json():
@@ -37,26 +38,22 @@ def test_empty_json():
     print(empty_json)
 
 
-def test_pretty_print():
+def test_pretty_print(content, indent: int = 0):
     # How to read and pretty-print the dicts.
-    import json
-
-    with open("src/json/bobdump.json") as f:
-        json_content = json.load(f)
-
-    for k, v in json_content.items():
-        print(k)
-        print("  |")
-        if isinstance(v, dict):
-            for k2, v2 in v.items():
-                print(k2)
-                print("    |")
-                print("  ", v2)
-        else:
-            print("  ==", v)
+    if isinstance(content, dict):
+        for k, v in content.items():
+            print(" " * indent, k)
+            if isinstance(v, dict):
+                test_pretty_print(v, indent + 2)
+            else:
+                print(" " * (indent + 1), v)
+    else:
+        print(" " * (indent + 1), content)
 
 
 if __name__ == "__main__":
     # test_basic_json()
     # test_empty_json()
-    test_pretty_print()
+    with open("src/json/bobdump.json") as f:
+        json_content = json.load(f)
+    test_pretty_print(json_content)
