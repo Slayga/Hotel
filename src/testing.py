@@ -10,7 +10,7 @@ import json
 
 def test_basic_json():
     # ! JSON
-    # ? open and read file
+    # * opening and reading file
     import json  # required...
 
     dict_data = {"name": "bob"}  # data to store (a dict)
