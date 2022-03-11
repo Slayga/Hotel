@@ -8,14 +8,14 @@
             "Viggo Rubin",
             "Guest",
             {
-                "roomId": 1,
+                "roomId": "2001",
                 "checkout-date": "2022-01-01 11:00",
                 "checked-out": 1
             }
         ]
     },
     "rooms": {
-        "1": {
+        "2001": {
             "space": 3,
             "type": "Penthouse",
             "bed": [

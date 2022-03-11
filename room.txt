@@ -1,0 +1,7 @@
+Room: 1
+desc: one bed
+state: Vacant
+
+Room 2
+one bed
+Vacant
