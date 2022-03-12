@@ -28,7 +28,6 @@ def test_basic_json():
     Returns:
         None: None
     """
-    import json  # required...
 
     # Data to store
     dict_data = {"name": "bob", "misc": {"1": [1, 2, 3, 4]}}
@@ -49,7 +48,6 @@ def test_basic_json():
 
 
 def test_empty_json():
-    import json
 
     # Write an empty dict to not crash when reading json...
     with open(path + "/json/test_empty.json", "w") as f:
