@@ -8,89 +8,60 @@ Info: Main running file for this application
 # Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
 import json
+import os
 
 # Todo: Be implemented in HotelManager? Or... Extract methods to standalone functions
 class DataHandling:
-    def __init__(
-        self, path: str, fallBackName: str = "/hotel", ext: str = ".json"
-    ):
-        # Check if path is valid and if the json file was given
-        # else add fallBackName and .json to path.
-        if path is None:
-            self.path = fallBackName + ext
-        else:
-            self.path = (
-                path if path.endswith(ext) else self.path + fallBackName + ext
-            )
+    def __init__(self, path: str):
+        # This should stay constant(private) throughout the lifetime of the program.
+        # I dunno rly setter doesn't get called otherwise...
+        self._path = self.path = path
+        print(self.path)
+        if not self.__file_exists():
+            # TODO Check if folder exist or not /json/hotel.json
+            self.__create_file()
 
-    # Should just be extracted from the class and be standalone function instead of method...
-    def create_file(self):
-        # Creates a empty file with empty dict
+    @property
+    def path(self) -> str:
+        """Property for path"""
+        return self._path
+
+    @path.setter
+    def path(self, value: str):
+        """Setter for path"""
+        # Instead of raising an exception on 'empty path' a fallback exists.
+        self.__fallback = "hotel.json"
+        if value:
+            if value.endswith(".json"):
+                self._path = value
+            else:
+                self._path = value + "/" + self.__fallback
+        else:
+            self._path = self.__fallback
+
+    def __file_exists(self) -> bool:
+        return os.path.exists(self._path)
+
+    def __create_file(self):
         with open(str(self.path), "w") as f:
             json.dump({}, f)
-        return 1
 
-    # Should just be extracted from the class and be standalone function instead of method...
     def pack_data(self, data: dict, mode: str = "w") -> bool:
         with open(self.path, mode) as f:
             json.dump(data, f)
 
-    # Should just be extracted from the class and be standalone function instead of method...
     def unpack_data(self) -> dict:
-        # If path is empty or no value
         try:
             with open(self.path) as f:
                 return json.load(f)
         except FileNotFoundError:
-            return -1
+            raise FileNotFoundError("Unresolved file error:", self.path)
 
 
 class HotelManager:
-    def __init__(self, path):
-        self.path = path
-        # Tries to unpack data from file
-        self.data = DataHandling().unpack_data(self.path)
-        # Incase no file was found at path
-        if self.data == -1:
-            # Create file
-            DataHandling().create_file(path)
-            # Retry unpacking
-            self.data = DataHandling().unpack_data(self.path)
-            # If still failing to load raise an exception
-            if self.data == -1:
-                raise Exception(
-                    "Unexpected error in unpacking file: path:'{}'".format(
-                        path
-                    )
-                )
-            else:
-                # Basically if the json file has saved data already
-                # it assigns the values (dicts) to the attribute if
-                # the key is in the data... see below:
-                # data_a = data["a"] if "a" in data else dict()
-                self.users = (
-                    self.data["users"] if "users" in self.data else dict()
-                )
-                self.rooms = (
-                    self.data["rooms"] if "rooms" in self.data else dict()
-                )
-                self.bookings = (
-                    self.data["bookings"]
-                    if "bookings" in self.data
-                    else dict()
-                )
-                self.old_books = (
-                    self.data["old_books"]
-                    if "old_books" in self.data
-                    else dict()
-                )
-        # Should just load data automatically...remove the implementation of
-        # auto_load and always load file on init. As it creates file when no file...
-        else:
-            self.users = dict()
-            self.rooms = dict()
-            self.bookings = dict()
-            self.old_books = dict()  # Breaking GDPR be like...
+    def __init__(self, path: str = "/json"):
+        self.data_handler = DataHandling(path)
+        self.data = self.data_handler.unpack_data()
 
     def check_in(self):
         ...
@@ -121,3 +92,11 @@ class HotelManager:
 
     def _pretty_print(self):
         ...
+
+
+class GuiHotel:
+    ...
+
+
+if __name__ == "__main__":
+    HotelManager()
