@@ -9,8 +9,10 @@ import json
 import imgui
 import os
 
-# Makes a directory in current working directory to store json files
-os.makedirs("test", exist_ok=True)
+# Create folder "json" in the current working directory
+path = os.path.dirname(__file__)
+if not os.path.exists(path + "\\json"):
+    os.makedirs(path + "\\json", exist_ok=True)
 
 
 def test_basic_json():
@@ -24,14 +26,14 @@ def test_basic_json():
     # Data to store
     dict_data = {"name": "bob", "misc": {"1": [1, 2, 3, 4]}}
 
-    # ? Writing data with context manager // automatically closes file... f.close(), '(__exit__)'
-    with open("test/json/example.json", "w") as f:
+    # ? Writing data with context manager // will automatically close file... f.close(), '(__exit__)'
+    with open(path + "/json/example.json", "w") as f:
         # Always have keys as strings ({"1": 1}) and avoid int ({1: 1}):
         json.dump(dict_data, f)  # dumps the data into the file...
         # ! note the mode in open("...", "w") -> "w" will overwrite the file
 
     # ? Reading data with context manager...
-    with open("test/json/bobdump.json") as f:
+    with open(path + "/json/bobdump.json") as f:
         json_content = json.load(f)  # json.loads(<file>) will return the dict
         # No need to pass mode in open() as default is "r" (read)
 
@@ -43,9 +45,10 @@ def test_empty_json():
     import json
 
     # Write an empty dict to not crash when reading json...
-    with open("test/json/example.json", "w") as f:
+    with open(path + "/json/test_empty.json", "w") as f:
         json.dump({}, f)
-    with open("test/json/example.json") as f:
+
+    with open(path + "/json/test_empty.json") as f:
         empty_json = json.load(f)
     print(empty_json)
 
@@ -53,16 +56,46 @@ def test_empty_json():
 def test_writing_json():
     # {str(): int()} is acceptable
     # {int(): int()} will be converted by json.dump(...) to {str(): int()}
+    """
+    {str():
+        {str():
+            {str(): list(),
+             str(): list(),
+             str(): list()
+            }
+        }
+    }
+    A acceptabel data structure that wont cause any issues...
+    {"users":
+        {"guest":
+            {"001": ["greger", "abc123"],
+             "002": ["niblan", "123"],
+             "003: ["liliputz", "admin"]
+            }
+        }
+    }
+    A non acceptabel structure as the keys in 'guests' will make json.dump to convert to the structure
+    {"users":
+        {"guest":
+            {001: ["greger", "abc123"],
+             002: ["niblan", "123"],
+             003: ["liliputz", "admin"],
+             "004": 123
+            }
+        }
+    }
+    """
     ...
 
 
 def test_pretty_print(content, indent: int = 0):
     # How to read and pretty-print the dicts.
+    # This is just to visually see the what is assinged to what...
     if isinstance(content, dict):
         for k, v in content.items():
             print(" " * indent, k)
             if isinstance(v, dict):
-                test_pretty_print(v, indent + 2)
+                test_pretty_print(v, indent + 2)  # Recursive
             else:
                 print(" " * (indent + 1), v)
     else:
@@ -71,12 +104,12 @@ def test_pretty_print(content, indent: int = 0):
 
 if __name__ == "__main__":
     # 1
-    # test_basic_json()
+    test_basic_json()
     # 2
-    # test_empty_json()
+    test_empty_json()
     # 3
-    # with open("test/json/bobdump.json") as f:
-    #     json_content = json.load(f)
-    # test_pretty_print(json_content)
+    with open("test/json/bobdump.json") as f:
+        json_content = json.load(f)
+    test_pretty_print(json_content)
     # 4
     ...
