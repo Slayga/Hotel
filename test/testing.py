@@ -30,14 +30,14 @@ def test_basic_json():
     with open(path + "/json/example.json", "w") as f:
         # Always have keys as strings ({"1": 1}) and avoid int ({1: 1}):
         json.dump(dict_data, f)  # dumps the data into the file...
-        # ! note the mode in open("...", "w") -> "w" will overwrite the file
+        # ! note the mode in open("...", "w") -> "w" will overwrite the file not append
 
     # ? Reading data with context manager...
-    with open(path + "/json/bobdump.json") as f:
+    with open(path + "/json/example.json") as f:
         json_content = json.load(f)  # json.loads(<file>) will return the dict
         # No need to pass mode in open() as default is "r" (read)
 
-    # Fact check the results from the loading...
+    # Fact check the results from the read (json.load(f))...
     print(json_content, type(json_content))
 
 
@@ -54,43 +54,16 @@ def test_empty_json():
 
 
 def test_writing_json():
-    # {str(): int()} is acceptable
-    # {int(): int()} will be converted by json.dump(...) to {str(): int()}
-    """
-    {str():
-        {str():
-            {str(): list(),
-             str(): list(),
-             str(): list()
-            }
-        }
-    }
-    A acceptabel data structure that wont cause any issues...
-    {"users":
-        {"guest":
-            {"001": ["greger", "abc123"],
-             "002": ["niblan", "123"],
-             "003: ["liliputz", "admin"]
-            }
-        }
-    }
-    A non acceptabel structure as the keys in 'guests' will make json.dump to convert to the structure
-    {"users":
-        {"guest":
-            {001: ["greger", "abc123"],
-             002: ["niblan", "123"],
-             003: ["liliputz", "admin"],
-             "004": 123
-            }
-        }
-    }
-    """
+    # Below is acceptable way to stor & write json
+    dict_str_key = {str(): int()}
+    # While this will be converted by json.dump(...) to dict_str_key
+    dict_int_key = {int(): int()}
     ...
 
 
 def test_pretty_print(content, indent: int = 0):
     # How to read and pretty-print the dicts.
-    # This is just to visually see the what is assinged to what...
+    # This is just to visually see the what is assigned to what...
     if isinstance(content, dict):
         for k, v in content.items():
             print(" " * indent, k)
