@@ -1,7 +1,5 @@
-
 # If Microsoft Visual C++ 14.0 or greater is not installed: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-# Check the: 'Desktop development with C++' box
-
+# Check the: 'Desktop development with C++' box when installing
 imgui @ git+https://github.com/pyimgui/pyimgui.git@1f095af5886f424ee12f26fa93b108b6420fafa4
 
 glfw
