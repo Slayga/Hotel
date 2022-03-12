@@ -9,7 +9,7 @@ Info: Main running file for this application
 
 import json
 
-# Todo: Be implemented in HotelManager? Or... Extarct methods to standalone functions
+# Todo: Be implemented in HotelManager? Or... Extract methods to standalone functions
 class DataHandling:
     def __init__(self, path, fallBackName: str = "/hotel", ext: str = ".json"):
         # Check if path is valid and if the json file was given
@@ -17,7 +17,9 @@ class DataHandling:
         if path is None:
             self.path = fallBackName + ext
         else:
-            self.path = path if path.endswith(ext) else self.path + fallBackName + ext
+            self.path = (
+                path if path.endswith(ext) else self.path + fallBackName + ext
+            )
 
     # Should just be extracted from the class and be standalone function instead of method...
     def create_file(self):
@@ -55,20 +57,30 @@ class HotelManager:
             # If still failing to load raise an exception
             if self.data == -1:
                 raise Exception(
-                    "Unexpected error in unpacking file: path:'{}'".format(path)
+                    "Unexpected error in unpacking file: path:'{}'".format(
+                        path
+                    )
                 )
             else:
                 # Basically if the json file has saved data already
                 # it assigns the values (dicts) to the attribute if
                 # the key is in the data... see below:
                 # data_a = data["a"] if "a" in data else dict()
-                self.users = self.data["users"] if "users" in self.data else dict()
-                self.rooms = self.data["rooms"] if "rooms" in self.data else dict()
+                self.users = (
+                    self.data["users"] if "users" in self.data else dict()
+                )
+                self.rooms = (
+                    self.data["rooms"] if "rooms" in self.data else dict()
+                )
                 self.bookings = (
-                    self.data["bookings"] if "bookings" in self.data else dict()
+                    self.data["bookings"]
+                    if "bookings" in self.data
+                    else dict()
                 )
                 self.old_books = (
-                    self.data["old_books"] if "old_books" in self.data else dict()
+                    self.data["old_books"]
+                    if "old_books" in self.data
+                    else dict()
                 )
         # Should just load data automatically...remove the implementation of
         # auto_load and always load file on init. As it creates file when no file...
