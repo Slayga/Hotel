@@ -11,7 +11,9 @@ import json
 
 # Todo: Be implemented in HotelManager? Or... Extract methods to standalone functions
 class DataHandling:
-    def __init__(self, path, fallBackName: str = "/hotel", ext: str = ".json"):
+    def __init__(
+        self, path: str, fallBackName: str = "/hotel", ext: str = ".json"
+    ):
         # Check if path is valid and if the json file was given
         # else add fallBackName and .json to path.
         if path is None:
