@@ -9,20 +9,27 @@ import json
 import imgui
 import os
 
+# Makes a directory in current working directory to store json files
 os.makedirs("test", exist_ok=True)
 
 
 def test_basic_json():
-    # ! JSON
-    # * opening and reading file
+    """Basics for writing and reading json files.
+
+    Returns:
+        None: None
+    """
     import json  # required...
 
-    dict_data = {"name": "bob"}  # data to store (a dict)
+    # Data to store
+    dict_data = {"name": "bob", "misc": {"1": [1, 2, 3, 4]}}
+
     # ? Writing data with context manager // automatically closes file... f.close(), '(__exit__)'
-    # Always write keys as strings and avoid int:
     with open("test/json/example.json", "w") as f:
+        # Always have keys as strings ({"1": 1}) and avoid int ({1: 1}):
         json.dump(dict_data, f)  # dumps the data into the file...
-        # ! note the mode in open("...", "w") -> "w" will overwrite the current content of file
+        # ! note the mode in open("...", "w") -> "w" will overwrite the file
+
     # ? Reading data with context manager...
     with open("test/json/bobdump.json") as f:
         json_content = json.load(f)  # json.loads(<file>) will return the dict
