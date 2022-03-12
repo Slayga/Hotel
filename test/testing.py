@@ -1,9 +1,8 @@
 """
 Name: Gabriel Engberg
 Date: 02-03-2022
-Info:
-Keep track of how to handle certain issues and 
-example solutions//general direction to the solution.
+Info: Keep track of how to handle certain issues and 
+    example solutions//general direction to the solution.
 
 Quick TL:DR:
         1. Use context manager to write and read json.
@@ -13,7 +12,6 @@ Quick TL:DR:
 
 """
 import json
-import imgui
 import os
 
 # Note: That path is just to get the exact path to the working directory.
