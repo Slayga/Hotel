@@ -12,55 +12,78 @@ import os
 
 # Todo: Be implemented in HotelManager? Or... Extract methods to standalone functions
 class DataHandling:
-    def __init__(self, path: str):
-        # This should stay constant(private) throughout the lifetime of the program.
-        # I dunno rly setter doesn't get called otherwise...
-        self._path = self.path = path
+    def __init__(self, filename: str):
+        self._filename = self.filename = filename
+        self._folder = "json"
+        self._path = os.path.dirname(__file__) + "/" + self.folder
+        self.full_path = self.path + "/" + self._filename
+        # Create self.folder in the current working directory.
+        if not os.path.exists(self._path):
+            os.makedirs(self._path, exist_ok=True)
+
         print(self.path)
-        if not self.__file_exists():
-            # TODO Check if folder exist or not /json/hotel.json
-            self.__create_file()
+        print(self.filename)
+        print(self.path + "/" + self.filename)
+
+        if not self.__file_exists(self.full_path):
+            self.__create_file(self.full_path)
 
     @property
     def path(self) -> str:
-        """Property for path"""
         return self._path
 
+    @property
+    def folder(self) -> str:
+        return self._folder
+
+    @property
+    def filename(self) -> str:
+        """Property for filename"""
+        return self._filename
+
     @path.setter
-    def path(self, value: str):
-        """Setter for path"""
-        # Instead of raising an exception on 'empty path' a fallback exists.
+    def setter(self, value: str):
+        raise ValueError("Path cant be changed")
+
+    @folder.setter
+    def folder(self, value: str):
+        raise ValueError("Folder cant be changed")
+
+    @filename.setter
+    def filename(self, value: str):
+        """Setter for filename"""
+        # Instead of raising an exception on 'empty filename' a fallback exists.
         self.__fallback = "hotel.json"
         if value:
             if value.endswith(".json"):
-                self._path = value
+                self._filename = value
             else:
-                self._path = value + "/" + self.__fallback
+                self._filename = value + ".json"
         else:
-            self._path = self.__fallback
+            self._filename = self.__fallback
 
-    def __file_exists(self) -> bool:
-        return os.path.exists(self._path)
+    def __file_exists(self, path: str) -> bool:
+        return os.path.exists(path)
 
-    def __create_file(self):
-        with open(str(self.path), "w") as f:
+    def __create_file(self, path: str):
+        with open(str(path), "w") as f:
             json.dump({}, f)
 
     def pack_data(self, data: dict, mode: str = "w") -> bool:
-        with open(self.path, mode) as f:
+        with open(self.full_path, mode) as f:
             json.dump(data, f)
 
     def unpack_data(self) -> dict:
         try:
-            with open(self.path) as f:
+            with open(self.full_path) as f:
                 return json.load(f)
         except FileNotFoundError:
-            raise FileNotFoundError("Unresolved file error:", self.path)
+            raise FileNotFoundError("Unresolved file error:", self.filename)
 
 
 class HotelManager:
-    def __init__(self, path: str = "/json"):
-        self.data_handler = DataHandling(path)
+    def __init__(self, filename: str = ""):
+        self.data_handler = DataHandling(filename)
         self.data = self.data_handler.unpack_data()
 
     def check_in(self):
