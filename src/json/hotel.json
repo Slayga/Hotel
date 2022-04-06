@@ -8,16 +8,16 @@
         "030607-1234": {
             "name": "Doe",
             "age": "30",
-            "room": "2"
+            "room": "1"
         }
     },
-    "rooms": {
-        "1": {
-            "name": "JuniorSvit",
+    "rooms": [
+        {
+            "name": "JuniorSuite",
             "price": 19.99,
             "space": 4,
             "state": "vacant",
-            "decsription": "This is a room fitted for average income earners, who wants that extra space and privacy.",
+            "description": "This is a room fitted for average income earners, who wants that extra space and privacy.",
             "misc": [
                 "2xDoubleBed",
                 "wifi",
@@ -26,14 +26,14 @@
                 "microwave"
             ],
             "user": "Here the booked user will 'bind' to the room",
-            "messages": "Additional message from the user that booked the room"
+            "message": "Additional message from the user that booked the room"
         },
-        "2": {
-            "name": "SeniorSvit",
+        {
+            "name": "SeniorSuite",
             "price": 29.99,
             "space": 2,
             "state": "occupied",
-            "decsription": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
+            "description": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
             "misc": [
                 "1xDoubleBed",
                 "wifi",
@@ -41,10 +41,10 @@
                 "fridge",
                 "microwave"
             ],
-            "users": "030607-1234",
-            "messages": "Please clean between 8pm-9pm"
+            "user": "030607-1234",
+            "message": "Please clean between 8pm-9pm"
         },
-        "3": {}
-    },
+        {}
+    ],
     "old": {}
 }
