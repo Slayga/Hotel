@@ -9,6 +9,7 @@ hence the management of seeing SSN easily.
 # Pickle or Json dump...
 # Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
+from typing import Collection, Any
 import json
 import os
 
@@ -131,24 +132,84 @@ class HotelManager:
         self.data_handler = DataHandling(filename)
         self.data = self.data_handler.unpack_data()
 
-        # Creating required structures
+        # Extracting or creating required structures
         self.users = self.data["users"] if "users" in self.data else dict()
-        self.rooms = self.data["rooms"] if "rooms" in self.data else dict()
+        self.rooms = self.data["rooms"] if "rooms" in self.data else list()
+        # All 'active' bookings are stored in active
+        self.active = self.data["active"] if "active" in self.data else dict()
         self.old = self.data["old"] if "old" in self.data else dict()
+        # Used when packing or updating data
+        self._extracted = {
+            "users": self.users,
+            "rooms": self.rooms,
+            "active": self.active,
+            "old": self.old,
+        }
 
-    def check_in(self):
-        ...
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        self.data: dict[str, Any]
+        self.users: dict[str, dict[str, str]]
+        self.rooms: list[dict[str, str | list[str]]]
+        self.active: dict[str, dict[str, str | bool]]
+        self.old: dict[str, int]
 
-    def check_out(self):
-        ...
-
-    def add_booking(self):
+    def __str__(self):
         """
-        To add a booking, the user must register with SSN and password.
-        And then select a room. Via console input.
+        Returns a string representation of the hotel manager.
         """
-        userInput = input(">> Press enter to browse through vacant rooms.. ")
-        ...
+        # Filter dict to get only vacant rooms
+        vacant_room = self.filter_dict(self.rooms, {"state": "vacant"})
+        return f"Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }"
+
+    def check_in(self, ssn: str) -> bool:
+        # Checks if user exists
+        if ssn in self.users:
+            # Check if already booked
+            if ssn in self.active:
+                # Check if not checked in
+                if not self.users[ssn]["checked_in"]:
+                    # Good to check in...
+                    self.active[ssn]["checked_in"] = True
+                    self._update_data()
+                    return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def check_out(self, ssn: str) -> bool:
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if checked in
+            if self.active[ssn]["checked_in"]:
+                # Good to check out...
+                self.active[ssn]["checked_in"] = False
+                # Increment times stayed at the hotel
+                self.old[ssn] += 1
+                # Remove booking from active dict
+                del self.active[ssn]
+                # Update data
+                self._update_data()
+                return True
+        return False
+
+    def add_booking(self, ssn: str, room: str) -> bool:
+        # Checks if user exists and NOT already booked
+        if ssn in self.users and ssn not in self.active:
+            # Convert to int and move one step back for correct indexing
+            if room.isdigit():
+                room_index = int(room) - 1
+                # Check if room is in range
+                if 0 <= room_index < len(self.rooms):
+                    #  Check if room is vacant
+                    if self.rooms[room_index]["state"] == "vacant":
+                        # Change room state to occupied
+                        self.rooms[room_index]["state"] = "occupied"
+                        # Add booking to active dict
+                        self.active[ssn] = {"room": room, "checked_in": False}
+                        # Update data
+                        self._update_data()
+                        return True
+        # If the controlstructure failed, returns False.
+        return False
 
     def remove_booking(self):
         ...
@@ -156,15 +217,40 @@ class HotelManager:
     def edit_booking(self):
         ...
 
-    def filter_rooms(self, filter_: dict = None) -> list[dict] | dict:
+    def filter_dict(
+        self,
+        data: Collection[dict],
+        filter_: dict | None = None,
+        inverted: bool = False,
+    ) -> list[dict] | Collection[dict]:
+        """Returns a list of all filtered matches depending on given filter
+
+        Args:
+            filter_ (dict, optional): A dict of len == 1 where the key is going to be
+                                    matched with similar key and also compare value to value.
+                                    Defaults to None.
+            inverted (bool, optional): Ability to invert results. Defaults to False.
+
+        Returns:
+            list[dict] | list: A list of filtered matches or all the matches if no filter is given.
+        """
         # Check if filter_ is provided (underscore is to avoid naming conflict)
         if filter_:
-            # Example of filter check filter_ = {"state": "vacant"}
-            for room in self.rooms:
-                ...
+            filtered: list = list()
+            # Gets first key in dict
+            filter_key = list(filter_.keys())[0]
+            for value in data:
+                if value[filter_key] == filter_[filter_key]:
+                    filtered.append(value)
+            else:
+                if inverted:
+                    # Returns the inverted list
+                    return [value for value in data if value not in filtered]
+                else:
+                    return filtered
         else:
-            # If no filter was given, return self.rooms (all rooms)
-            return self.rooms
+            # If no filter was given, return data (all)
+            return data
 
     def add_room(self):
         ...
@@ -178,6 +264,23 @@ class HotelManager:
     def _pretty_print(self):
         ...
 
+    def _update_data(self):
+        """
+        Updates data structure with new data and loads the new data
+        """
+        # Updates each dict in self.data
+        for key, value in self._extracted.items():
+            self.data.update({key: value})
+
+        # Same practice as constructor
+        self.data_handler.pack_data(self.data)
+        self.data = self.data_handler.unpack_data()
+
+        self.users = self.data["users"] if "users" in self.data else dict()
+        self.rooms = self.data["rooms"] if "rooms" in self.data else list()
+        self.active = self.data["active"] if "active" in self.data else dict()
+        self.old = self.data["old"] if "old" in self.data else dict()
+
 
 class GuiHotel:
     ...
@@ -185,6 +288,7 @@ class GuiHotel:
 
 def main():
     HotelManager()
+    print(HotelManager())
 
 
 if __name__ == "__main__":
