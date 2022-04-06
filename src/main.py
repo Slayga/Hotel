@@ -9,7 +9,7 @@ hence the management of seeing SSN easily.
 # Pickle or Json dump...
 # Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
-from typing import Collection, Any
+from typing import Collection, Any, Iterator
 import json
 import os
 
@@ -211,10 +211,32 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def remove_booking(self):
-        ...
+    def remove_booking(self, ssn: str) -> bool:
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if not checked in
+            if not self.active[ssn]["checked_in"]:
+                # Change room state to vacant
+                self.rooms[int(self.active[ssn]["room"]) - 1][
+                    "state"
+                ] = "vacant"
+                # Remove booking from active dict
+                del self.active[ssn]
+                # Update data
+                self._update_data()
+                return True
+        return False
 
     def edit_booking(self):
+        ...
+
+    def add_room(self):
+        ...
+
+    def remove_room(self):
+        ...
+
+    def edit_room(self):
         ...
 
     def filter_dict(
@@ -252,15 +274,6 @@ class HotelManager:
             # If no filter was given, return data (all)
             return data
 
-    def add_room(self):
-        ...
-
-    def remove_room(self):
-        ...
-
-    def edit_room(self):
-        ...
-
     def _pretty_print(self):
         ...
 
@@ -287,8 +300,8 @@ class GuiHotel:
 
 
 def main():
-    HotelManager()
-    print(HotelManager())
+    test = HotelManager()
+    print(test)
 
 
 if __name__ == "__main__":
