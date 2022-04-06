@@ -2,20 +2,18 @@
     "users": {
         "031105-1234": {
             "name": "John",
-            "age": "25",
-            "room": false
+            "age": "25"
         },
         "030607-1234": {
             "name": "Doe",
-            "age": "30",
-            "room": "1"
+            "age": "30"
         }
     },
     "rooms": [
         {
             "name": "JuniorSuite",
-            "price": 19.99,
-            "space": 4,
+            "price": "19.99",
+            "space": "4",
             "state": "vacant",
             "description": "This is a room fitted for average income earners, who wants that extra space and privacy.",
             "misc": [
@@ -30,8 +28,8 @@
         },
         {
             "name": "SeniorSuite",
-            "price": 29.99,
-            "space": 2,
+            "price": "29.99",
+            "space": "2",
             "state": "occupied",
             "description": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
             "misc": [
@@ -43,8 +41,13 @@
             ],
             "user": "030607-1234",
             "message": "Please clean between 8pm-9pm"
-        },
-        {}
+        }
     ],
+    "active": {
+        "030607-1234": {
+            "room": "2",
+            "checked_in": false
+        }
+    },
     "old": {}
 }
