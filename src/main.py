@@ -230,8 +230,44 @@ class HotelManager:
     def edit_booking(self):
         ...
 
-    def add_room(self):
-        ...
+    def add_room(
+        self,
+        name: str,
+        price: str,
+        space: str,
+        state: str,
+        description: str,
+        misc: list[str],
+    ) -> bool:
+        """
+        Adds a room to the hotel.
+
+        Args:
+            name (str): Name of the room, example: JuniorSuite
+            price (str): Price per night, example: 19.99
+            space (str): How many can fit? example: 2
+            state (str): State of the room, example: vacant or occupied
+            description (str): A short description, who its fitted for
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        """
+        user: str = ""
+        message: str = ""
+        self.rooms.append(
+            {
+                "name": name,
+                "price": price,
+                "space": space,
+                "state": state,
+                "description": description,
+                "misc": misc,
+                "user": user,
+                "message": message,
+            }
+        )
+        return True
 
     def remove_room(self):
         ...
