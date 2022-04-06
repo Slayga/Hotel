@@ -1,1 +1,50 @@
-{}
+{
+    "users": {
+        "031105-1234": {
+            "name": "John",
+            "age": "25",
+            "room": false
+        },
+        "030607-1234": {
+            "name": "Doe",
+            "age": "30",
+            "room": "2"
+        }
+    },
+    "rooms": {
+        "1": {
+            "name": "JuniorSvit",
+            "price": 19.99,
+            "space": 4,
+            "state": "vacant",
+            "decsription": "This is a room fitted for average income earners, who wants that extra space and privacy.",
+            "misc": [
+                "2xDoubleBed",
+                "wifi",
+                "tv",
+                "fridge",
+                "microwave"
+            ],
+            "user": "Here the booked user will 'bind' to the room",
+            "messages": "Additional message from the user that booked the room"
+        },
+        "2": {
+            "name": "SeniorSvit",
+            "price": 29.99,
+            "space": 2,
+            "state": "occupied",
+            "decsription": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
+            "misc": [
+                "1xDoubleBed",
+                "wifi",
+                "tv",
+                "fridge",
+                "microwave"
+            ],
+            "users": "030607-1234",
+            "messages": "Please clean between 8pm-9pm"
+        },
+        "3": {}
+    },
+    "old": {}
+}

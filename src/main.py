@@ -19,6 +19,7 @@ class DataHandling:
         self.full_path = self.path + "/" + self._filename
         # Create self.folder in the current working directory.
         if not os.path.exists(self._path):
+            #
             os.makedirs(self._path, exist_ok=True)
 
         if not self.__file_exists(self.full_path):
@@ -78,14 +79,25 @@ class DataHandling:
 
 
 class HotelManager:
+    """
+    Class for managing a hotel database system.
+    Used to manipulate data from given file that class DataHandling returns
+    when unpacking.
+
+    HotelManager uses methods for checking in, checking out,
+    adding bookings, removing bookings, editing bookings, adding rooms,
+    removing rooms, editing rooms, and printing data.
+    """
+
     def __init__(self, filename: str = ""):
-        # Unpacking and loading data from given path
+        # Unpacking and loading data from given path(Default is None)
         self.data_handler = DataHandling(filename)
         self.data = self.data_handler.unpack_data()
-        
+
         # Creating required structures
         self.users = self.data["users"] if "users" in self.data else dict()
         self.rooms = self.data["rooms"] if "rooms" in self.data else dict()
+        self.old = self.data["old"] if "old" in self.data else dict()
 
     def check_in(self):
         ...
@@ -94,6 +106,11 @@ class HotelManager:
         ...
 
     def add_booking(self):
+        """
+        To add a booking, the user must register with SSN and password.
+        And then select a room. Via console input.
+        """
+        userInput = input(">> Press enter to browse through vacant rooms.. ")
         ...
 
     def remove_booking(self):
@@ -102,8 +119,17 @@ class HotelManager:
     def edit_booking(self):
         ...
 
-    def show_bookings(self):
-        ...
+    def filter_rooms(self, filter_:dict = None) -> list:
+        # key: What key to check for each room, value is the value of the key
+        # Check if filter_ is provided (underscore is to avoid naming conflict)
+        filter_ = False if filter_ is None else filter_
+        if filter_:
+            for room in self.rooms:
+                ...
+        else:
+            # If no filter was given, return self.rooms (all rooms)
+            return self.rooms
+        
 
     def add_room(self):
         ...
@@ -122,5 +148,9 @@ class GuiHotel:
     ...
 
 
-if __name__ == "__main__":
+def main():
     HotelManager()
+
+
+if __name__ == "__main__":
+    main()
