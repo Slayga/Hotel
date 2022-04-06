@@ -21,10 +21,6 @@ class DataHandling:
         if not os.path.exists(self._path):
             os.makedirs(self._path, exist_ok=True)
 
-        print(self.path)
-        print(self.filename)
-        print(self.path + "/" + self.filename)
-
         if not self.__file_exists(self.full_path):
             self.__create_file(self.full_path)
 
@@ -83,8 +79,13 @@ class DataHandling:
 
 class HotelManager:
     def __init__(self, filename: str = ""):
+        # Unpacking and loading data from given path
         self.data_handler = DataHandling(filename)
         self.data = self.data_handler.unpack_data()
+        
+        # Creating required structures
+        self.users = self.data["users"] if "users" in self.data else dict()
+        self.rooms = self.data["rooms"] if "rooms" in self.data else dict()
 
     def check_in(self):
         ...
