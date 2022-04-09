@@ -211,17 +211,19 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def remove_booking(self, ssn: str) -> bool:
+    def remove_booking(self, ssn: str, unregister:bool) -> bool:
         # Check if user exists and is booked
         if ssn in self.users and ssn in self.active:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1][
-                    "state"
-                ] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) - 1]["state"] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
+                if unregister:
+                    # Remove ssn from user, and increment ssn old
+                    del self.users[ssn]
+                    self.old[ssn] += 1
                 # Update data
                 self._update_data()
                 return True
@@ -243,12 +245,12 @@ class HotelManager:
         Adds a room to the hotel.
 
         Args:
-            name (str): Name of the room, example: JuniorSuite
-            price (str): Price per night, example: 19.99
-            space (str): How many can fit? example: 2
-            state (str): State of the room, example: vacant or occupied
-            description (str): A short description, who its fitted for
-            misc (list[str]): list of additional information, example: wifi, type of bed, etc.
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            space (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
 
         Returns:
             bool: True if operation was successful, False otherwise
