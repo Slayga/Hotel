@@ -155,11 +155,56 @@ class HotelManager:
 
     def __str__(self):
         """
-        Returns a string representation of the hotel manager.
+        Returns a string representation of the class HotelManager.
+        Will ultimately return a string of amount of bookings, total room and vacant rooms.
         """
         # Filter dict to get only vacant rooms
         vacant_room = self.filter_dict(self.rooms, {"state": "vacant"})
         return f"Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }"
+
+    def register_user(self, ssn: str, name: str, age: str) -> str | bool:
+        """
+        Registers a user to the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user's social security number
+            name (str): name of given user
+            age (str): age of given user
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        """
+        # Check if a user is already registered
+        if ssn in self.users:
+            return "User with given ssn already exists"
+        # Check if age is a number
+        if not age.isdigit():
+            return "Age must be a number"
+        # Else add user to self.users with ssn as the key
+        self.users[ssn] = {"name": name, "age": age}
+        return True
+
+    def unregister_user(self, ssn):
+        """
+        Unregister a user from the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user's social security number
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        """
+        # Check if a user is already registered
+        if ssn not in self.users:
+            return "User with given ssn does not exist"
+        # Else add user to self.old and remove user from self.users with ssn as the key
+        self.old[ssn] += 1
+        del self.users[ssn]
+        return True
 
     def check_in(self, ssn: str) -> bool:
         # Checks if user exists
@@ -189,6 +234,7 @@ class HotelManager:
                 # Update data
                 self._update_data()
                 return True
+        # If the controlstructure failed, returns False.
         return False
 
     def add_booking(self, ssn: str, room: str) -> bool:
@@ -211,13 +257,15 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def remove_booking(self, ssn: str, unregister:bool) -> bool:
+    def remove_booking(self, ssn: str, unregister: bool) -> bool:
         # Check if user exists and is booked
         if ssn in self.users and ssn in self.active:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1]["state"] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) - 1][
+                    "state"
+                ] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -227,6 +275,7 @@ class HotelManager:
                 # Update data
                 self._update_data()
                 return True
+        # If the controlstructure failed, returns False.
         return False
 
     def edit_booking(self):
