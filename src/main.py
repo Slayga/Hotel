@@ -27,7 +27,7 @@ class JsonHandling:
         Args:
             filename (str, optional): Name of the file to be used. Defaults to hotel.json.
         """
-        # For a particular reason, this is needed to call the filename setter
+        # For a particular reason, this is needed to call the filename setter on initialize
         self._filename = self.filename = filename
         self._folder = "json"
         # Gets absolute path to working directory...
