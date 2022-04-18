@@ -131,7 +131,7 @@ class HotelManager:
         """Constructor for HotelManager
 
         Args:
-            filename (str, optional): _description_. Defaults to "".
+            filename (str, optional): Optional argument for the name of the file. Defaults to "".
         """
         # Unpacking and loading json_data from given path(Default is None)
         self.json_handler = JsonHandling(filename)
@@ -218,6 +218,15 @@ class HotelManager:
         return True
 
     def check_in(self, ssn: str) -> bool:
+        """
+        Called when user is trying to check in to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check in
+
+        Returns:
+            bool: Boolean on success or failure
+        """
         # Checks if user exists
         if ssn in self.users:
             # Check if already booked
@@ -232,6 +241,15 @@ class HotelManager:
         return False
 
     def check_out(self, ssn: str) -> bool:
+        """
+        Called when user is trying to check out to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check out
+
+        Returns:
+            bool: Boolean on success or failure
+        """
         # Check if user exists and is booked
         if ssn in self.users and ssn in self.active:
             # Check if checked in
@@ -249,10 +267,20 @@ class HotelManager:
         return False
 
     def add_booking(self, ssn: str, room: str) -> bool:
+        """
+        Called when user is booking a room. Must be registered to add booking.
+
+        Args:
+            ssn (str): ssn of user
+            room (str): room number(digits): "1", "2", "3" etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        """
         # Checks if user exists and NOT already booked
         if ssn in self.users and ssn not in self.active:
-            # Convert to int and move one step back for correct indexing
             if room.isdigit():
+                # Convert to int and move one step back for correct indexing
                 room_index = int(room) - 1
                 # Check if room is in range
                 if 0 <= room_index < len(self.rooms):
@@ -269,6 +297,16 @@ class HotelManager:
         return False
 
     def remove_booking(self, ssn: str, unregister: bool) -> bool:
+        """
+        Called when user is removing a booking. Must be registered to remove booking.
+
+        Args:
+            ssn (str): ssn of user
+            room (str): room number(digits): "1", "2", "3" etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        """
         # Check if user exists and is booked
         if ssn in self.users and ssn in self.active:
             # Check if not checked in
@@ -378,7 +416,7 @@ class HotelManager:
 
     def _update_json(self):
         """
-        Updates json_data structure with new json_data and loads the new json_data
+        Updates data structure with new json_data and loads the new json_data
         """
         # Updates each dict in self.json_data
         for key, value in self._extracted.items():
@@ -401,6 +439,10 @@ class HotelManager:
 
 
 class GuiHotel:
+    ...
+
+
+class ConsoleHotel:
     ...
 
 
