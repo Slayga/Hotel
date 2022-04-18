@@ -14,14 +14,14 @@ import json
 import os
 
 
-class DataHandling:
+class JsonHandling:
     """
-    Class for handling data from json files
+    Class for handling json data from json files
     """
 
     def __init__(self, filename: str = "hotel.json"):
         """
-        Constructor for DataHandling
+        Constructor for JsonHandling
 
         Args:
             filename (str, optional): Name of the file to be used. Defaults to hotel.json.
@@ -93,17 +93,17 @@ class DataHandling:
         with open(str(path), "w") as f:
             json.dump({}, f)
 
-    def pack_data(self, data: dict, mode: str = "w"):
+    def pack_data(self, json_data: dict, mode: str = "w"):
         """
-        Writes data to a json file
+        Writes json data to a json file
 
         Args:
-            data (dict): Data structure of data to be stored,
+            json_data (dict): data to be stored in json file,
                         #! NOTE that all keys must be of type str
             mode (str, optional): Mode the file will be open in. Defaults to "w".
         """
         with open(self.full_path, mode) as f:
-            json.dump(data, f)
+            json.dump(json_data, f)
 
     def unpack_data(self) -> dict:
         """
@@ -119,26 +119,37 @@ class DataHandling:
 class HotelManager:
     """
     Class for managing a hotel database system.
-    Used to manipulate data from given file that class DataHandling returns
+    Used to manipulate json data from given file that class JsonHandling returns
     when unpacking.
 
     HotelManager uses methods for: checking in, checking out,
     adding bookings, removing bookings, editing bookings, adding rooms,
-    removing rooms, editing rooms, and printing raw data.
+    removing rooms, editing rooms, and printing raw json_data.
     """
 
     def __init__(self, filename: str = ""):
-        # Unpacking and loading data from given path(Default is None)
-        self.data_handler = DataHandling(filename)
-        self.data = self.data_handler.unpack_data()
+        """Constructor for HotelManager
+
+        Args:
+            filename (str, optional): _description_. Defaults to "".
+        """
+        # Unpacking and loading json_data from given path(Default is None)
+        self.json_handler = JsonHandling(filename)
+        self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.data["users"] if "users" in self.data else dict()
-        self.rooms = self.data["rooms"] if "rooms" in self.data else list()
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
+        )
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
+        )
         # All 'active' bookings are stored in active
-        self.active = self.data["active"] if "active" in self.data else dict()
-        self.old = self.data["old"] if "old" in self.data else dict()
-        # Used when packing or updating data
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
+        )
+        self.old = self.json_data["old"] if "old" in self.json_data else dict()
+        # Used when packing or updating json_data
         self._extracted = {
             "users": self.users,
             "rooms": self.rooms,
@@ -147,7 +158,7 @@ class HotelManager:
         }
 
         # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
-        self.data: dict[str, Any]
+        self.json_data: dict[str, Any]
         self.users: dict[str, dict[str, str]]
         self.rooms: list[dict[str, str | list[str]]]
         self.active: dict[str, dict[str, str | bool]]
@@ -186,7 +197,7 @@ class HotelManager:
         self.users[ssn] = {"name": name, "age": age}
         return True
 
-    def unregister_user(self, ssn):
+    def unregister_user(self, ssn) -> bool | str:
         """
         Unregister a user from the HotelManager.
         Will return a string or boolean depending on success.
@@ -215,7 +226,7 @@ class HotelManager:
                 if not self.users[ssn]["checked_in"]:
                     # Good to check in...
                     self.active[ssn]["checked_in"] = True
-                    self._update_data()
+                    self._update_json()
                     return True
         # If the controlstructure failed, returns False.
         return False
@@ -231,8 +242,8 @@ class HotelManager:
                 self.old[ssn] += 1
                 # Remove booking from active dict
                 del self.active[ssn]
-                # Update data
-                self._update_data()
+                # Update json_data
+                self._update_json()
                 return True
         # If the controlstructure failed, returns False.
         return False
@@ -251,8 +262,8 @@ class HotelManager:
                         self.rooms[room_index]["state"] = "occupied"
                         # Add booking to active dict
                         self.active[ssn] = {"room": room, "checked_in": False}
-                        # Update data
-                        self._update_data()
+                        # Update json_data
+                        self._update_json()
                         return True
         # If the controlstructure failed, returns False.
         return False
@@ -269,11 +280,12 @@ class HotelManager:
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
-                    # Remove ssn from user, and increment ssn old
-                    del self.users[ssn]
-                    self.old[ssn] += 1
-                # Update data
-                self._update_data()
+                    # Unregister user
+                    if not self.unregister_user(ssn):
+                        # Failed un-registration
+                        return False
+                # Update json_data
+                self._update_json()
                 return True
         # If the controlstructure failed, returns False.
         return False
@@ -364,22 +376,28 @@ class HotelManager:
     def _pretty_print(self):
         ...
 
-    def _update_data(self):
+    def _update_json(self):
         """
-        Updates data structure with new data and loads the new data
+        Updates json_data structure with new json_data and loads the new json_data
         """
-        # Updates each dict in self.data
+        # Updates each dict in self.json_data
         for key, value in self._extracted.items():
-            self.data.update({key: value})
+            self.json_data.update({key: value})
 
         # Same practice as constructor
-        self.data_handler.pack_data(self.data)
-        self.data = self.data_handler.unpack_data()
+        self.json_handler.pack_data(self.json_data)
+        self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.data["users"] if "users" in self.data else dict()
-        self.rooms = self.data["rooms"] if "rooms" in self.data else list()
-        self.active = self.data["active"] if "active" in self.data else dict()
-        self.old = self.data["old"] if "old" in self.data else dict()
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
+        )
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
+        )
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
+        )
+        self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
 class GuiHotel:
