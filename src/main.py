@@ -12,6 +12,7 @@ hence the management of seeing SSN easily.
 from typing import Collection, Any, Iterator
 import json
 import os
+from abc import ABCMeta, abstractmethod
 
 
 class JsonHandling:
@@ -438,11 +439,43 @@ class HotelManager:
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
-class GuiHotel:
+class HotelInterface(metaclass=ABCMeta):
+    """
+    All classes that "connect" to the hotel is derived from HotelInterface.
+    An abstract class that predefines implementations requirements.
+    """
+
+    @abstractmethod
+    def __init__(self, hotel: HotelManager):
+        """
+        Initializes the hotel object that it will connect to
+
+        Args:
+            hotel (HotelManager): HotelManager object
+        """
+        self.hotel = hotel
+
+    @abstractmethod
+    def run(self):
+        """
+        Implement the run method to start the interface.
+        TL:DR; Talk to the self.hotel object
+        """
+        ...
+
+
+class WebHotel(HotelInterface):
+    # Django or Flask implementation
     ...
 
 
-class ConsoleHotel:
+class GuiHotel(HotelInterface):
+    # PyImgui implementation
+    ...
+
+
+class ConsoleHotel(HotelInterface):
+    # Normal console (printing) implementation
     ...
 
 
