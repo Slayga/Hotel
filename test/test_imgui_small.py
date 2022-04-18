@@ -1,3 +1,9 @@
+"""
+Name: Gabriel Engberg
+Date: 18-04-2022
+Info: Testing for general purpose imgui library
+docs: https://pyimgui.readthedocs.io/en/latest/reference/imgui.core.html?highlight=scroll#imgui.core.get_scroll_y
+"""
 # Smaller test than test_imgui.py, note '# type: ignore' is for pylint
 import sys
 import glfw
