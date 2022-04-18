@@ -24,32 +24,6 @@ path_to_font = None  # "path/to/font.ttf"
 
 opened_state = True
 
-# Frame commands from the video
-# def frame_commands():
-#     io = imgui.get_io()
-#     if io.key_ctrl and io.keys_down[glfw.KEY_Q]:
-#         sys.exit(0)
-#
-#     if imgui.begin_main_menu_bar():
-#         if imgui.begin_menu("File"):
-#             clicked, selected = imgui.menu_item("Quit", "Ctrl+Q")
-#             if clicked:
-#                 sys.exit(0)
-#             imgui.end_menu()
-#         imgui.end_main_menu_bar()
-#
-#     with imgui.begin("A Window!"):
-#         if imgui.button("select"):
-#             imgui.open_popup("select-popup")
-#
-#         try:
-#             with imgui.begin_popup("select-popup") as popup:
-#                 if popup.opened:
-#                     imgui.text("Select one")
-#                     raise Exception
-#         except Exception:
-#             print("caught exception and no crash!")
-
 
 def frame_commands():
     io = imgui.get_io()
@@ -61,7 +35,9 @@ def frame_commands():
         if main_menu_bar.opened:
             with imgui.begin_menu("File", True) as file_menu:
                 if file_menu.opened:
-                    clicked_quit, selected_quit = imgui.menu_item("Quit", "Ctrl+Q")
+                    clicked_quit, selected_quit = imgui.menu_item(
+                        "Quit", "Ctrl+Q"
+                    )
                     if clicked_quit:
                         sys.exit(0)
 
@@ -184,7 +160,9 @@ def frame_commands():
                         if item2.opened:
                             imgui.text("Another content...")
                     global opened_state
-                    with imgui.begin_tab_item("Item 3", opened=opened_state) as item3:
+                    with imgui.begin_tab_item(
+                        "Item 3", opened=opened_state
+                    ) as item3:
                         opened_state = item3.opened
                         if item3.selected:
                             imgui.text("Hello Saylor!")
@@ -259,7 +237,9 @@ def impl_glfw_init():
     glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
-    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    window = glfw.create_window(
+        int(width), int(height), window_name, None, None
+    )
     glfw.make_context_current(window)
 
     if not window:
