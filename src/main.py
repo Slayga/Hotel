@@ -124,7 +124,7 @@ class HotelManager:
 
     HotelManager uses methods for: checking in, checking out,
     adding bookings, removing bookings, editing bookings, adding rooms,
-    removing rooms, editing rooms, and printing raw json_data.
+    removing rooms, editing rooms, register users, unregister users and printing raw json_data.
     """
 
     def __init__(self, filename: str = ""):
