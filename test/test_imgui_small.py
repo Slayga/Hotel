@@ -51,23 +51,32 @@ class TestImguiSmall:
         # Console window
         with imgui.begin("Console Messages") as console:
             if console.opened:
-                with imgui.begin_menu("Clear", True) as clear_console:
+                with imgui.begin_menu("_Debug", True) as clear_console:
                     if clear_console.opened:
                         clicked_clear, selected_clear = imgui.menu_item(
                             "Clear"
                         )
                         if clicked_clear:
                             self.console_message = ""
+
+                        clicked_addHello, selected_addHello = imgui.menu_item(
+                            "Add: hello"
+                        )
+                        if clicked_addHello:
+                            self.console_message += "Hello World!\n"
+
+                        # add just newline
+                        clicked_addNew, selected_addNew = imgui.menu_item(
+                            "Add: newline"
+                        )
+                        if clicked_addNew:
+                            self.console_message += "\n"
+
             # Add to console message with button press
-            with imgui.begin_child("Console Region", -1, 150, border=True):
+            with imgui.begin_child("Console Region", -1, 250, border=True):
                 imgui.text(self.console_message)
                 imgui.set_scroll_y(imgui.get_scroll_max_y())
-            imgui.button("Add to console message")
-            if imgui.is_item_hovered():
-                with imgui.begin_tooltip():
-                    imgui.text("Add 'Hello World!' to console message")
-            if imgui.is_item_clicked():
-                self.console_message += "\n" + "Hello World!"
+
             imgui.show_metrics_window()
 
     def render_frame(self, impl, window):
