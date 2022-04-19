@@ -12,9 +12,54 @@ import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
 
+def pretty_print(value, filter_type=(list, dict), tab=1):
+    """
+    Prints a value in a pretty way
+    """
+    if isinstance(value, filter_type):
+        if isinstance(value, dict):
+            for key, val in value.items():
+                print("\t" * tab + f"'{key}'")
+                pretty_print(val, filter_type, tab + 1)
+        else:
+            for val in value:
+                pretty_print(val, filter_type, tab + 1)
+    else:
+        print("\t" * tab + f"{value}")
+
+
 class TestImguiSmall:
     def __init__(self):
-        self.console_message = "Hello World!"
+        self.console_message = "Hello World!\n"
+        self.data = {
+            "user": {
+                "Gabriel": ["Gabriel Engberg", "Admin"],
+                "Viggo": [
+                    "Viggo Rubin",
+                    "Guest",
+                    {
+                        "roomId": "2001",
+                        "checkout-date": "2022-01-01 11:00",
+                        "checked-out": 1,
+                    },
+                ],
+            },
+            "rooms": {
+                "2001": {
+                    "space": 3,
+                    "type": "Penthouse",
+                    "bed": ["King Size", "Single Bed"],
+                    "misc": [
+                        "Ocean-View",
+                        "Couch",
+                        "TV",
+                        "Bathroom",
+                        "75kvm",
+                        "Wifi",
+                    ],
+                }
+            },
+        }
 
     def main(self):
         imgui.create_context()  # type: ignore
@@ -72,6 +117,15 @@ class TestImguiSmall:
                         if clicked_addNew:
                             self.console_message += "\n"
 
+                        # add just data from dict
+                        clicked_addData, selected_addData = imgui.menu_item(
+                            "Add: Data"
+                        )
+                        if clicked_addData:
+                            self.console_message = ""
+                            for k, v in self.data.items():
+                                self.console_message += f"{k}: \n"
+
             # Add to console message with button press
             with imgui.begin_child("Console Region", -1, 250, border=True):
                 imgui.text(self.console_message)
@@ -120,4 +174,7 @@ class TestImguiSmall:
 
 
 if __name__ == "__main__":
-    TestImguiSmall().main()
+    # TestImguiSmall().main()
+    data = TestImguiSmall().data
+    # print(data)
+    pretty_print(data)
