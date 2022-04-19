@@ -139,16 +139,10 @@ class HotelManager:
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = (
-            self.json_data["users"] if "users" in self.json_data else dict()
-        )
-        self.rooms = (
-            self.json_data["rooms"] if "rooms" in self.json_data else list()
-        )
+        self.users = self.json_data["users"] if "users" in self.json_data else dict()
+        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
         # All 'active' bookings are stored in active
-        self.active = (
-            self.json_data["active"] if "active" in self.json_data else dict()
-        )
+        self.active = self.json_data["active"] if "active" in self.json_data else dict()
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
         # Used when packing or updating json_data
         self._extracted = {
@@ -313,9 +307,7 @@ class HotelManager:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1][
-                    "state"
-                ] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) - 1]["state"] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -427,15 +419,9 @@ class HotelManager:
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = (
-            self.json_data["users"] if "users" in self.json_data else dict()
-        )
-        self.rooms = (
-            self.json_data["rooms"] if "rooms" in self.json_data else list()
-        )
-        self.active = (
-            self.json_data["active"] if "active" in self.json_data else dict()
-        )
+        self.users = self.json_data["users"] if "users" in self.json_data else dict()
+        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
+        self.active = self.json_data["active"] if "active" in self.json_data else dict()
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
@@ -453,7 +439,6 @@ class HotelInterface(metaclass=ABCMeta):
         Args:
             hotel (HotelManager): HotelManager object
         """
-        self.hotel = hotel
 
     @abstractmethod
     def run(self):
@@ -476,7 +461,12 @@ class GuiHotel(HotelInterface):
 
 class ConsoleHotel(HotelInterface):
     # Normal console (printing) implementation
-    ...
+    def __init__(self, hotel):
+        self.hotel = hotel
+        ...
+
+    def run(self):
+        ...
 
 
 def main():
