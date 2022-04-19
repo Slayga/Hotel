@@ -432,11 +432,11 @@ class HotelInterface(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __init__(self, hotel: HotelManager):
+    def __init__(self):
         """
         Initializes the hotel object that it will connect to
 
-        Args:
+        Expected Args:
             hotel (HotelManager): HotelManager object
         """
 
@@ -460,19 +460,113 @@ class GuiHotel(HotelInterface):
 
 
 class ConsoleHotel(HotelInterface):
-    # Normal console (printing) implementation
-    def __init__(self, hotel):
+    """Normal console (printing) implementation"""
+
+    def __init__(self, hotel: HotelManager):
+        # Object instance of HotelManager class
         self.hotel = hotel
-        ...
+
+        # Console related attributes
+        self._exit_option = "#"
+        self._menu_option = {
+            "header": "Nimbus Hotel",
+            "description": "Welcome to Nimbus Hotel's Navigation Menu. Please select an option.",
+            "options": [
+                "Hotel Info",
+                "View all vacant rooms",
+                "Add Booking",
+                "Register",
+                "Book",
+                "Check-in",
+                "Check-out",
+            ],
+            "exit": self._exit_option,
+        }
 
     def run(self):
+        """
+        Loop with menu option to view hotel info, add booking, register, unbook, etc... and exit option.
+        """
+        # Main loop
+        while True:
+            # Prints the menu
+            self._print_menu()
+            # Gets user input
+            user_input = self._userInput("\nEnter your choice: ")
+            if ...:
+                ...
+            elif user_input == self._exit_option:
+                # Exits the program
+                break
+            else:
+                # If invalid, print error message
+                print("\nInvalid input, please try again.")
+
+    def _userPrint(self, *args, **kwargs):
+        """
+        Override to print ">>" before message that is directed to a user.
+        For visibility purposes.
+        """
+        print(">> ", end="")
+        print(*args, **kwargs)
+
+    def _userInput(self, *args, **kwargs):
+        """
+        Override to print ">>" before message that is directed to a user.
+        For visibility purposes.
+        """
+        print(">> ", end="")
+        return input(*args, **kwargs)
+
+    def _print_menu(self):
+        """
+        Prints the predefined menu options
+        """
+        # Prints the menu header
+        print(self._menu_option["header"])
+        # Prints the menu description
+        print(self._menu_option["description"])
+        # Prints the menu options
+        for index, option in enumerate(self._menu_option["options"]):
+            self._userPrint(f"[{index}] {option}")
+
+        # Print exit option'
+
+        print("")
+
+    def _print_hotel_info(self):
+        ...
+
+    def _add_booking(self):
+        ...
+
+    def _remove_booking(self):
+        ...
+
+    def _edit_booking(self):
+        ...
+
+    def _add_room(self):
+        ...
+
+    def _remove_room(self):
+        ...
+
+    def _register_user(self):
+        ...
+
+    def _unregister_user(self):
         ...
 
 
 def main():
     test = HotelManager()
-    print(test)
+    # print(test)
+
+    ConsoleHotel(test).run()
 
 
 if __name__ == "__main__":
     main()
+    # ConsoleHotel(HotelManager())._print_menu()
+    # ConsoleHotel(HotelManager())._userInput("Enter your choice: ")
