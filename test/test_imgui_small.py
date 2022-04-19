@@ -98,9 +98,7 @@ class TestImguiSmall:
             if console.opened:
                 with imgui.begin_menu("_Debug", True) as clear_console:
                     if clear_console.opened:
-                        clicked_clear, selected_clear = imgui.menu_item(
-                            "Clear"
-                        )
+                        clicked_clear, selected_clear = imgui.menu_item("Clear")
                         if clicked_clear:
                             self.console_message = ""
 
@@ -118,9 +116,7 @@ class TestImguiSmall:
                             self.console_message += "\n"
 
                         # add just data from dict
-                        clicked_addData, selected_addData = imgui.menu_item(
-                            "Add: Data"
-                        )
+                        clicked_addData, selected_addData = imgui.menu_item("Add: Data")
                         if clicked_addData:
                             self.console_message = ""
                             for k, v in self.data.items():
@@ -160,9 +156,7 @@ class TestImguiSmall:
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
-        window = glfw.create_window(
-            int(width), int(height), window_name, None, None
-        )
+        window = glfw.create_window(int(width), int(height), window_name, None, None)
         glfw.make_context_current(window)
 
         if not window:
@@ -174,7 +168,7 @@ class TestImguiSmall:
 
 
 if __name__ == "__main__":
-    # TestImguiSmall().main()
-    data = TestImguiSmall().data
+    TestImguiSmall().main()
+    # data = TestImguiSmall().data
     # print(data)
-    pretty_print(data)
+    # pretty_print(data)
