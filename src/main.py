@@ -467,7 +467,6 @@ class ConsoleHotel(HotelInterface):
         self.hotel = hotel
 
         # Console related attributes
-        self._exit_option = "#"
         self._menu_option = {
             "header": "Nimbus Hotel",
             "description": "Welcome to Nimbus Hotel's Navigation Menu. Please select an option.",
@@ -480,7 +479,7 @@ class ConsoleHotel(HotelInterface):
                 "Check-in",
                 "Check-out",
             ],
-            "exit": self._exit_option,
+            "exit": "#",
         }
 
     def run(self):
@@ -489,13 +488,12 @@ class ConsoleHotel(HotelInterface):
         """
         # Main loop
         while True:
-            # Prints the menu
-            self._print_menu()
-            # Gets user input
-            user_input = self._userInput("\nEnter your choice: ")
+            # Prints the menu and gets input
+            user_input = self._print_menu()
+
             if ...:
                 ...
-            elif user_input == self._exit_option:
+            elif user_input == self._menu_option["exit"]:
                 # Exits the program
                 break
             else:
@@ -506,6 +504,7 @@ class ConsoleHotel(HotelInterface):
         """
         Override to print ">>" before message that is directed to a user.
         For visibility purposes.
+        Used exactly like print().
         """
         print(">> ", end="")
         print(*args, **kwargs)
@@ -530,9 +529,12 @@ class ConsoleHotel(HotelInterface):
         for index, option in enumerate(self._menu_option["options"]):
             self._userPrint(f"[{index}] {option}")
 
-        # Print exit option'
-
+        # Print exit option
+        self._userPrint(
+            f"[{self._menu_option['exit']}] Exit or return to top level menu"
+        )
         print("")
+        return self._userInput("Enter your choice: ")
 
     def _print_hotel_info(self):
         ...
@@ -569,4 +571,4 @@ def main():
 if __name__ == "__main__":
     main()
     # ConsoleHotel(HotelManager())._print_menu()
-    # ConsoleHotel(HotelManager())._userInput("Enter your choice: ")
+    # ConsoleHotel(HotelManager())._userInput("Enter your choice: "))

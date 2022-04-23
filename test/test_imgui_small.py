@@ -5,27 +5,12 @@ Info: Testing for general purpose imgui library
 docs: https://pyimgui.readthedocs.io/en/latest/reference/imgui.core.html?highlight=scroll#imgui.core.get_scroll_y
 """
 # Smaller test than test_imgui.py, note '# type: ignore' is for pylint
+from pydoc import cli
 import sys
 import glfw
 import OpenGL.GL as gl
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
-
-
-def pretty_print(value, filter_type=(list, dict), tab=1):
-    """
-    Prints a value in a pretty way
-    """
-    if isinstance(value, filter_type):
-        if isinstance(value, dict):
-            for key, val in value.items():
-                print("\t" * tab + f"'{key}'")
-                pretty_print(val, filter_type, tab + 1)
-        else:
-            for val in value:
-                pretty_print(val, filter_type, tab + 1)
-    else:
-        print("\t" * tab + f"{value}")
 
 
 class TestImguiSmall:
@@ -95,18 +80,21 @@ class TestImguiSmall:
 
         # Console window
         with imgui.begin("Console Messages") as console:
+            clicked_addHello, clicked_addNew, clicked_addData = False, False, False
             if console.opened:
                 with imgui.begin_menu("_Debug", True) as clear_console:
                     if clear_console.opened:
                         clicked_clear, selected_clear = imgui.menu_item("Clear")
                         if clicked_clear:
                             self.console_message = ""
+                            imgui.set_scroll_y(imgui.get_scroll_max_y())
 
                         clicked_addHello, selected_addHello = imgui.menu_item(
                             "Add: hello"
                         )
                         if clicked_addHello:
-                            self.console_message += "Hello World!\n"
+                            self.console_message += "Hello World!\n" * 10
+                            imgui.set_scroll_y(imgui.get_scroll_max_y())
 
                         # add just newline
                         clicked_addNew, selected_addNew = imgui.menu_item(
@@ -114,6 +102,7 @@ class TestImguiSmall:
                         )
                         if clicked_addNew:
                             self.console_message += "\n"
+                            imgui.set_scroll_y(imgui.get_scroll_max_y())
 
                         # add just data from dict
                         clicked_addData, selected_addData = imgui.menu_item("Add: Data")
@@ -121,11 +110,16 @@ class TestImguiSmall:
                             self.console_message = ""
                             for k, v in self.data.items():
                                 self.console_message += f"{k}: \n"
+                                if isinstance(v, (list, dict)):
+                                    self.pretty_print(v)
+                            imgui.set_scroll_y(imgui.get_scroll_max_y())
 
             # Add to console message with button press
             with imgui.begin_child("Console Region", -1, 250, border=True):
                 imgui.text(self.console_message)
-                imgui.set_scroll_y(imgui.get_scroll_max_y())
+                # Check if anythin was clicked and scroll to bottom
+                if clicked_addHello or clicked_addNew or clicked_addData:
+                    imgui.set_scroll_y(imgui.get_scroll_max_y() + 1000)
 
             imgui.show_metrics_window()
 
@@ -165,6 +159,16 @@ class TestImguiSmall:
             sys.exit(1)
 
         return window
+
+    def pretty_print(self, value, filter_type=None, tab=0):
+        if isinstance(value, dict):
+            for key, val in value.items():
+                if filter_type is None or filter_type == key:
+                    print("\t" * tab + f"'{key}'")
+                    self.pretty_print(val, filter_type, tab + 1)
+        else:
+            for val in value:
+                self.pretty_print(val, filter_type, tab + 1)
 
 
 if __name__ == "__main__":
