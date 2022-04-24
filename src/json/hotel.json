@@ -13,9 +13,9 @@
         {
             "name": "JuniorSuite",
             "price": "19.99",
-            "space": "4",
+            "capacity": "4",
             "state": "vacant",
-            "description": "This is a room fitted for average income earners, who wants that extra space and privacy.",
+            "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",
             "misc": [
                 "2xDoubleBed",
                 "wifi",
@@ -29,9 +29,9 @@
         {
             "name": "SeniorSuite",
             "price": "29.99",
-            "space": "2",
+            "capacity": "2",
             "state": "occupied",
-            "description": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
+            "description": "This is a room fitted for the most senior income earners, who wants that extra capacity and privacy.",
             "misc": [
                 "1xDoubleBed",
                 "wifi",
