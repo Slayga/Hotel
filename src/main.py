@@ -27,8 +27,7 @@ class JsonHandling:
         Args:
             filename (str, optional): Name of the file to be used. Defaults to hotel.json.
         """
-        # For a particular reason, this is needed to call the filename setter on initialize
-        self._filename = self.filename = filename
+        self.filename = filename
         self._folder = "json"
         # Gets absolute path to working directory...
         self._path = os.path.dirname(__file__) + "/" + self.folder
@@ -60,12 +59,12 @@ class JsonHandling:
 
     @path.setter
     def setter(self, _: str):
-        """Setter for path, forcing immutable attr...kinda"""
+        """Setter for path"""
         raise ValueError("Path attr. cant be changed")
 
     @folder.setter
     def folder(self, _: str):
-        """Setter for folder, forcing immutable attr...kinda"""
+        """Setter for folder"""
         raise ValueError("Folder attr. cant be changed")
 
     @filename.setter
@@ -139,10 +138,16 @@ class HotelManager:
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.json_data["users"] if "users" in self.json_data else dict()
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
+        )
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
+        )
         # All 'active' bookings are stored in active
-        self.active = self.json_data["active"] if "active" in self.json_data else dict()
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
+        )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
         # Used when packing or updating json_data
         self._extracted = {
@@ -307,7 +312,9 @@ class HotelManager:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1]["state"] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) - 1][
+                    "state"
+                ] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -328,7 +335,7 @@ class HotelManager:
         self,
         name: str,
         price: str,
-        space: str,
+        capacity: str,
         state: str,
         description: str,
         misc: list[str],
@@ -339,7 +346,7 @@ class HotelManager:
         Args:
             name (str): Name of the room, example: JuniorSuite\n
             price (str): Price per night, example: 19.99\n
-            space (str): How many can fit? example: 2\n
+            capacity (str): How many can fit? example: 2\n
             state (str): State of the room, example: vacant or occupied\n
             description (str): A short description, who its fitted for\n
             misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
@@ -353,7 +360,7 @@ class HotelManager:
             {
                 "name": name,
                 "price": price,
-                "space": space,
+                "capacity": capacity,
                 "state": state,
                 "description": description,
                 "misc": misc,
@@ -419,9 +426,15 @@ class HotelManager:
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.json_data["users"] if "users" in self.json_data else dict()
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
-        self.active = self.json_data["active"] if "active" in self.json_data else dict()
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
+        )
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
+        )
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
+        )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
@@ -460,7 +473,7 @@ class GuiHotel(HotelInterface):
 
 
 class ConsoleHotel(HotelInterface):
-    """Normal console (printing) implementation"""
+    """Normal console (print) implementation"""
 
     def __init__(self, hotel: HotelManager):
         # Object instance of HotelManager class
@@ -469,38 +482,48 @@ class ConsoleHotel(HotelInterface):
         # Console related attributes
         self._menu_option = {
             "header": "Nimbus Hotel",
-            "description": "Welcome to Nimbus Hotel's Navigation Menu. Please select an option.",
-            "options": [
-                "Hotel Info",
-                "View all vacant rooms",
-                "Add Booking",
-                "Register",
-                "Book",
-                "Check-in",
-                "Check-out",
-            ],
+            "description": "Welcome to Nimbus Hotel's Navigation Menu.\nPlease select an option.",
+            "options": {
+                "Hotel Info": self._print_hotel_info,
+                "View all vacant rooms": self._print_all_vacant,
+                "Add Booking": self._add_booking,
+                "Register": self._register_user,
+                "Book": self._add_booking,
+                "Check-in": self._check_in,
+                "Check-out": self._check_out,
+            },
             "exit": "#",
         }
 
     def run(self):
         """
-        Loop with menu option to view hotel info, add booking, register, unbook, etc... and exit option.
+        Runs the interface. Prints the menu and waits for user input
+        and call respective function, until opted to exit
         """
         # Main loop
         while True:
             # Prints the menu and gets input
             user_input = self._print_menu()
 
-            if ...:
-                ...
-            elif user_input == self._menu_option["exit"]:
-                # Exits the program
-                break
-            else:
-                # If invalid, print error message
-                print("\nInvalid input, please try again.")
+            if user_input.isdigit():  # type: ignore
+                if int(user_input) in range(
+                    0, len(self._menu_option["options"])
+                ):
+                    # If input is a number, execute the corresponding function
+                    self._menu_option["options"][
+                        list(self._menu_option["options"].keys())[
+                            int(user_input)
+                        ]
+                    ]()
 
-    def _userPrint(self, *args, **kwargs):
+            elif user_input == self._menu_option["exit"]:
+                # Update json_data before exiting
+                self.hotel._update_json()
+                # Exits the loop & program
+                break
+
+    @staticmethod
+    def _userPrint(*args, **kwargs):
         """
         Override to print ">>" before message that is directed to a user.
         For visibility purposes.
@@ -509,7 +532,8 @@ class ConsoleHotel(HotelInterface):
         print(">> ", end="")
         print(*args, **kwargs)
 
-    def _userInput(self, *args, **kwargs):
+    @staticmethod
+    def _userInput(*args, **kwargs):
         """
         Override to print ">>" before message that is directed to a user.
         For visibility purposes.
@@ -517,15 +541,31 @@ class ConsoleHotel(HotelInterface):
         print(">> ", end="")
         return input(*args, **kwargs)
 
-    def _print_menu(self):
+    @staticmethod
+    def clear_console():
+        """
+        Clears the console.
+        """
+        os.system("cls" if os.name == "nt" else "clear")
+
+    def _print_menu(self, noInput=False, noClear=False) -> str:
         """
         Prints the predefined menu options
+
+        Args:
+            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+
+        Returns:
+            str | None: str if user input is expected else None
         """
-        # Prints the menu header
+        # Clear console window if user hasn't disabled the option
+        self.clear_console() if not noClear else ...
+
         print(self._menu_option["header"])
-        # Prints the menu description
+        print("=" * len(self._menu_option["header"]))
         print(self._menu_option["description"])
         # Prints the menu options
+        print("-" * max(len(opt) for opt in self._menu_option["options"]))
         for index, option in enumerate(self._menu_option["options"]):
             self._userPrint(f"[{index}] {option}")
 
@@ -534,10 +574,38 @@ class ConsoleHotel(HotelInterface):
             f"[{self._menu_option['exit']}] Exit or return to top level menu"
         )
         print("")
-        return self._userInput("Enter your choice: ")
+        # If no input is required, return None else return user input
+        if not noInput:
+            return self._userInput("Please select an option: ")
+
+        # If noInput is true, returns an empty string
+        return ""
 
     def _print_hotel_info(self):
-        ...
+        self.clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print(self.hotel)
+        self._userInput("Press enter to continue...")
+
+    def _print_all_vacant(self):
+        self.vacant_rooms = self.hotel.filter_dict(
+            self.hotel.rooms, {"state": "vacant"}
+        )
+        self.clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print(f"There are {len(self.vacant_rooms)} vacant rooms")
+        print("-" * max(len(opt) for opt in self.vacant_rooms))
+        # Print out all room information here
+        for room in self.vacant_rooms:
+            self._userPrint(f"Type: {room['name']}")
+            self._userPrint(f"State: {room['state']}")
+            self._userPrint(f"Price: {room['price']}")
+            self._userPrint(f"Capacity: {room['capacity']}")
+            self._userPrint(f"Features: {room['features']}")
+            self._userPrint("")
+        self._userInput("Press enter to continue...")
 
     def _add_booking(self):
         ...
@@ -558,6 +626,12 @@ class ConsoleHotel(HotelInterface):
         ...
 
     def _unregister_user(self):
+        ...
+
+    def _check_in(self):
+        ...
+
+    def _check_out(self):
         ...
 
 
