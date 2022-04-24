@@ -271,7 +271,7 @@ class HotelManager:
         Called when user is booking a room. Must be registered to add booking.
 
         Args:
-            ssn (str): ssn of user
+            ssn (str): ssn of user\n
             room (str): room number(digits): "1", "2", "3" etc.
 
         Returns:
@@ -301,7 +301,7 @@ class HotelManager:
         Called when user is removing a booking. Must be registered to remove booking.
 
         Args:
-            ssn (str): ssn of user
+            ssn (str): ssn of user\n
             room (str): room number(digits): "1", "2", "3" etc.
 
         Returns:
@@ -387,7 +387,7 @@ class HotelManager:
         Args:
             filter_ (dict, optional): A dict of len == 1 where the key is going to be
                                     matched with similar key and also compare value to value.
-                                    Defaults to None.
+                                    Defaults to None.\n
             inverted (bool, optional): Ability to invert results. Defaults to False.
 
         Returns:
@@ -596,18 +596,28 @@ class ConsoleHotel(HotelInterface):
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
         print(f"There are {len(self.vacant_rooms)} vacant rooms")
-        print("-" * max(len(opt) for opt in self.vacant_rooms))
+        print("-" * 15)
         # Print out all room information here
         for room in self.vacant_rooms:
-            self._userPrint(f"Type: {room['name']}")
-            self._userPrint(f"State: {room['state']}")
-            self._userPrint(f"Price: {room['price']}")
-            self._userPrint(f"Capacity: {room['capacity']}")
-            self._userPrint(f"Features: {room['features']}")
-            self._userPrint("")
+            print(f"Type: {room['name']}")
+            print(f"State: {room['state']}")
+            print(f"Price: {room['price']}c")
+            print(f"Capacity: {room['capacity']}")
+            print(f"Description: {room['description']}")
+            print(f"Features:", ", ".join(room["misc"]))
+            print("-" * 15)
         self._userInput("Press enter to continue...")
 
     def _add_booking(self):
+        userSsn = self._userInput("Please enter your SSN: ")
+
+        if self.hotel.add_booking(
+            userSsn, userRoom, checkAndRegisterUser=True
+        ):
+            self._userPrint("Booking successful!")
+        else:
+            self._userPrint("Booking failed!")
+        self._userInput("Press enter to continue...")
         ...
 
     def _remove_booking(self):
