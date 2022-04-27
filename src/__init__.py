@@ -1,1 +1,1 @@
-from main import main
+from hotel import _main
