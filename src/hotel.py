@@ -193,7 +193,15 @@ class HotelManager:
         return True
 
     def is_registered(self, ssn: str) -> bool:
-        # Returns true if ssn in self.users
+        """
+        Returns a boolean depending on whether a user is registered or not.
+
+        Args:
+            ssn (str): SSN of user
+
+        Returns:
+            bool: True if a user is registered, False otherwise
+        """
         return ssn in self.users
 
     def unregister_user(self, ssn) -> bool | str:
