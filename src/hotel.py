@@ -1,5 +1,5 @@
 """
-Project: Hotel managment system \n
+Project: Hotel management system \n
 Name: Gabriel Engberg, Viggo Rubin \n
 Date: 28-02-2022 \n
 Info: Main running file for hotel application. \n
@@ -139,12 +139,15 @@ class HotelManager:
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.json_data["users"] if "users" in self.json_data else dict(
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
         )
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list(
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
         )
         # All 'active' bookings are stored in active
-        self.active = self.json_data["active"] if "active" in self.json_data else dict(
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
         )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
         # Used when packing or updating json_data
@@ -207,7 +210,9 @@ class HotelManager:
         """
         return ssn in self.users
 
-    def edit_user(self, ssn: str, name: str = "", age: str = "", new_ssn: str = "") -> bool:
+    def edit_user(
+        self, ssn: str, name: str = "", age: str = "", new_ssn: str = ""
+    ) -> bool:
         if self.is_registered(ssn):
             if new_ssn:
                 # Changes key in self.users to new_ssn(pop returns the value)
@@ -347,8 +352,9 @@ class HotelManager:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) -
-                           1]["state"] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) - 1][
+                    "state"
+                ] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -460,11 +466,14 @@ class HotelManager:
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.json_data["users"] if "users" in self.json_data else dict(
+        self.users = (
+            self.json_data["users"] if "users" in self.json_data else dict()
         )
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list(
+        self.rooms = (
+            self.json_data["rooms"] if "rooms" in self.json_data else list()
         )
-        self.active = self.json_data["active"] if "active" in self.json_data else dict(
+        self.active = (
+            self.json_data["active"] if "active" in self.json_data else dict()
         )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
@@ -472,7 +481,7 @@ class HotelManager:
 class HotelInterface(metaclass=ABCMeta):
     """
     All classes that "connect" to the hotel is derived from HotelInterface.
-    An abstract class that predefines implementations requirements.
+    An abstract class that predefined implementations requirements.
     """
 
     @abstractmethod
@@ -537,11 +546,14 @@ class ConsoleHotel(HotelInterface):
             user_input = self._print_menu()
 
             if user_input.isdigit():  # type: ignore
-                if int(user_input) in range(0, len(self._menu_option["options"])):
+                if int(user_input) in range(
+                    0, len(self._menu_option["options"])
+                ):
                     # If input is a number, execute the corresponding function
                     self._menu_option["options"][
                         list(self._menu_option["options"].keys())[
-                            int(user_input)]
+                            int(user_input)
+                        ]
                     ]()
 
             elif user_input == self._menu_option["exit"]:
@@ -641,7 +653,8 @@ class ConsoleHotel(HotelInterface):
             (userSsn := self._userInput("Please enter your SSN: "))
         ):
             self._userInput(
-                "Invalid SSN. Press enter to try again or # to exit")
+                "Invalid SSN. Press enter to try again or # to exit"
+            )
         userRoom = self._userInput("Please enter the room number: ")
 
         if self.hotel.add_booking(userSsn, userRoom):
