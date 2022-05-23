@@ -10,7 +10,7 @@ hence the management of seeing SSN easily.
 # Pickle or Json dump...
 # Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
-from typing import Collection, Any
+from typing import Collection, Any, Callable
 import json
 import os
 from abc import ABCMeta, abstractmethod
@@ -139,16 +139,13 @@ class HotelManager:
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = (
-            self.json_data["users"] if "users" in self.json_data else dict()
-        )
-        self.rooms = (
-            self.json_data["rooms"] if "rooms" in self.json_data else list()
-        )
+        self.users = (self.json_data["users"]
+                      if "users" in self.json_data else dict())
+        self.rooms = (self.json_data["rooms"]
+                      if "rooms" in self.json_data else list())
         # All 'active' bookings are stored in active
-        self.active = (
-            self.json_data["active"] if "active" in self.json_data else dict()
-        )
+        self.active = (self.json_data["active"]
+                       if "active" in self.json_data else dict())
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
         # Used when packing or updating json_data
         self._extracted = {
@@ -158,7 +155,7 @@ class HotelManager:
             "old": self.old,
         }
 
-        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking... Ignore
         self.json_data: dict[str, Any]
         self.users: dict[str, dict[str, str]]
         self.rooms: list[dict[str, str | list[str]]]
@@ -210,21 +207,50 @@ class HotelManager:
         """
         return ssn in self.users
 
-    def edit_user(
-        self, ssn: str, name: str = "", age: str = "", new_ssn: str = ""
-    ) -> bool:
+    def is_ssn_valid(self, ssn: str) -> bool:
+        """Evaluate if ssn is valid
+
+        Args:
+            ssn (str): Social security number.
+
+        Returns:
+            bool: True on success, False otherwise
+        """
+        # Removes all dashes and spaces
+        ssn = ssn.replace("-", "").replace(" ", "")
+        if ssn.isdigit():
+            if len(ssn) == 12:
+                return True
+        return False
+
+    def edit_user(self,
+                  ssn: str,
+                  name: str = "",
+                  age: str = "",
+                  new_ssn: str = "") -> bool:
+        """
+        Edits a user's information.
+
+        Returns:
+            bool: True if user is registered, False otherwise 
+            (Note: Return is only affected if ssn is registered)
+        """
+
         if self.is_registered(ssn):
+            # If new ssn is provided, the key must be updated.
             if new_ssn:
-                # Changes key in self.users to new_ssn(pop returns the value)
+                # Changes key in self.users to new_ssn(pop returns the value hence the assignment below)
                 self.users[new_ssn] = self.users.pop(ssn)
                 ssn = new_ssn
             if name:
                 self.users[ssn]["name"] = name
             if age:
                 self.users[ssn]["age"] = age
+            return True
+        # User is not registered
         return False
 
-    def unregister_user(self, ssn) -> bool | str:
+    def unregister_user(self, ssn: str) -> bool | str:
         """
         Unregister a user from the HotelManager.
         Will return a string or boolean depending on success.
@@ -236,6 +262,8 @@ class HotelManager:
         Returns:
             str | bool: str on failure, boolean(True) on success
         """
+        self.is_ssn_valid(ssn)
+
         # Check if a user is already registered
         if ssn not in self.users:
             return "User with given ssn does not exist"
@@ -352,9 +380,8 @@ class HotelManager:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1][
-                    "state"
-                ] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) -
+                           1]["state"] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -396,18 +423,16 @@ class HotelManager:
         """
         user: str = ""
         message: str = ""
-        self.rooms.append(
-            {
-                "name": name,
-                "price": price,
-                "capacity": capacity,
-                "state": state,
-                "description": description,
-                "misc": misc,
-                "user": user,
-                "message": message,
-            }
-        )
+        self.rooms.append({
+            "name": name,
+            "price": price,
+            "capacity": capacity,
+            "state": state,
+            "description": description,
+            "misc": misc,
+            "user": user,
+            "message": message,
+        })
         return True
 
     def remove_room(self):
@@ -466,15 +491,12 @@ class HotelManager:
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = (
-            self.json_data["users"] if "users" in self.json_data else dict()
-        )
-        self.rooms = (
-            self.json_data["rooms"] if "rooms" in self.json_data else list()
-        )
-        self.active = (
-            self.json_data["active"] if "active" in self.json_data else dict()
-        )
+        self.users = (self.json_data["users"]
+                      if "users" in self.json_data else dict())
+        self.rooms = (self.json_data["rooms"]
+                      if "rooms" in self.json_data else list())
+        self.active = (self.json_data["active"]
+                       if "active" in self.json_data else dict())
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
@@ -519,10 +541,11 @@ class ConsoleHotel(HotelInterface):
         # Object instance of HotelManager class
         self.hotel = hotel
 
-        # Console related attributes
+        # Console related attributes, avoid having exit value as a number(interferes with options menu)
         self._menu_option = {
             "header": "Nimbus Hotel",
-            "description": "Welcome to Nimbus Hotel's Navigation Menu.\nPlease select an option.",
+            "description":
+            "Welcome to Nimbus Hotel's Navigation Menu.\nPlease select an option.",
             "options": {
                 "Hotel Info": self._print_hotel_info,
                 "View all vacant rooms": self._print_all_vacant,
@@ -542,19 +565,20 @@ class ConsoleHotel(HotelInterface):
         """
         # Main loop
         while True:
+            # Updates the hotels internal information
+            self.hotel._update_json()
             # Prints the menu and gets input
             user_input = self._print_menu()
 
             if user_input.isdigit():
-                if int(user_input) in range(
-                    0, len(self._menu_option["options"])
-                ):
-                    # If input is a number, execute the corresponding function
-                    self._menu_option["options"][
-                        list(self._menu_option["options"].keys())[
-                            int(user_input)
-                        ]
-                    ]()
+                # Checks if the user input is within the range of allowed options
+                if int(user_input) in range(0,
+                                            len(self._menu_option["options"])):
+                    # Calls the corresponding method to call.
+                    # For example user_input = 1 will call self._print_all_vacant()
+                    self._menu_option["options"][list(
+                        self._menu_option["options"].keys())[int(
+                            user_input)]]()
 
             elif user_input == self._menu_option["exit"]:
                 # Update json_data before exiting
@@ -611,8 +635,7 @@ class ConsoleHotel(HotelInterface):
 
         # Print exit option
         self._userPrint(
-            f"[{self._menu_option['exit']}] Exit or return to top level menu"
-        )
+            f"[{self._menu_option['exit']}] Exit or return to top level menu")
         print("")
         # If no input is required, return None else return user input
         if not noInput:
@@ -629,9 +652,8 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _print_all_vacant(self):
-        self.vacant_rooms = self.hotel.filter_dict(
-            self.hotel.rooms, {"state": "vacant"}
-        )
+        self.vacant_rooms = self.hotel.filter_dict(self.hotel.rooms,
+                                                   {"state": "vacant"})
         self.clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -650,11 +672,9 @@ class ConsoleHotel(HotelInterface):
 
     def _add_booking(self):
         while not self.hotel.is_registered(
-            (userSsn := self._userInput("Please enter your SSN: "))
-        ):
+            (userSsn := self._userInput("Please enter your SSN: "))):
             self._userInput(
-                "Invalid SSN. Press enter to try again or # to exit"
-            )
+                "Invalid SSN. Press enter to try again or # to exit")
         userRoom = self._userInput("Please enter the room number: ")
 
         if self.hotel.add_booking(userSsn, userRoom):
