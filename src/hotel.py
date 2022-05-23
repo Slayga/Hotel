@@ -545,7 +545,7 @@ class ConsoleHotel(HotelInterface):
             # Prints the menu and gets input
             user_input = self._print_menu()
 
-            if user_input.isdigit():  # type: ignore
+            if user_input.isdigit():
                 if int(user_input) in range(
                     0, len(self._menu_option["options"])
                 ):
