@@ -12,7 +12,7 @@
     "rooms": [
         {
             "name": "JuniorSuite",
-            "price": "19.99",
+            "price": "19.99c",
             "capacity": "4",
             "state": "vacant",
             "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",

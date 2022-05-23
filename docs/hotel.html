@@ -1,0 +1,2207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>hotel API documentation</title>
+<meta name="description" content="Project: Hotel managment system …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>hotel</code></h1>
+</header>
+<section id="section-intro">
+<p>Project: Hotel managment system </p>
+<p>Name: Gabriel Engberg, Viggo Rubin </p>
+<p>Date: 28-02-2022 </p>
+<p>Info: Main running file for hotel application. </p>
+<p>This is in theory meant to be used by personal at a given hotel,
+hence the management of seeing SSN easily.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Project: Hotel managment system \n
+Name: Gabriel Engberg, Viggo Rubin \n
+Date: 28-02-2022 \n
+Info: Main running file for hotel application. \n
+This is in theory meant to be used by personal at a given hotel, 
+hence the management of seeing SSN easily.
+&#34;&#34;&#34;
+
+# Pickle or Json dump...
+# Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
+
+from typing import Collection, Any
+import json
+import os
+from abc import ABCMeta, abstractmethod
+
+
+class JsonHandling:
+    &#34;&#34;&#34;
+    Class for handling json data from json files
+    &#34;&#34;&#34;
+
+    def __init__(self, filename: str = &#34;hotel.json&#34;):
+        &#34;&#34;&#34;
+        Constructor for JsonHandling
+
+        Args:
+            filename (str, optional): Name of the file to be used. Defaults to hotel.json.
+        &#34;&#34;&#34;
+        self.filename = filename
+        self._folder = &#34;json&#34;
+        # Gets absolute path to working directory...
+        self._path = os.path.dirname(__file__) + &#34;/&#34; + self.folder
+        # Absolute path to file (file included)
+        self.full_path = self.path + &#34;/&#34; + self._filename
+        # Create self.folder in the current working directory.
+        if not os.path.exists(self._path):
+            # Make a folder called json in directory if not existing
+            os.makedirs(self._path, exist_ok=True)
+
+        # Creates the .json file if it doesn&#39;t exist.
+        if not os.path.exists(self.full_path):
+            self.__create_file(self.full_path)
+
+    @property
+    def path(self) -&gt; str:
+        &#34;&#34;&#34;Property for path&#34;&#34;&#34;
+        return self._path
+
+    @property
+    def folder(self) -&gt; str:
+        &#34;&#34;&#34;Property for folder&#34;&#34;&#34;
+        return self._folder
+
+    @property
+    def filename(self) -&gt; str:
+        &#34;&#34;&#34;Property for filename&#34;&#34;&#34;
+        return self._filename
+
+    @path.setter
+    def setter(self, _: str):
+        &#34;&#34;&#34;Setter for path&#34;&#34;&#34;
+        raise ValueError(&#34;Path attr. cant be changed&#34;)
+
+    @folder.setter
+    def folder(self, _: str):
+        &#34;&#34;&#34;Setter for folder&#34;&#34;&#34;
+        raise ValueError(&#34;Folder attr. cant be changed&#34;)
+
+    @filename.setter
+    def filename(self, value: str):
+        &#34;&#34;&#34;Setter for filename&#34;&#34;&#34;
+        # Instead of raising an exception on no &#39;filename&#39; a fallback exists.
+        self.__fallback = &#34;hotel.json&#34;
+        # Evaluate whetever the custom value(if given is a valid file)
+        if value:
+            if value.endswith(&#34;.json&#34;):
+                self._filename = value
+            else:
+                self._filename = value + &#34;.json&#34;
+        else:
+            self._filename = self.__fallback
+
+    def __create_file(self, path: str):
+        &#34;&#34;&#34;
+        Creates an &#39;empty&#39; json file
+
+        Args:
+            path (str): Given path to file
+        &#34;&#34;&#34;
+        # Loads an empty dict into the json file, or it will crash on read.
+        # See testing.py in &#39;test&#39; folder for more details.
+        with open(str(path), &#34;w&#34;) as f:
+            json.dump({}, f)
+
+    def pack_data(self, json_data: dict, mode: str = &#34;w&#34;):
+        &#34;&#34;&#34;
+        Writes json data to a json file
+
+        Args:
+            json_data (dict): data to be stored in json file,
+                        #! NOTE that all keys must be of type str
+            mode (str, optional): Mode the file will be open in. Defaults to &#34;w&#34;.
+        &#34;&#34;&#34;
+        with open(self.full_path, mode) as f:
+            json.dump(json_data, f)
+
+    def unpack_data(self) -&gt; dict:
+        &#34;&#34;&#34;
+        Opens json file and returns the data structure as a dictionary
+
+        Returns:
+            dict: data stored in json file as a dictionary.
+        &#34;&#34;&#34;
+        with open(self.full_path) as f:
+            return json.load(f)
+
+
+class HotelManager:
+    &#34;&#34;&#34;
+    Class for managing a hotel database system.
+    Used to manipulate json data from given file that class JsonHandling returns
+    when unpacking.
+
+    HotelManager uses methods for: checking in, checking out,
+    adding bookings, removing bookings, editing bookings, adding rooms,
+    removing rooms, editing rooms, register users, unregister users and printing raw json_data.
+    &#34;&#34;&#34;
+
+    def __init__(self, filename: str = &#34;&#34;):
+        &#34;&#34;&#34;Constructor for HotelManager
+
+        Args:
+            filename (str, optional): Optional argument for the name of the file. Defaults to &#34;&#34;.
+        &#34;&#34;&#34;
+        # Unpacking and loading json_data from given path(Default is None)
+        self.json_handler = JsonHandling(filename)
+        self.json_data = self.json_handler.unpack_data()
+
+        # Extracting or creating required structures
+        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
+        )
+        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
+        )
+        # All &#39;active&#39; bookings are stored in active
+        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
+        )
+        self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
+        # Used when packing or updating json_data
+        self._extracted = {
+            &#34;users&#34;: self.users,
+            &#34;rooms&#34;: self.rooms,
+            &#34;active&#34;: self.active,
+            &#34;old&#34;: self.old,
+        }
+
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        self.json_data: dict[str, Any]
+        self.users: dict[str, dict[str, str]]
+        self.rooms: list[dict[str, str | list[str]]]
+        self.active: dict[str, dict[str, str | bool]]
+        self.old: dict[str, int]
+
+    def __str__(self):
+        &#34;&#34;&#34;
+        Returns a string representation of the class HotelManager.
+        Will ultimately return a string of amount of bookings, total room and vacant rooms.
+        &#34;&#34;&#34;
+        # Filter dict to get only vacant rooms
+        vacant_room = self.filter_dict(self.rooms, {&#34;state&#34;: &#34;vacant&#34;})
+        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }&#34;
+
+    def register_user(self, ssn: str, name: str, age: str) -&gt; str | bool:
+        &#34;&#34;&#34;
+        Registers a user to the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+            name (str): name of given user
+            age (str): age of given user
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        &#34;&#34;&#34;
+        # Check if a user is already registered
+        if ssn in self.users:
+            return &#34;User with given ssn already exists&#34;
+        # Check if age is a number
+        if not age.isdigit():
+            return &#34;Age must be a number&#34;
+        # Else add user to self.users with ssn as the key
+        self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+        return True
+
+    def is_registered(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Returns a boolean depending on whether a user is registered or not.
+
+        Args:
+            ssn (str): SSN of user
+
+        Returns:
+            bool: True if a user is registered, False otherwise
+        &#34;&#34;&#34;
+        return ssn in self.users
+
+    def unregister_user(self, ssn) -&gt; bool | str:
+        &#34;&#34;&#34;
+        Unregister a user from the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        &#34;&#34;&#34;
+        # Check if a user is already registered
+        if ssn not in self.users:
+            return &#34;User with given ssn does not exist&#34;
+        # Else add user to self.old and remove user from self.users with ssn as the key
+        self.old[ssn] += 1
+        del self.users[ssn]
+        return True
+
+    def check_in(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to check in to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check in
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Checks if user exists
+        if ssn in self.users:
+            # Check if already booked
+            if ssn in self.active:
+                # Check if not checked in
+                if not self.users[ssn][&#34;checked_in&#34;]:
+                    # Good to check in...
+                    self.active[ssn][&#34;checked_in&#34;] = True
+                    self._update_json()
+                    return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def check_out(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to check out to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check out
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if checked in
+            if self.active[ssn][&#34;checked_in&#34;]:
+                # Good to check out...
+                self.active[ssn][&#34;checked_in&#34;] = False
+                # Increment times stayed at the hotel
+                self.old[ssn] += 1
+                # Remove booking from active dict
+                del self.active[ssn]
+                # Update json_data
+                self._update_json()
+                return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def add_booking(self, ssn: str, room: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is booking a room. Must be registered to add booking.
+
+        Args:
+            ssn (str): ssn of user\n
+            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Checks if user exists and NOT already booked
+        if ssn in self.users and ssn not in self.active:
+            if room.isdigit():
+                # Convert to int and move one step back for correct indexing
+                room_index = int(room) - 1
+                # Check if room is in range
+                if 0 &lt;= room_index &lt; len(self.rooms):
+                    #  Check if room is vacant
+                    if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                        # Change room state to occupied
+                        self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                        # Add booking to active dict
+                        self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
+                        # Update json_data
+                        self._update_json()
+                        return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is removing a booking. Must be registered to remove booking.
+
+        Args:
+            ssn (str): ssn of user\n
+            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if not checked in
+            if not self.active[ssn][&#34;checked_in&#34;]:
+                # Change room state to vacant
+                self.rooms[int(self.active[ssn][&#34;room&#34;]) -
+                           1][&#34;state&#34;] = &#34;vacant&#34;
+                # Remove booking from active dict
+                del self.active[ssn]
+                if unregister:
+                    # Unregister user
+                    if not self.unregister_user(ssn):
+                        # Failed un-registration
+                        return False
+                # Update json_data
+                self._update_json()
+                return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def edit_booking(self):
+        ...
+
+    def add_room(
+        self,
+        name: str,
+        price: str,
+        capacity: str,
+        state: str,
+        description: str,
+        misc: list[str],
+    ) -&gt; bool:
+        &#34;&#34;&#34;
+        Adds a room to the hotel.
+
+        Args:
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            capacity (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        &#34;&#34;&#34;
+        user: str = &#34;&#34;
+        message: str = &#34;&#34;
+        self.rooms.append(
+            {
+                &#34;name&#34;: name,
+                &#34;price&#34;: price,
+                &#34;capacity&#34;: capacity,
+                &#34;state&#34;: state,
+                &#34;description&#34;: description,
+                &#34;misc&#34;: misc,
+                &#34;user&#34;: user,
+                &#34;message&#34;: message,
+            }
+        )
+        return True
+
+    def remove_room(self):
+        ...
+
+    def edit_room(self):
+        ...
+
+    def filter_dict(
+        self,
+        data: Collection[dict],
+        filter_: dict | None = None,
+        inverted: bool = False,
+    ) -&gt; list[dict] | Collection[dict]:
+        &#34;&#34;&#34;Returns a list of all filtered matches depending on given filter
+
+        Args:
+            filter_ (dict, optional): A dict of len == 1 where the key is going to be
+                                    matched with similar key and also compare value to value.
+                                    Defaults to None.\n
+            inverted (bool, optional): Ability to invert results. Defaults to False.
+
+        Returns:
+            list[dict] | list: A list of filtered matches or all the matches if no filter is given.
+        &#34;&#34;&#34;
+        # Check if filter_ is provided (underscore is to avoid naming conflict)
+        if filter_:
+            filtered: list = list()
+            # Gets first key in dict
+            filter_key = list(filter_.keys())[0]
+            for value in data:
+                if value[filter_key] == filter_[filter_key]:
+                    filtered.append(value)
+            else:
+                if inverted:
+                    # Returns the inverted list
+                    return [value for value in data if value not in filtered]
+                else:
+                    return filtered
+        else:
+            # If no filter was given, return data (all)
+            return data
+
+    def _pretty_print(self):
+        ...
+
+    def _update_json(self):
+        &#34;&#34;&#34;
+        Updates data structure with new json_data and loads the new json_data
+        &#34;&#34;&#34;
+        # Updates each dict in self.json_data
+        for key, value in self._extracted.items():
+            self.json_data.update({key: value})
+
+        # Same practice as constructor
+        self.json_handler.pack_data(self.json_data)
+        self.json_data = self.json_handler.unpack_data()
+
+        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
+        )
+        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
+        )
+        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
+        )
+        self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
+
+
+class HotelInterface(metaclass=ABCMeta):
+    &#34;&#34;&#34;
+    All classes that &#34;connect&#34; to the hotel is derived from HotelInterface.
+    An abstract class that predefines implementations requirements.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def __init__(self):
+        &#34;&#34;&#34;
+        Initializes the hotel object that it will connect to
+
+        Expected Args:
+            hotel (HotelManager): HotelManager object
+        &#34;&#34;&#34;
+
+    @abstractmethod
+    def run(self):
+        &#34;&#34;&#34;
+        Implement the run method to start the interface.
+        TL:DR; Talk to the self.hotel object
+        &#34;&#34;&#34;
+        ...
+
+
+class WebHotel(HotelInterface):
+    # Django or Flask implementation
+    ...
+
+
+class GuiHotel(HotelInterface):
+    # PyImgui implementation
+    ...
+
+
+class ConsoleHotel(HotelInterface):
+    &#34;&#34;&#34;Normal console (print) implementation&#34;&#34;&#34;
+
+    def __init__(self, hotel: HotelManager):
+        # Object instance of HotelManager class
+        self.hotel = hotel
+
+        # Console related attributes
+        self._menu_option = {
+            &#34;header&#34;: &#34;Nimbus Hotel&#34;,
+            &#34;description&#34;: &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
+            &#34;options&#34;: {
+                &#34;Hotel Info&#34;: self._print_hotel_info,
+                &#34;View all vacant rooms&#34;: self._print_all_vacant,
+                &#34;Add Booking&#34;: self._add_booking,
+                &#34;Register&#34;: self._register_user,
+                &#34;Book&#34;: self._add_booking,
+                &#34;Check-in&#34;: self._check_in,
+                &#34;Check-out&#34;: self._check_out,
+            },
+            &#34;exit&#34;: &#34;#&#34;,
+        }
+
+    def run(self):
+        &#34;&#34;&#34;
+        Runs the interface. Prints the menu and waits for user input
+        and call respective function, until opted to exit
+        &#34;&#34;&#34;
+        # Main loop
+        while True:
+            # Prints the menu and gets input
+            user_input = self._print_menu()
+
+            if user_input.isdigit():  # type: ignore
+                if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
+                    # If input is a number, execute the corresponding function
+                    self._menu_option[&#34;options&#34;][
+                        list(self._menu_option[&#34;options&#34;].keys())[
+                            int(user_input)]
+                    ]()
+
+            elif user_input == self._menu_option[&#34;exit&#34;]:
+                # Update json_data before exiting
+                self.hotel._update_json()
+                # Exits the loop &amp; program
+                break
+
+    @staticmethod
+    def _userPrint(*args, **kwargs):
+        &#34;&#34;&#34;
+        Override to print &#34;&gt;&gt;&#34; before message that is directed to a user.
+        For visibility purposes.
+        Used exactly like print().
+        &#34;&#34;&#34;
+        print(&#34;&gt;&gt; &#34;, end=&#34;&#34;)
+        print(*args, **kwargs)
+
+    @staticmethod
+    def _userInput(*args, **kwargs):
+        &#34;&#34;&#34;
+        Override to print &#34;&gt;&gt;&#34; before message that is directed to a user.
+        For visibility purposes.
+        &#34;&#34;&#34;
+        print(&#34;&gt;&gt; &#34;, end=&#34;&#34;)
+        return input(*args, **kwargs)
+
+    @staticmethod
+    def clear_console():
+        &#34;&#34;&#34;
+        Clears the console.
+        &#34;&#34;&#34;
+        os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)
+
+    def _print_menu(self, noInput=False, noClear=False) -&gt; str:
+        &#34;&#34;&#34;
+        Prints the predefined menu options
+
+        Args:
+            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+
+        Returns:
+            str | None: str if user input is expected else None
+        &#34;&#34;&#34;
+        # Clear console window if user hasn&#39;t disabled the option
+        self.clear_console() if not noClear else ...
+
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(self._menu_option[&#34;description&#34;])
+        # Prints the menu options
+        print(&#34;-&#34; * max(len(opt) for opt in self._menu_option[&#34;options&#34;]))
+        for index, option in enumerate(self._menu_option[&#34;options&#34;]):
+            self._userPrint(f&#34;[{index}] {option}&#34;)
+
+        # Print exit option
+        self._userPrint(
+            f&#34;[{self._menu_option[&#39;exit&#39;]}] Exit or return to top level menu&#34;
+        )
+        print(&#34;&#34;)
+        # If no input is required, return None else return user input
+        if not noInput:
+            return self._userInput(&#34;Please select an option: &#34;)
+
+        # If noInput is true, returns an empty string
+        return &#34;&#34;
+
+    def _print_hotel_info(self):
+        self.clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(self.hotel)
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _print_all_vacant(self):
+        self.vacant_rooms = self.hotel.filter_dict(
+            self.hotel.rooms, {&#34;state&#34;: &#34;vacant&#34;}
+        )
+        self.clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(f&#34;There are {len(self.vacant_rooms)} vacant rooms&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all room information here
+        for room in self.vacant_rooms:
+            print(f&#34;Type: {room[&#39;name&#39;]}&#34;)
+            print(f&#34;State: {room[&#39;state&#39;]}&#34;)
+            print(f&#34;Price: {room[&#39;price&#39;]}c&#34;)
+            print(f&#34;Capacity: {room[&#39;capacity&#39;]}&#34;)
+            print(f&#34;Description: {room[&#39;description&#39;]}&#34;)
+            print(f&#34;Features:&#34;, &#34;, &#34;.join(room[&#34;misc&#34;]))
+            print(&#34;-&#34; * 15)
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_booking(self):
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))
+        ):
+            self._userInput(
+                &#34;Invalid SSN. Press enter to try again or # to exit&#34;)
+        userRoom = self._userInput(&#34;Please enter the room number: &#34;)
+
+        if self.hotel.add_booking(userSsn, userRoom):
+            self._userPrint(&#34;Booking successful!&#34;)
+        else:
+            self._userPrint(&#34;Booking failed!&#34;)
+        self._userInput(&#34;Press enter to continue...&#34;)
+        ...
+
+    def _remove_booking(self):
+        ...
+
+    def _edit_booking(self):
+        ...
+
+    def _add_room(self):
+        ...
+
+    def _remove_room(self):
+        ...
+
+    def _register_user(self):
+        ...
+
+    def _unregister_user(self):
+        ...
+
+    def _check_in(self):
+        ...
+
+    def _check_out(self):
+        ...
+
+
+def _main():
+    test = HotelManager()
+    # print(test)
+
+    ConsoleHotel(test).run()
+
+
+if __name__ == &#34;__main__&#34;:
+    _main()
+    # ConsoleHotel(HotelManager())._print_menu()
+    # ConsoleHotel(HotelManager())._userInput(&#34;Enter your choice: &#34;))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="hotel.ConsoleHotel"><code class="flex name class">
+<span>class <span class="ident">ConsoleHotel</span></span>
+<span>(</span><span>hotel: <a title="hotel.HotelManager" href="#hotel.HotelManager">HotelManager</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Normal console (print) implementation</p>
+<p>Initializes the hotel object that it will connect to</p>
+<p>Expected Args:
+hotel (HotelManager): HotelManager object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ConsoleHotel(HotelInterface):
+    &#34;&#34;&#34;Normal console (print) implementation&#34;&#34;&#34;
+
+    def __init__(self, hotel: HotelManager):
+        # Object instance of HotelManager class
+        self.hotel = hotel
+
+        # Console related attributes
+        self._menu_option = {
+            &#34;header&#34;: &#34;Nimbus Hotel&#34;,
+            &#34;description&#34;: &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
+            &#34;options&#34;: {
+                &#34;Hotel Info&#34;: self._print_hotel_info,
+                &#34;View all vacant rooms&#34;: self._print_all_vacant,
+                &#34;Add Booking&#34;: self._add_booking,
+                &#34;Register&#34;: self._register_user,
+                &#34;Book&#34;: self._add_booking,
+                &#34;Check-in&#34;: self._check_in,
+                &#34;Check-out&#34;: self._check_out,
+            },
+            &#34;exit&#34;: &#34;#&#34;,
+        }
+
+    def run(self):
+        &#34;&#34;&#34;
+        Runs the interface. Prints the menu and waits for user input
+        and call respective function, until opted to exit
+        &#34;&#34;&#34;
+        # Main loop
+        while True:
+            # Prints the menu and gets input
+            user_input = self._print_menu()
+
+            if user_input.isdigit():  # type: ignore
+                if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
+                    # If input is a number, execute the corresponding function
+                    self._menu_option[&#34;options&#34;][
+                        list(self._menu_option[&#34;options&#34;].keys())[
+                            int(user_input)]
+                    ]()
+
+            elif user_input == self._menu_option[&#34;exit&#34;]:
+                # Update json_data before exiting
+                self.hotel._update_json()
+                # Exits the loop &amp; program
+                break
+
+    @staticmethod
+    def _userPrint(*args, **kwargs):
+        &#34;&#34;&#34;
+        Override to print &#34;&gt;&gt;&#34; before message that is directed to a user.
+        For visibility purposes.
+        Used exactly like print().
+        &#34;&#34;&#34;
+        print(&#34;&gt;&gt; &#34;, end=&#34;&#34;)
+        print(*args, **kwargs)
+
+    @staticmethod
+    def _userInput(*args, **kwargs):
+        &#34;&#34;&#34;
+        Override to print &#34;&gt;&gt;&#34; before message that is directed to a user.
+        For visibility purposes.
+        &#34;&#34;&#34;
+        print(&#34;&gt;&gt; &#34;, end=&#34;&#34;)
+        return input(*args, **kwargs)
+
+    @staticmethod
+    def clear_console():
+        &#34;&#34;&#34;
+        Clears the console.
+        &#34;&#34;&#34;
+        os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)
+
+    def _print_menu(self, noInput=False, noClear=False) -&gt; str:
+        &#34;&#34;&#34;
+        Prints the predefined menu options
+
+        Args:
+            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+
+        Returns:
+            str | None: str if user input is expected else None
+        &#34;&#34;&#34;
+        # Clear console window if user hasn&#39;t disabled the option
+        self.clear_console() if not noClear else ...
+
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(self._menu_option[&#34;description&#34;])
+        # Prints the menu options
+        print(&#34;-&#34; * max(len(opt) for opt in self._menu_option[&#34;options&#34;]))
+        for index, option in enumerate(self._menu_option[&#34;options&#34;]):
+            self._userPrint(f&#34;[{index}] {option}&#34;)
+
+        # Print exit option
+        self._userPrint(
+            f&#34;[{self._menu_option[&#39;exit&#39;]}] Exit or return to top level menu&#34;
+        )
+        print(&#34;&#34;)
+        # If no input is required, return None else return user input
+        if not noInput:
+            return self._userInput(&#34;Please select an option: &#34;)
+
+        # If noInput is true, returns an empty string
+        return &#34;&#34;
+
+    def _print_hotel_info(self):
+        self.clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(self.hotel)
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _print_all_vacant(self):
+        self.vacant_rooms = self.hotel.filter_dict(
+            self.hotel.rooms, {&#34;state&#34;: &#34;vacant&#34;}
+        )
+        self.clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(f&#34;There are {len(self.vacant_rooms)} vacant rooms&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all room information here
+        for room in self.vacant_rooms:
+            print(f&#34;Type: {room[&#39;name&#39;]}&#34;)
+            print(f&#34;State: {room[&#39;state&#39;]}&#34;)
+            print(f&#34;Price: {room[&#39;price&#39;]}c&#34;)
+            print(f&#34;Capacity: {room[&#39;capacity&#39;]}&#34;)
+            print(f&#34;Description: {room[&#39;description&#39;]}&#34;)
+            print(f&#34;Features:&#34;, &#34;, &#34;.join(room[&#34;misc&#34;]))
+            print(&#34;-&#34; * 15)
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_booking(self):
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))
+        ):
+            self._userInput(
+                &#34;Invalid SSN. Press enter to try again or # to exit&#34;)
+        userRoom = self._userInput(&#34;Please enter the room number: &#34;)
+
+        if self.hotel.add_booking(userSsn, userRoom):
+            self._userPrint(&#34;Booking successful!&#34;)
+        else:
+            self._userPrint(&#34;Booking failed!&#34;)
+        self._userInput(&#34;Press enter to continue...&#34;)
+        ...
+
+    def _remove_booking(self):
+        ...
+
+    def _edit_booking(self):
+        ...
+
+    def _add_room(self):
+        ...
+
+    def _remove_room(self):
+        ...
+
+    def _register_user(self):
+        ...
+
+    def _unregister_user(self):
+        ...
+
+    def _check_in(self):
+        ...
+
+    def _check_out(self):
+        ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="hotel.ConsoleHotel.clear_console"><code class="name flex">
+<span>def <span class="ident">clear_console</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears the console.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def clear_console():
+    &#34;&#34;&#34;
+    Clears the console.
+    &#34;&#34;&#34;
+    os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="hotel.ConsoleHotel.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Runs the interface. Prints the menu and waits for user input
+and call respective function, until opted to exit</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(self):
+    &#34;&#34;&#34;
+    Runs the interface. Prints the menu and waits for user input
+    and call respective function, until opted to exit
+    &#34;&#34;&#34;
+    # Main loop
+    while True:
+        # Prints the menu and gets input
+        user_input = self._print_menu()
+
+        if user_input.isdigit():  # type: ignore
+            if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
+                # If input is a number, execute the corresponding function
+                self._menu_option[&#34;options&#34;][
+                    list(self._menu_option[&#34;options&#34;].keys())[
+                        int(user_input)]
+                ]()
+
+        elif user_input == self._menu_option[&#34;exit&#34;]:
+            # Update json_data before exiting
+            self.hotel._update_json()
+            # Exits the loop &amp; program
+            break</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="hotel.GuiHotel"><code class="flex name class">
+<span>class <span class="ident">GuiHotel</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
+An abstract class that predefines implementations requirements.</p>
+<p>Initializes the hotel object that it will connect to</p>
+<p>Expected Args:
+hotel (HotelManager): HotelManager object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GuiHotel(HotelInterface):
+    # PyImgui implementation
+    ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></b></code>:
+<ul class="hlist">
+<li><code><a title="hotel.HotelInterface.run" href="#hotel.HotelInterface.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="hotel.HotelInterface"><code class="flex name class">
+<span>class <span class="ident">HotelInterface</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
+An abstract class that predefines implementations requirements.</p>
+<p>Initializes the hotel object that it will connect to</p>
+<p>Expected Args:
+hotel (HotelManager): HotelManager object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HotelInterface(metaclass=ABCMeta):
+    &#34;&#34;&#34;
+    All classes that &#34;connect&#34; to the hotel is derived from HotelInterface.
+    An abstract class that predefines implementations requirements.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def __init__(self):
+        &#34;&#34;&#34;
+        Initializes the hotel object that it will connect to
+
+        Expected Args:
+            hotel (HotelManager): HotelManager object
+        &#34;&#34;&#34;
+
+    @abstractmethod
+    def run(self):
+        &#34;&#34;&#34;
+        Implement the run method to start the interface.
+        TL:DR; Talk to the self.hotel object
+        &#34;&#34;&#34;
+        ...</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="hotel.ConsoleHotel" href="#hotel.ConsoleHotel">ConsoleHotel</a></li>
+<li><a title="hotel.GuiHotel" href="#hotel.GuiHotel">GuiHotel</a></li>
+<li><a title="hotel.WebHotel" href="#hotel.WebHotel">WebHotel</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="hotel.HotelInterface.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement the run method to start the interface.
+TL:DR; Talk to the self.hotel object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def run(self):
+    &#34;&#34;&#34;
+    Implement the run method to start the interface.
+    TL:DR; Talk to the self.hotel object
+    &#34;&#34;&#34;
+    ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="hotel.HotelManager"><code class="flex name class">
+<span>class <span class="ident">HotelManager</span></span>
+<span>(</span><span>filename: str = '')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for managing a hotel database system.
+Used to manipulate json data from given file that class JsonHandling returns
+when unpacking.</p>
+<p>HotelManager uses methods for: checking in, checking out,
+adding bookings, removing bookings, editing bookings, adding rooms,
+removing rooms, editing rooms, register users, unregister users and printing raw json_data.</p>
+<p>Constructor for HotelManager</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Optional argument for the name of the file. Defaults to "".</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HotelManager:
+    &#34;&#34;&#34;
+    Class for managing a hotel database system.
+    Used to manipulate json data from given file that class JsonHandling returns
+    when unpacking.
+
+    HotelManager uses methods for: checking in, checking out,
+    adding bookings, removing bookings, editing bookings, adding rooms,
+    removing rooms, editing rooms, register users, unregister users and printing raw json_data.
+    &#34;&#34;&#34;
+
+    def __init__(self, filename: str = &#34;&#34;):
+        &#34;&#34;&#34;Constructor for HotelManager
+
+        Args:
+            filename (str, optional): Optional argument for the name of the file. Defaults to &#34;&#34;.
+        &#34;&#34;&#34;
+        # Unpacking and loading json_data from given path(Default is None)
+        self.json_handler = JsonHandling(filename)
+        self.json_data = self.json_handler.unpack_data()
+
+        # Extracting or creating required structures
+        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
+        )
+        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
+        )
+        # All &#39;active&#39; bookings are stored in active
+        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
+        )
+        self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
+        # Used when packing or updating json_data
+        self._extracted = {
+            &#34;users&#34;: self.users,
+            &#34;rooms&#34;: self.rooms,
+            &#34;active&#34;: self.active,
+            &#34;old&#34;: self.old,
+        }
+
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        self.json_data: dict[str, Any]
+        self.users: dict[str, dict[str, str]]
+        self.rooms: list[dict[str, str | list[str]]]
+        self.active: dict[str, dict[str, str | bool]]
+        self.old: dict[str, int]
+
+    def __str__(self):
+        &#34;&#34;&#34;
+        Returns a string representation of the class HotelManager.
+        Will ultimately return a string of amount of bookings, total room and vacant rooms.
+        &#34;&#34;&#34;
+        # Filter dict to get only vacant rooms
+        vacant_room = self.filter_dict(self.rooms, {&#34;state&#34;: &#34;vacant&#34;})
+        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }&#34;
+
+    def register_user(self, ssn: str, name: str, age: str) -&gt; str | bool:
+        &#34;&#34;&#34;
+        Registers a user to the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+            name (str): name of given user
+            age (str): age of given user
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        &#34;&#34;&#34;
+        # Check if a user is already registered
+        if ssn in self.users:
+            return &#34;User with given ssn already exists&#34;
+        # Check if age is a number
+        if not age.isdigit():
+            return &#34;Age must be a number&#34;
+        # Else add user to self.users with ssn as the key
+        self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+        return True
+
+    def is_registered(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Returns a boolean depending on whether a user is registered or not.
+
+        Args:
+            ssn (str): SSN of user
+
+        Returns:
+            bool: True if a user is registered, False otherwise
+        &#34;&#34;&#34;
+        return ssn in self.users
+
+    def unregister_user(self, ssn) -&gt; bool | str:
+        &#34;&#34;&#34;
+        Unregister a user from the HotelManager.
+        Will return a string or boolean depending on success.
+        (Type check for the str or bool)
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+
+        Returns:
+            str | bool: str on failure, boolean(True) on success
+        &#34;&#34;&#34;
+        # Check if a user is already registered
+        if ssn not in self.users:
+            return &#34;User with given ssn does not exist&#34;
+        # Else add user to self.old and remove user from self.users with ssn as the key
+        self.old[ssn] += 1
+        del self.users[ssn]
+        return True
+
+    def check_in(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to check in to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check in
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Checks if user exists
+        if ssn in self.users:
+            # Check if already booked
+            if ssn in self.active:
+                # Check if not checked in
+                if not self.users[ssn][&#34;checked_in&#34;]:
+                    # Good to check in...
+                    self.active[ssn][&#34;checked_in&#34;] = True
+                    self._update_json()
+                    return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def check_out(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to check out to hotel
+
+        Args:
+            ssn (str): ssn of user wanting to check out
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if checked in
+            if self.active[ssn][&#34;checked_in&#34;]:
+                # Good to check out...
+                self.active[ssn][&#34;checked_in&#34;] = False
+                # Increment times stayed at the hotel
+                self.old[ssn] += 1
+                # Remove booking from active dict
+                del self.active[ssn]
+                # Update json_data
+                self._update_json()
+                return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def add_booking(self, ssn: str, room: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is booking a room. Must be registered to add booking.
+
+        Args:
+            ssn (str): ssn of user\n
+            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Checks if user exists and NOT already booked
+        if ssn in self.users and ssn not in self.active:
+            if room.isdigit():
+                # Convert to int and move one step back for correct indexing
+                room_index = int(room) - 1
+                # Check if room is in range
+                if 0 &lt;= room_index &lt; len(self.rooms):
+                    #  Check if room is vacant
+                    if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                        # Change room state to occupied
+                        self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                        # Add booking to active dict
+                        self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
+                        # Update json_data
+                        self._update_json()
+                        return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is removing a booking. Must be registered to remove booking.
+
+        Args:
+            ssn (str): ssn of user\n
+            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+        Returns:
+            bool: Boolean on success or failure
+        &#34;&#34;&#34;
+        # Check if user exists and is booked
+        if ssn in self.users and ssn in self.active:
+            # Check if not checked in
+            if not self.active[ssn][&#34;checked_in&#34;]:
+                # Change room state to vacant
+                self.rooms[int(self.active[ssn][&#34;room&#34;]) -
+                           1][&#34;state&#34;] = &#34;vacant&#34;
+                # Remove booking from active dict
+                del self.active[ssn]
+                if unregister:
+                    # Unregister user
+                    if not self.unregister_user(ssn):
+                        # Failed un-registration
+                        return False
+                # Update json_data
+                self._update_json()
+                return True
+        # If the controlstructure failed, returns False.
+        return False
+
+    def edit_booking(self):
+        ...
+
+    def add_room(
+        self,
+        name: str,
+        price: str,
+        capacity: str,
+        state: str,
+        description: str,
+        misc: list[str],
+    ) -&gt; bool:
+        &#34;&#34;&#34;
+        Adds a room to the hotel.
+
+        Args:
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            capacity (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        &#34;&#34;&#34;
+        user: str = &#34;&#34;
+        message: str = &#34;&#34;
+        self.rooms.append(
+            {
+                &#34;name&#34;: name,
+                &#34;price&#34;: price,
+                &#34;capacity&#34;: capacity,
+                &#34;state&#34;: state,
+                &#34;description&#34;: description,
+                &#34;misc&#34;: misc,
+                &#34;user&#34;: user,
+                &#34;message&#34;: message,
+            }
+        )
+        return True
+
+    def remove_room(self):
+        ...
+
+    def edit_room(self):
+        ...
+
+    def filter_dict(
+        self,
+        data: Collection[dict],
+        filter_: dict | None = None,
+        inverted: bool = False,
+    ) -&gt; list[dict] | Collection[dict]:
+        &#34;&#34;&#34;Returns a list of all filtered matches depending on given filter
+
+        Args:
+            filter_ (dict, optional): A dict of len == 1 where the key is going to be
+                                    matched with similar key and also compare value to value.
+                                    Defaults to None.\n
+            inverted (bool, optional): Ability to invert results. Defaults to False.
+
+        Returns:
+            list[dict] | list: A list of filtered matches or all the matches if no filter is given.
+        &#34;&#34;&#34;
+        # Check if filter_ is provided (underscore is to avoid naming conflict)
+        if filter_:
+            filtered: list = list()
+            # Gets first key in dict
+            filter_key = list(filter_.keys())[0]
+            for value in data:
+                if value[filter_key] == filter_[filter_key]:
+                    filtered.append(value)
+            else:
+                if inverted:
+                    # Returns the inverted list
+                    return [value for value in data if value not in filtered]
+                else:
+                    return filtered
+        else:
+            # If no filter was given, return data (all)
+            return data
+
+    def _pretty_print(self):
+        ...
+
+    def _update_json(self):
+        &#34;&#34;&#34;
+        Updates data structure with new json_data and loads the new json_data
+        &#34;&#34;&#34;
+        # Updates each dict in self.json_data
+        for key, value in self._extracted.items():
+            self.json_data.update({key: value})
+
+        # Same practice as constructor
+        self.json_handler.pack_data(self.json_data)
+        self.json_data = self.json_handler.unpack_data()
+
+        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
+        )
+        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
+        )
+        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
+        )
+        self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="hotel.HotelManager.add_booking"><code class="name flex">
+<span>def <span class="ident">add_booking</span></span>(<span>self, ssn: str, room: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when user is booking a room. Must be registered to add booking.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>ssn of user</dd>
+<dt><strong><code>room</code></strong> :&ensp;<code>str</code></dt>
+<dd>room number(digits): "1", "2", "3" etc.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>Boolean on success or failure</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_booking(self, ssn: str, room: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Called when user is booking a room. Must be registered to add booking.
+
+    Args:
+        ssn (str): ssn of user\n
+        room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+    Returns:
+        bool: Boolean on success or failure
+    &#34;&#34;&#34;
+    # Checks if user exists and NOT already booked
+    if ssn in self.users and ssn not in self.active:
+        if room.isdigit():
+            # Convert to int and move one step back for correct indexing
+            room_index = int(room) - 1
+            # Check if room is in range
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                #  Check if room is vacant
+                if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                    # Change room state to occupied
+                    self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                    # Add booking to active dict
+                    self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
+                    # Update json_data
+                    self._update_json()
+                    return True
+    # If the controlstructure failed, returns False.
+    return False</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.add_room"><code class="name flex">
+<span>def <span class="ident">add_room</span></span>(<span>self, name: str, price: str, capacity: str, state: str, description: str, misc: list) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a room to the hotel.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the room, example: JuniorSuite</dd>
+<dt><strong><code>price</code></strong> :&ensp;<code>str</code></dt>
+<dd>Price per night, example: 19.99</dd>
+<dt><strong><code>capacity</code></strong> :&ensp;<code>str</code></dt>
+<dd>How many can fit? example: 2</dd>
+<dt><strong><code>state</code></strong> :&ensp;<code>str</code></dt>
+<dd>State of the room, example: vacant or occupied</dd>
+<dt><strong><code>description</code></strong> :&ensp;<code>str</code></dt>
+<dd>A short description, who its fitted for</dd>
+<dt><strong><code>misc</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>list of additional information, example: wifi, type of bed, etc.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if operation was successful, False otherwise</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_room(
+    self,
+    name: str,
+    price: str,
+    capacity: str,
+    state: str,
+    description: str,
+    misc: list[str],
+) -&gt; bool:
+    &#34;&#34;&#34;
+    Adds a room to the hotel.
+
+    Args:
+        name (str): Name of the room, example: JuniorSuite\n
+        price (str): Price per night, example: 19.99\n
+        capacity (str): How many can fit? example: 2\n
+        state (str): State of the room, example: vacant or occupied\n
+        description (str): A short description, who its fitted for\n
+        misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+
+    Returns:
+        bool: True if operation was successful, False otherwise
+    &#34;&#34;&#34;
+    user: str = &#34;&#34;
+    message: str = &#34;&#34;
+    self.rooms.append(
+        {
+            &#34;name&#34;: name,
+            &#34;price&#34;: price,
+            &#34;capacity&#34;: capacity,
+            &#34;state&#34;: state,
+            &#34;description&#34;: description,
+            &#34;misc&#34;: misc,
+            &#34;user&#34;: user,
+            &#34;message&#34;: message,
+        }
+    )
+    return True</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.check_in"><code class="name flex">
+<span>def <span class="ident">check_in</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when user is trying to check in to hotel</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>ssn of user wanting to check in</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>Boolean on success or failure</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_in(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Called when user is trying to check in to hotel
+
+    Args:
+        ssn (str): ssn of user wanting to check in
+
+    Returns:
+        bool: Boolean on success or failure
+    &#34;&#34;&#34;
+    # Checks if user exists
+    if ssn in self.users:
+        # Check if already booked
+        if ssn in self.active:
+            # Check if not checked in
+            if not self.users[ssn][&#34;checked_in&#34;]:
+                # Good to check in...
+                self.active[ssn][&#34;checked_in&#34;] = True
+                self._update_json()
+                return True
+    # If the controlstructure failed, returns False.
+    return False</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.check_out"><code class="name flex">
+<span>def <span class="ident">check_out</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when user is trying to check out to hotel</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>ssn of user wanting to check out</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>Boolean on success or failure</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_out(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Called when user is trying to check out to hotel
+
+    Args:
+        ssn (str): ssn of user wanting to check out
+
+    Returns:
+        bool: Boolean on success or failure
+    &#34;&#34;&#34;
+    # Check if user exists and is booked
+    if ssn in self.users and ssn in self.active:
+        # Check if checked in
+        if self.active[ssn][&#34;checked_in&#34;]:
+            # Good to check out...
+            self.active[ssn][&#34;checked_in&#34;] = False
+            # Increment times stayed at the hotel
+            self.old[ssn] += 1
+            # Remove booking from active dict
+            del self.active[ssn]
+            # Update json_data
+            self._update_json()
+            return True
+    # If the controlstructure failed, returns False.
+    return False</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.edit_booking"><code class="name flex">
+<span>def <span class="ident">edit_booking</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def edit_booking(self):
+    ...</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.edit_room"><code class="name flex">
+<span>def <span class="ident">edit_room</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def edit_room(self):
+    ...</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.filter_dict"><code class="name flex">
+<span>def <span class="ident">filter_dict</span></span>(<span>self, data: Collection[dict], filter_: dict | None = None, inverted: bool = False) ‑> Union[list[dict], Collection[dict]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all filtered matches depending on given filter</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filter_</code></strong> :&ensp;<code>dict</code>, optional</dt>
+<dd>A dict of len == 1 where the key is going to be
+matched with similar key and also compare value to value.
+Defaults to None.</dd>
+<dt><strong><code>inverted</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Ability to invert results. Defaults to False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>list[dict] | list: A list of filtered matches or all the matches if no filter is given.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def filter_dict(
+    self,
+    data: Collection[dict],
+    filter_: dict | None = None,
+    inverted: bool = False,
+) -&gt; list[dict] | Collection[dict]:
+    &#34;&#34;&#34;Returns a list of all filtered matches depending on given filter
+
+    Args:
+        filter_ (dict, optional): A dict of len == 1 where the key is going to be
+                                matched with similar key and also compare value to value.
+                                Defaults to None.\n
+        inverted (bool, optional): Ability to invert results. Defaults to False.
+
+    Returns:
+        list[dict] | list: A list of filtered matches or all the matches if no filter is given.
+    &#34;&#34;&#34;
+    # Check if filter_ is provided (underscore is to avoid naming conflict)
+    if filter_:
+        filtered: list = list()
+        # Gets first key in dict
+        filter_key = list(filter_.keys())[0]
+        for value in data:
+            if value[filter_key] == filter_[filter_key]:
+                filtered.append(value)
+        else:
+            if inverted:
+                # Returns the inverted list
+                return [value for value in data if value not in filtered]
+            else:
+                return filtered
+    else:
+        # If no filter was given, return data (all)
+        return data</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.is_registered"><code class="name flex">
+<span>def <span class="ident">is_registered</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a boolean depending on whether a user is registered or not.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSN of user</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if a user is registered, False otherwise</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_registered(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Returns a boolean depending on whether a user is registered or not.
+
+    Args:
+        ssn (str): SSN of user
+
+    Returns:
+        bool: True if a user is registered, False otherwise
+    &#34;&#34;&#34;
+    return ssn in self.users</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.register_user"><code class="name flex">
+<span>def <span class="ident">register_user</span></span>(<span>self, ssn: str, name: str, age: str) ‑> str | bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Registers a user to the HotelManager.
+Will return a string or boolean depending on success.
+(Type check for the str or bool)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>string of 12 characters representing a user's social security number</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>name of given user</dd>
+<dt><strong><code>age</code></strong> :&ensp;<code>str</code></dt>
+<dd>age of given user</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>str | bool: str on failure, boolean(True) on success</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register_user(self, ssn: str, name: str, age: str) -&gt; str | bool:
+    &#34;&#34;&#34;
+    Registers a user to the HotelManager.
+    Will return a string or boolean depending on success.
+    (Type check for the str or bool)
+
+    Args:
+        ssn (str): string of 12 characters representing a user&#39;s social security number
+        name (str): name of given user
+        age (str): age of given user
+
+    Returns:
+        str | bool: str on failure, boolean(True) on success
+    &#34;&#34;&#34;
+    # Check if a user is already registered
+    if ssn in self.users:
+        return &#34;User with given ssn already exists&#34;
+    # Check if age is a number
+    if not age.isdigit():
+        return &#34;Age must be a number&#34;
+    # Else add user to self.users with ssn as the key
+    self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+    return True</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.remove_booking"><code class="name flex">
+<span>def <span class="ident">remove_booking</span></span>(<span>self, ssn: str, unregister: bool) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when user is removing a booking. Must be registered to remove booking.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>ssn of user</dd>
+<dt><strong><code>room</code></strong> :&ensp;<code>str</code></dt>
+<dd>room number(digits): "1", "2", "3" etc.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>Boolean on success or failure</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+    &#34;&#34;&#34;
+    Called when user is removing a booking. Must be registered to remove booking.
+
+    Args:
+        ssn (str): ssn of user\n
+        room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+
+    Returns:
+        bool: Boolean on success or failure
+    &#34;&#34;&#34;
+    # Check if user exists and is booked
+    if ssn in self.users and ssn in self.active:
+        # Check if not checked in
+        if not self.active[ssn][&#34;checked_in&#34;]:
+            # Change room state to vacant
+            self.rooms[int(self.active[ssn][&#34;room&#34;]) -
+                       1][&#34;state&#34;] = &#34;vacant&#34;
+            # Remove booking from active dict
+            del self.active[ssn]
+            if unregister:
+                # Unregister user
+                if not self.unregister_user(ssn):
+                    # Failed un-registration
+                    return False
+            # Update json_data
+            self._update_json()
+            return True
+    # If the controlstructure failed, returns False.
+    return False</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.remove_room"><code class="name flex">
+<span>def <span class="ident">remove_room</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_room(self):
+    ...</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.unregister_user"><code class="name flex">
+<span>def <span class="ident">unregister_user</span></span>(<span>self, ssn) ‑> str | bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unregister a user from the HotelManager.
+Will return a string or boolean depending on success.
+(Type check for the str or bool)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>string of 12 characters representing a user's social security number</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>str | bool: str on failure, boolean(True) on success</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unregister_user(self, ssn) -&gt; bool | str:
+    &#34;&#34;&#34;
+    Unregister a user from the HotelManager.
+    Will return a string or boolean depending on success.
+    (Type check for the str or bool)
+
+    Args:
+        ssn (str): string of 12 characters representing a user&#39;s social security number
+
+    Returns:
+        str | bool: str on failure, boolean(True) on success
+    &#34;&#34;&#34;
+    # Check if a user is already registered
+    if ssn not in self.users:
+        return &#34;User with given ssn does not exist&#34;
+    # Else add user to self.old and remove user from self.users with ssn as the key
+    self.old[ssn] += 1
+    del self.users[ssn]
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="hotel.JsonHandling"><code class="flex name class">
+<span>class <span class="ident">JsonHandling</span></span>
+<span>(</span><span>filename: str = 'hotel.json')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for handling json data from json files</p>
+<p>Constructor for JsonHandling</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Name of the file to be used. Defaults to hotel.json.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class JsonHandling:
+    &#34;&#34;&#34;
+    Class for handling json data from json files
+    &#34;&#34;&#34;
+
+    def __init__(self, filename: str = &#34;hotel.json&#34;):
+        &#34;&#34;&#34;
+        Constructor for JsonHandling
+
+        Args:
+            filename (str, optional): Name of the file to be used. Defaults to hotel.json.
+        &#34;&#34;&#34;
+        self.filename = filename
+        self._folder = &#34;json&#34;
+        # Gets absolute path to working directory...
+        self._path = os.path.dirname(__file__) + &#34;/&#34; + self.folder
+        # Absolute path to file (file included)
+        self.full_path = self.path + &#34;/&#34; + self._filename
+        # Create self.folder in the current working directory.
+        if not os.path.exists(self._path):
+            # Make a folder called json in directory if not existing
+            os.makedirs(self._path, exist_ok=True)
+
+        # Creates the .json file if it doesn&#39;t exist.
+        if not os.path.exists(self.full_path):
+            self.__create_file(self.full_path)
+
+    @property
+    def path(self) -&gt; str:
+        &#34;&#34;&#34;Property for path&#34;&#34;&#34;
+        return self._path
+
+    @property
+    def folder(self) -&gt; str:
+        &#34;&#34;&#34;Property for folder&#34;&#34;&#34;
+        return self._folder
+
+    @property
+    def filename(self) -&gt; str:
+        &#34;&#34;&#34;Property for filename&#34;&#34;&#34;
+        return self._filename
+
+    @path.setter
+    def setter(self, _: str):
+        &#34;&#34;&#34;Setter for path&#34;&#34;&#34;
+        raise ValueError(&#34;Path attr. cant be changed&#34;)
+
+    @folder.setter
+    def folder(self, _: str):
+        &#34;&#34;&#34;Setter for folder&#34;&#34;&#34;
+        raise ValueError(&#34;Folder attr. cant be changed&#34;)
+
+    @filename.setter
+    def filename(self, value: str):
+        &#34;&#34;&#34;Setter for filename&#34;&#34;&#34;
+        # Instead of raising an exception on no &#39;filename&#39; a fallback exists.
+        self.__fallback = &#34;hotel.json&#34;
+        # Evaluate whetever the custom value(if given is a valid file)
+        if value:
+            if value.endswith(&#34;.json&#34;):
+                self._filename = value
+            else:
+                self._filename = value + &#34;.json&#34;
+        else:
+            self._filename = self.__fallback
+
+    def __create_file(self, path: str):
+        &#34;&#34;&#34;
+        Creates an &#39;empty&#39; json file
+
+        Args:
+            path (str): Given path to file
+        &#34;&#34;&#34;
+        # Loads an empty dict into the json file, or it will crash on read.
+        # See testing.py in &#39;test&#39; folder for more details.
+        with open(str(path), &#34;w&#34;) as f:
+            json.dump({}, f)
+
+    def pack_data(self, json_data: dict, mode: str = &#34;w&#34;):
+        &#34;&#34;&#34;
+        Writes json data to a json file
+
+        Args:
+            json_data (dict): data to be stored in json file,
+                        #! NOTE that all keys must be of type str
+            mode (str, optional): Mode the file will be open in. Defaults to &#34;w&#34;.
+        &#34;&#34;&#34;
+        with open(self.full_path, mode) as f:
+            json.dump(json_data, f)
+
+    def unpack_data(self) -&gt; dict:
+        &#34;&#34;&#34;
+        Opens json file and returns the data structure as a dictionary
+
+        Returns:
+            dict: data stored in json file as a dictionary.
+        &#34;&#34;&#34;
+        with open(self.full_path) as f:
+            return json.load(f)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="hotel.JsonHandling.filename"><code class="name">var <span class="ident">filename</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Property for filename</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def filename(self) -&gt; str:
+    &#34;&#34;&#34;Property for filename&#34;&#34;&#34;
+    return self._filename</code></pre>
+</details>
+</dd>
+<dt id="hotel.JsonHandling.folder"><code class="name">var <span class="ident">folder</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Property for folder</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def folder(self) -&gt; str:
+    &#34;&#34;&#34;Property for folder&#34;&#34;&#34;
+    return self._folder</code></pre>
+</details>
+</dd>
+<dt id="hotel.JsonHandling.path"><code class="name">var <span class="ident">path</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Property for path</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def path(self) -&gt; str:
+    &#34;&#34;&#34;Property for path&#34;&#34;&#34;
+    return self._path</code></pre>
+</details>
+</dd>
+<dt id="hotel.JsonHandling.setter"><code class="name">var <span class="ident">setter</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Property for path</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def path(self) -&gt; str:
+    &#34;&#34;&#34;Property for path&#34;&#34;&#34;
+    return self._path</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="hotel.JsonHandling.pack_data"><code class="name flex">
+<span>def <span class="ident">pack_data</span></span>(<span>self, json_data: dict, mode: str = 'w')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes json data to a json file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>json_data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>data to be stored in json file,
+#! NOTE that all keys must be of type str</dd>
+<dt><strong><code>mode</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Mode the file will be open in. Defaults to "w".</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pack_data(self, json_data: dict, mode: str = &#34;w&#34;):
+    &#34;&#34;&#34;
+    Writes json data to a json file
+
+    Args:
+        json_data (dict): data to be stored in json file,
+                    #! NOTE that all keys must be of type str
+        mode (str, optional): Mode the file will be open in. Defaults to &#34;w&#34;.
+    &#34;&#34;&#34;
+    with open(self.full_path, mode) as f:
+        json.dump(json_data, f)</code></pre>
+</details>
+</dd>
+<dt id="hotel.JsonHandling.unpack_data"><code class="name flex">
+<span>def <span class="ident">unpack_data</span></span>(<span>self) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Opens json file and returns the data structure as a dictionary</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>data stored in json file as a dictionary.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unpack_data(self) -&gt; dict:
+    &#34;&#34;&#34;
+    Opens json file and returns the data structure as a dictionary
+
+    Returns:
+        dict: data stored in json file as a dictionary.
+    &#34;&#34;&#34;
+    with open(self.full_path) as f:
+        return json.load(f)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="hotel.WebHotel"><code class="flex name class">
+<span>class <span class="ident">WebHotel</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
+An abstract class that predefines implementations requirements.</p>
+<p>Initializes the hotel object that it will connect to</p>
+<p>Expected Args:
+hotel (HotelManager): HotelManager object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WebHotel(HotelInterface):
+    # Django or Flask implementation
+    ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></b></code>:
+<ul class="hlist">
+<li><code><a title="hotel.HotelInterface.run" href="#hotel.HotelInterface.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="hotel.ConsoleHotel" href="#hotel.ConsoleHotel">ConsoleHotel</a></code></h4>
+<ul class="">
+<li><code><a title="hotel.ConsoleHotel.clear_console" href="#hotel.ConsoleHotel.clear_console">clear_console</a></code></li>
+<li><code><a title="hotel.ConsoleHotel.run" href="#hotel.ConsoleHotel.run">run</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="hotel.GuiHotel" href="#hotel.GuiHotel">GuiHotel</a></code></h4>
+</li>
+<li>
+<h4><code><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></code></h4>
+<ul class="">
+<li><code><a title="hotel.HotelInterface.run" href="#hotel.HotelInterface.run">run</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="hotel.HotelManager" href="#hotel.HotelManager">HotelManager</a></code></h4>
+<ul class="two-column">
+<li><code><a title="hotel.HotelManager.add_booking" href="#hotel.HotelManager.add_booking">add_booking</a></code></li>
+<li><code><a title="hotel.HotelManager.add_room" href="#hotel.HotelManager.add_room">add_room</a></code></li>
+<li><code><a title="hotel.HotelManager.check_in" href="#hotel.HotelManager.check_in">check_in</a></code></li>
+<li><code><a title="hotel.HotelManager.check_out" href="#hotel.HotelManager.check_out">check_out</a></code></li>
+<li><code><a title="hotel.HotelManager.edit_booking" href="#hotel.HotelManager.edit_booking">edit_booking</a></code></li>
+<li><code><a title="hotel.HotelManager.edit_room" href="#hotel.HotelManager.edit_room">edit_room</a></code></li>
+<li><code><a title="hotel.HotelManager.filter_dict" href="#hotel.HotelManager.filter_dict">filter_dict</a></code></li>
+<li><code><a title="hotel.HotelManager.is_registered" href="#hotel.HotelManager.is_registered">is_registered</a></code></li>
+<li><code><a title="hotel.HotelManager.register_user" href="#hotel.HotelManager.register_user">register_user</a></code></li>
+<li><code><a title="hotel.HotelManager.remove_booking" href="#hotel.HotelManager.remove_booking">remove_booking</a></code></li>
+<li><code><a title="hotel.HotelManager.remove_room" href="#hotel.HotelManager.remove_room">remove_room</a></code></li>
+<li><code><a title="hotel.HotelManager.unregister_user" href="#hotel.HotelManager.unregister_user">unregister_user</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="hotel.JsonHandling" href="#hotel.JsonHandling">JsonHandling</a></code></h4>
+<ul class="two-column">
+<li><code><a title="hotel.JsonHandling.filename" href="#hotel.JsonHandling.filename">filename</a></code></li>
+<li><code><a title="hotel.JsonHandling.folder" href="#hotel.JsonHandling.folder">folder</a></code></li>
+<li><code><a title="hotel.JsonHandling.pack_data" href="#hotel.JsonHandling.pack_data">pack_data</a></code></li>
+<li><code><a title="hotel.JsonHandling.path" href="#hotel.JsonHandling.path">path</a></code></li>
+<li><code><a title="hotel.JsonHandling.setter" href="#hotel.JsonHandling.setter">setter</a></code></li>
+<li><code><a title="hotel.JsonHandling.unpack_data" href="#hotel.JsonHandling.unpack_data">unpack_data</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="hotel.WebHotel" href="#hotel.WebHotel">WebHotel</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

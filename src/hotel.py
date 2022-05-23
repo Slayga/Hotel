@@ -10,7 +10,7 @@ hence the management of seeing SSN easily.
 # Pickle or Json dump...
 # Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
 
-from typing import Collection, Any, Iterator
+from typing import Collection, Any
 import json
 import os
 from abc import ABCMeta, abstractmethod
@@ -139,10 +139,13 @@ class HotelManager:
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.json_data["users"] if "users" in self.json_data else dict()
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
+        self.users = self.json_data["users"] if "users" in self.json_data else dict(
+        )
+        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list(
+        )
         # All 'active' bookings are stored in active
-        self.active = self.json_data["active"] if "active" in self.json_data else dict()
+        self.active = self.json_data["active"] if "active" in self.json_data else dict(
+        )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
         # Used when packing or updating json_data
         self._extracted = {
@@ -183,7 +186,7 @@ class HotelManager:
             str | bool: str on failure, boolean(True) on success
         """
         # Check if a user is already registered
-        if ssn in self.users:
+        if self.is_registered(ssn):
             return "User with given ssn already exists"
         # Check if age is a number
         if not age.isdigit():
@@ -203,6 +206,18 @@ class HotelManager:
             bool: True if a user is registered, False otherwise
         """
         return ssn in self.users
+
+    def edit_user(self, ssn: str, name: str = "", age: str = "", new_ssn: str = "") -> bool:
+        if self.is_registered(ssn):
+            if new_ssn:
+                # Changes key in self.users to new_ssn(pop returns the value)
+                self.users[new_ssn] = self.users.pop(ssn)
+                ssn = new_ssn
+            if name:
+                self.users[ssn]["name"] = name
+            if age:
+                self.users[ssn]["age"] = age
+        return False
 
     def unregister_user(self, ssn) -> bool | str:
         """
@@ -235,9 +250,9 @@ class HotelManager:
             bool: Boolean on success or failure
         """
         # Checks if user exists
-        if ssn in self.users:
+        if self.is_registered(ssn):
             # Check if already booked
-            if ssn in self.active:
+            if self.is_booked(ssn):
                 # Check if not checked in
                 if not self.users[ssn]["checked_in"]:
                     # Good to check in...
@@ -258,7 +273,7 @@ class HotelManager:
             bool: Boolean on success or failure
         """
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if checked in
             if self.active[ssn]["checked_in"]:
                 # Good to check out...
@@ -285,7 +300,7 @@ class HotelManager:
             bool: Boolean on success or failure
         """
         # Checks if user exists and NOT already booked
-        if ssn in self.users and ssn not in self.active:
+        if self.is_registered(ssn) and not self.is_booked(ssn):
             if room.isdigit():
                 # Convert to int and move one step back for correct indexing
                 room_index = int(room) - 1
@@ -303,6 +318,19 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
+    def is_booked(self, ssn: str) -> bool:
+        """
+        Returns a boolean depending on whether a user is booked or not.
+
+        Args:
+            ssn (str): SSN of user
+
+        Returns:
+            bool: True if a user is booked, False otherwise
+        """
+        return ssn in self.active
+        ...
+
     def remove_booking(self, ssn: str, unregister: bool) -> bool:
         """
         Called when user is removing a booking. Must be registered to remove booking.
@@ -315,11 +343,12 @@ class HotelManager:
             bool: Boolean on success or failure
         """
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) - 1]["state"] = "vacant"
+                self.rooms[int(self.active[ssn]["room"]) -
+                           1]["state"] = "vacant"
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -431,9 +460,12 @@ class HotelManager:
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.json_data["users"] if "users" in self.json_data else dict()
-        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list()
-        self.active = self.json_data["active"] if "active" in self.json_data else dict()
+        self.users = self.json_data["users"] if "users" in self.json_data else dict(
+        )
+        self.rooms = self.json_data["rooms"] if "rooms" in self.json_data else list(
+        )
+        self.active = self.json_data["active"] if "active" in self.json_data else dict(
+        )
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
 
 
@@ -508,7 +540,8 @@ class ConsoleHotel(HotelInterface):
                 if int(user_input) in range(0, len(self._menu_option["options"])):
                     # If input is a number, execute the corresponding function
                     self._menu_option["options"][
-                        list(self._menu_option["options"].keys())[int(user_input)]
+                        list(self._menu_option["options"].keys())[
+                            int(user_input)]
                     ]()
 
             elif user_input == self._menu_option["exit"]:
@@ -607,7 +640,8 @@ class ConsoleHotel(HotelInterface):
         while not self.hotel.is_registered(
             (userSsn := self._userInput("Please enter your SSN: "))
         ):
-            self._userInput("Invalid SSN. Press enter to try again or # to exit")
+            self._userInput(
+                "Invalid SSN. Press enter to try again or # to exit")
         userRoom = self._userInput("Please enter the room number: ")
 
         if self.hotel.add_booking(userSsn, userRoom):
