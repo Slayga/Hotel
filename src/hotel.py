@@ -816,8 +816,6 @@ class ConsoleHotel(HotelInterface):
                    self._userInput("Enter your SSN (12 characters): ")
                    ) != self._menu_option["exit"]:
                 if self.hotel.is_ssn_valid(userSSN):
-                    # Checks if the SSN is valid
-                    self._userPrint("SSN is valid")
                     break
                 else:
                     self._userPrint(
@@ -830,8 +828,6 @@ class ConsoleHotel(HotelInterface):
             while (userName := self._userInput("Enter your name: ")
                    ) != self._menu_option["exit"]:
                 if userName:
-                    # Checks if the name is valid
-                    self._userPrint("Name is valid")
                     break
                 else:
                     self._userPrint(
@@ -845,8 +841,6 @@ class ConsoleHotel(HotelInterface):
                    ) != self._menu_option["exit"]:
 
                 if userAge.isdigit():
-                    # Checks if the age is valid
-                    self._userPrint("Age is valid")
                     break
                 else:
                     self._userPrint(
@@ -869,13 +863,54 @@ class ConsoleHotel(HotelInterface):
         ...
 
     def _unregister_user(self):
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Unregister a user")
+        print("-" * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput("Enter your SSN (12 characters): ")
+                   ) != self._menu_option["exit"]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    # Checks if the SSN is valid
+                    self._userPrint("SSN is valid")
+                    break
+                else:
+                    self._userPrint(
+                        "SSN is invalid, make sure its following format: YYYYMMDDXXXX"
+                    )
+
+            if userSSN == self._menu_option["exit"]:
+                break
+
+            if type(result := self.hotel.unregister_user(userSSN)) == bool:
+                # Unregistered user if the result is a bool
+                self._userPrint("User unregistered")
+            else:
+                # Prints the error message
+                self._userPrint(result)
+            self._userInput("Press enter to continue")
+            break
 
     def _print_all_users(self):
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("All users")
+        print("-" * 15)
+        # Print out all user information here
+        for index, (k, v) in enumerate(self.hotel.users.items()):
+            print(f"User {index+1}:")
+            print("SSN:", k)
+            print("Name:", v["name"])
+            print("Age:", v["age"])
+            print("-" * 15)
+
+        self._userInput("Press enter to continue...")
 
     def _add_booking(self):
-        ...
         self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -903,10 +938,40 @@ class ConsoleHotel(HotelInterface):
                     f"Invalid room number. Press enter to try again or {self._menu_option['exit']} to exit"
                 )
 
-        if self.hotel.add_booking(userSsn, userRoom):
+        while True:
+            # Prompt user if they want to add message to staff.
+            userMessage = self._userInput(
+                "Do you want to add a message to the staff? (y/n): ")
+            if userMessage == self._menu_option["exit"]:
+                return
+            if userMessage.lower() in ["y", "n"]:
+                break
+            else:
+                self._userInput(
+                    f"Invalid input. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        # If user wants to add message to staff, prompt for message.
+        if userMessage.lower() == "y":
+            while True:
+                userMessage = self._userInput("Please enter your message: ")
+                if userMessage == self._menu_option["exit"]:
+                    return
+                if userMessage:
+                    break
+                else:
+                    self._userInput(
+                        f"Invalid message. Press enter to try again or {self._menu_option['exit']} to exit"
+                    )
+        else:
+            userMessage = ""
+
+        if self.hotel.add_booking(userSsn, userRoom, userMessage):
             self._userPrint("Booking successful!")
         else:
-            self._userPrint("Booking failed!")
+            self._userPrint(
+                "Booking failed! (Make sure room is vacant and its the right number)"
+            )
         self._userInput("Press enter to continue...")
 
     def _remove_booking(self):
