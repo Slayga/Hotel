@@ -193,6 +193,7 @@ class HotelManager:
             return "Age must be a number"
         # Else add user to self.users with ssn as the key
         self.users[ssn] = {"name": name, "age": age}
+        self._update_json()
         return True
 
     def is_registered(self, ssn: str) -> bool:
@@ -231,21 +232,35 @@ class HotelManager:
         """
         Edits a user's information.
 
+        Args:
+            ssn (str): SSN of the CURRENTLY registered user, provide new_ssn to edit this
+            name (str, optional): New name. Defaults to "".
+            age (str, optional): New age. Defaults to "".
+            new_ssn (str, optional): New ssn. Defaults to "".
+
         Returns:
-            bool: True if user is registered, False otherwise 
-            (Note: Return is only affected if ssn is registered)
+            bool: True on success, False otherwise
         """
+        if not self.is_ssn_valid(ssn):
+            return False
 
         if self.is_registered(ssn):
             # If new ssn is provided, the key must be updated.
             if new_ssn:
                 # Changes key in self.users to new_ssn(pop returns the value hence the assignment below)
                 self.users[new_ssn] = self.users.pop(ssn)
+                # Edit booking ssn
+                if self.is_booked(ssn):
+                    self.active[new_ssn] = self.active.pop(ssn)
+                    booked_room = int(self.active[new_ssn]["room"])
+                    self.rooms[booked_room]["user"] = new_ssn
+                # To not interfere with multiple changes
                 ssn = new_ssn
             if name:
                 self.users[ssn]["name"] = name
             if age:
                 self.users[ssn]["age"] = age
+            self._update_json()
             return True
         # User is not registered
         return False
@@ -254,7 +269,6 @@ class HotelManager:
         """
         Unregister a user from the HotelManager.
         Will return a string or boolean depending on success.
-        (Type check for the str or bool)
 
         Args:
             ssn (str): string of 12 characters representing a user's social security number
@@ -262,7 +276,8 @@ class HotelManager:
         Returns:
             str | bool: str on failure, boolean(True) on success
         """
-        self.is_ssn_valid(ssn)
+        if not self.is_ssn_valid(ssn):
+            return "Invalid ssn"
 
         # Check if a user is already registered
         if ssn not in self.users:
@@ -270,6 +285,15 @@ class HotelManager:
         # Else add user to self.old and remove user from self.users with ssn as the key
         self.old[ssn] += 1
         del self.users[ssn]
+
+        # If user is booked, remove from active and update room
+        if self.is_booked(ssn):
+            booked_room = int(self.active[ssn]["room"]) - 1
+            self.rooms[booked_room]["user"] = ""
+            self.rooms[booked_room]["message"] = "vacant"
+            del self.active[ssn]
+
+        self._update_json()
         return True
 
     def check_in(self, ssn: str) -> bool:
@@ -282,6 +306,9 @@ class HotelManager:
         Returns:
             bool: Boolean on success or failure
         """
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists
         if self.is_registered(ssn):
             # Check if already booked
@@ -295,43 +322,58 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def check_out(self, ssn: str) -> bool:
+    def check_out(self, ssn: str, unregister: bool) -> bool:
         """
         Called when user is trying to check out to hotel
 
         Args:
             ssn (str): ssn of user wanting to check out
+            unregister (bool): Boolean on whether to unregister user or not
 
         Returns:
             bool: Boolean on success or failure
         """
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
         if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if checked in
             if self.active[ssn]["checked_in"]:
                 # Good to check out...
+                booked_room = int(self.active[ssn]["room"]) - 1
+                self.rooms[booked_room]["user"] = ""
+                self.rooms[booked_room]["message"] = "vacant"
+
                 self.active[ssn]["checked_in"] = False
                 # Increment times stayed at the hotel
                 self.old[ssn] += 1
                 # Remove booking from active dict
                 del self.active[ssn]
+                if unregister:
+                    self.unregister_user(ssn)
                 # Update json_data
                 self._update_json()
                 return True
         # If the controlstructure failed, returns False.
         return False
 
-    def add_booking(self, ssn: str, room: str) -> bool:
+    def add_booking(self, ssn: str, room: str, message: str = "") -> bool:
         """
         Called when user is booking a room. Must be registered to add booking.
 
         Args:
             ssn (str): ssn of user\n
             room (str): room number(digits): "1", "2", "3" etc.
+            message (str, optional): message from user. Defaults to "".
 
         Returns:
             bool: Boolean on success or failure
         """
+
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists and NOT already booked
         if self.is_registered(ssn) and not self.is_booked(ssn):
             if room.isdigit():
@@ -343,6 +385,8 @@ class HotelManager:
                     if self.rooms[room_index]["state"] == "vacant":
                         # Change room state to occupied
                         self.rooms[room_index]["state"] = "occupied"
+                        self.rooms[room_index]["user"] = ssn
+                        self.rooms[room_index]["message"] = message
                         # Add booking to active dict
                         self.active[ssn] = {"room": room, "checked_in": False}
                         # Update json_data
@@ -362,26 +406,32 @@ class HotelManager:
             bool: True if a user is booked, False otherwise
         """
         return ssn in self.active
-        ...
 
     def remove_booking(self, ssn: str, unregister: bool) -> bool:
         """
-        Called when user is removing a booking. Must be registered to remove booking.
+        Called when user is trying to remove a booking. Must be registered to remove booking.
 
         Args:
-            ssn (str): ssn of user\n
-            room (str): room number(digits): "1", "2", "3" etc.
+            ssn (str): _description_
+            unregister (bool): unregister the user when removing booking
 
         Returns:
-            bool: Boolean on success or failure
+            bool: _description_
         """
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
         if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn]["room"]) -
-                           1]["state"] = "vacant"
+                booked_room = int(self.active[ssn]["room"]) - 1
+                # Remove rooms user and message
+                self.rooms[booked_room]["state"] = "vacant"
+                self.rooms[booked_room]["user"] = ""
+                self.rooms[booked_room]["message"] = ""
+
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -433,10 +483,26 @@ class HotelManager:
             "user": user,
             "message": message,
         })
+        self._update_json()
         return True
 
-    def remove_room(self):
-        ...
+    def remove_room(self, room_nr: str) -> bool:
+        """
+        Removes a room from the hotel.
+
+        Args:
+            room_nr (str): Room nr (index in room list + 1)
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        """
+        if room_nr.isdigit():
+            room_index = int(room_nr) - 1
+            if 0 <= room_index < len(self.rooms):
+                del self.rooms[room_index]
+                self._update_json()
+                return True
+        return False
 
     def edit_room(self):
         ...
@@ -477,6 +543,7 @@ class HotelManager:
             return data
 
     def _pretty_print(self):
+        # Unimplemented, intended for debugging only...
         ...
 
     def _update_json(self):
