@@ -526,7 +526,6 @@ class HotelManager:
                 return True
         return False
 
-    # Like adding room but all args predefined as ""
     def edit_room(
         self,
         room_id: str,
@@ -676,6 +675,7 @@ class ConsoleHotel(HotelInterface):
             "header": "Nimbus Hotel",
             "description":
             "Welcome to Nimbus Hotel's Navigation Menu.\nPlease select an option.",
+            # Options values are all HotelManager methods
             "options": {
                 "Hotel Info": self._print_hotel_info,
                 "View all vacant rooms": self._print_all_vacant,
@@ -791,6 +791,7 @@ class ConsoleHotel(HotelInterface):
         print("-" * 15)
         # Print out all room information here
         for room in self.vacant_rooms:
+            print(f"Room Number:  {self.hotel.rooms.index(room)+1}")
             print(f"Type: {room['name']}")
             print(f"State: {room['state']}")
             print(f"Price: {room['price']}c")
@@ -800,12 +801,40 @@ class ConsoleHotel(HotelInterface):
             print("-" * 15)
         self._userInput("Press enter to continue...")
 
+    def _register_user(self):
+        ...
+
+    def _edit_user(self):
+        ...
+
+    def _unregister_user(self):
+        ...
+
+    def _check_in(self):
+        ...
+
+    def _check_out(self):
+        ...
+
     def _add_booking(self):
         while not self.hotel.is_registered(
             (userSsn := self._userInput("Please enter your SSN: "))):
+            if userSsn == self._menu_option["exit"]:
+                return
             self._userInput(
-                "Invalid SSN. Press enter to try again or # to exit")
-        userRoom = self._userInput("Please enter the room number: ")
+                f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
+            )
+        while True:
+            userRoom = self._userInput("Please enter the room number: ")
+            if userRoom == self._menu_option["exit"]:
+                return
+            if userRoom.isdigit() and int(userRoom) in range(
+                    len(self.hotel.rooms)):
+                break
+            else:
+                self._userInput(
+                    f"Invalid room number. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
 
         if self.hotel.add_booking(userSsn, userRoom):
             self._userPrint("Booking successful!")
@@ -826,16 +855,7 @@ class ConsoleHotel(HotelInterface):
     def _remove_room(self):
         ...
 
-    def _register_user(self):
-        ...
-
-    def _unregister_user(self):
-        ...
-
-    def _check_in(self):
-        ...
-
-    def _check_out(self):
+    def _edit_room(self):
         ...
 
 
