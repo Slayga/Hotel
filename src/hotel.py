@@ -126,7 +126,8 @@ class HotelManager:
     """
 
     def __init__(self, filename: str = ""):
-        """Constructor for HotelManager
+        """
+        Constructor for HotelManager
 
         Args:
             filename (str, optional): Optional argument for the name of the file. Defaults to "".
