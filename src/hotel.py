@@ -7,10 +7,10 @@ This is in theory meant to be used by personal at a given hotel,
 hence the management of seeing SSN easily.
 """
 
-from typing import Collection, Any
+from abc import ABCMeta, abstractmethod
 import json
 import os
-from abc import ABCMeta, abstractmethod
+from typing import Collection, Any
 
 
 class JsonHandling:
@@ -101,8 +101,6 @@ class JsonHandling:
             mode (str, optional): Mode the file will be open in. Defaults to "w".
         """
         with open(self.full_path, mode) as f:
-            for k, v in json_data.items():
-                print(k, ":", v)
             json.dump(json_data, f)
 
     def unpack_data(self) -> dict:
@@ -674,11 +672,20 @@ class ConsoleHotel(HotelInterface):
             "options": {
                 "Hotel Info": self._print_hotel_info,
                 "View all vacant rooms": self._print_all_vacant,
-                "Add Booking": self._add_booking,
-                "Register": self._register_user,
-                "Book": self._add_booking,
-                "Check-in": self._check_in,
-                "Check-out": self._check_out,
+                "Register new user": self._register_user,
+                "Edit user": self._edit_user,
+                "Unregister user": self._unregister_user,
+                "View all users": self._print_all_users,
+                "Add booking": self._add_booking,
+                "Edit booking": self._edit_booking,
+                "Remove booking": self._remove_booking,
+                "View all bookings": self._print_all_bookings,
+                "Add room": self._add_room,
+                "Edit room": self._edit_room,
+                "Remove room": self._remove_room,
+                "View all rooms": self._print_all_rooms,
+                "Check in": self._check_in,
+                "Check out": self._check_out,
             },
             "exit": "#",
         }
@@ -863,13 +870,11 @@ class ConsoleHotel(HotelInterface):
     def _unregister_user(self):
         ...
 
-    def _check_in(self):
-        ...
-
-    def _check_out(self):
+    def _print_all_users(self):
         ...
 
     def _add_booking(self):
+        ...
         self.clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -909,6 +914,9 @@ class ConsoleHotel(HotelInterface):
     def _edit_booking(self):
         ...
 
+    def _print_all_bookings(self):
+        ...
+
     def _add_room(self):
         ...
 
@@ -916,6 +924,15 @@ class ConsoleHotel(HotelInterface):
         ...
 
     def _edit_room(self):
+        ...
+
+    def _print_all_rooms(self):
+        ...
+
+    def _check_in(self):
+        ...
+
+    def _check_out(self):
         ...
 
 
