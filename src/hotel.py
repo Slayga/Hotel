@@ -975,10 +975,68 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _remove_booking(self):
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Remove a booking")
+        print("-" * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput("Please enter your SSN: "))):
+            if userSsn == self._menu_option["exit"]:
+                return
+            self._userInput(
+                f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
+            )
+
+        while True:
+            userUnregister = self._userInput(
+                "Do you want to unregister the user? (y/n): ")
+            if userUnregister == self._menu_option["exit"]:
+                return
+            if userUnregister.lower() in ["y", "n"]:
+                break
+            else:
+                self._userInput(
+                    f"Invalid input. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        if userUnregister.lower() == "y":
+            userUnregister = True
+        else:
+            userUnregister = False
+
+        if self.hotel.remove_booking(userSsn, userUnregister):
+            self._userPrint("Booking removed!")
+        else:
+            self._userPrint("Un-booking failed!, contact an admin")
+
+        self._userInput("Press enter to continue...")
+        return
 
     def _edit_booking(self):
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Edit a booking")
+        print("-" * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput("Please enter your SSN: "))):
+            if userSsn == self._menu_option["exit"]:
+                return
+            self._userInput(
+                f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
+            )
+
+        while True:
+            # Print current booking message and room number.
+            booked_room_index = int(self.hotel.active[userSsn]["room"]) - 1
+            self._userPrint("Booked by:", self.hotel.active[userSsn]["user"])
+            self._userPrint(self.hotel.rooms[booked_room_index]["message"])
+            self._userPrint("Leave blank to keep the same value")
 
     def _print_all_bookings(self):
         ...
