@@ -101,6 +101,8 @@ class JsonHandling:
             mode (str, optional): Mode the file will be open in. Defaults to "w".
         """
         with open(self.full_path, mode) as f:
+            for k, v in json_data.items():
+                print(k, ":", v)
             json.dump(json_data, f)
 
     def unpack_data(self) -> dict:
@@ -144,13 +146,6 @@ class HotelManager:
         self.active = (self.json_data["active"]
                        if "active" in self.json_data else dict())
         self.old = self.json_data["old"] if "old" in self.json_data else dict()
-        # Used when packing or updating json_data
-        self._extracted = {
-            "users": self.users,
-            "rooms": self.rooms,
-            "active": self.active,
-            "old": self.old,
-        }
 
         # Type hinting for pylance, only noticeable in IDE with basic or strict type checking... Ignore
         self.json_data: dict[str, Any]
@@ -280,7 +275,10 @@ class HotelManager:
         if ssn not in self.users:
             return "User with given ssn does not exist"
         # Else add user to self.old and remove user from self.users with ssn as the key
-        self.old[ssn] += 1
+        if ssn in self.old:
+            self.old[ssn] += 1
+        else:
+            self.old[ssn] = 1
         del self.users[ssn]
 
         # If user is booked, remove from active and update room
@@ -610,9 +608,6 @@ class HotelManager:
         """
         Updates data structure with new json_data and loads the new json_data
         """
-        # Updates each dict in self.json_data
-        for key, value in self._extracted.items():
-            self.json_data.update({key: value})
 
         # Same practice as constructor
         self.json_handler.pack_data(self.json_data)
@@ -802,7 +797,65 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _register_user(self):
-        ...
+        self.clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Register a new user")
+        print("-" * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput("Enter your SSN (12 characters): ")
+                   ) != self._menu_option["exit"]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    # Checks if the SSN is valid
+                    self._userPrint("SSN is valid")
+                    break
+                else:
+                    self._userPrint(
+                        "SSN is invalid, make sure its following format: YYYYMMDDXXXX"
+                    )
+
+            if userSSN == self._menu_option["exit"]:
+                break
+
+            while (userName := self._userInput("Enter your name: ")
+                   ) != self._menu_option["exit"]:
+                if userName:
+                    # Checks if the name is valid
+                    self._userPrint("Name is valid")
+                    break
+                else:
+                    self._userPrint(
+                        "Name is invalid, make sure its following format: Firstname Lastname"
+                    )
+
+            if userName == self._menu_option["exit"]:
+                break
+
+            while (userAge := self._userInput("Enter your age: ")
+                   ) != self._menu_option["exit"]:
+
+                if userAge.isdigit():
+                    # Checks if the age is valid
+                    self._userPrint("Age is valid")
+                    break
+                else:
+                    self._userPrint(
+                        "Age is invalid, make sure its a number only")
+
+            if userAge == self._menu_option["exit"]:
+                break
+
+            if type(result := self.hotel.register_user(userSSN, userName,
+                                                       userAge)) == bool:
+                # Registered user if the result is a bool
+                self._userPrint("User registered")
+                self._userInput("Press enter to continue")
+                break
+            else:
+                # Prints the error message
+                self._userPrint(result)
 
     def _edit_user(self):
         ...
@@ -817,6 +870,13 @@ class ConsoleHotel(HotelInterface):
         ...
 
     def _add_booking(self):
+        self.clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Add a new booking")
+        print("-" * 15)
+
+        # Prompt user for input until valid input is registered.
         while not self.hotel.is_registered(
             (userSsn := self._userInput("Please enter your SSN: "))):
             if userSsn == self._menu_option["exit"]:
@@ -824,6 +884,7 @@ class ConsoleHotel(HotelInterface):
             self._userInput(
                 f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
             )
+
         while True:
             userRoom = self._userInput("Please enter the room number: ")
             if userRoom == self._menu_option["exit"]:
@@ -841,7 +902,6 @@ class ConsoleHotel(HotelInterface):
         else:
             self._userPrint("Booking failed!")
         self._userInput("Press enter to continue...")
-        ...
 
     def _remove_booking(self):
         ...
@@ -862,6 +922,9 @@ class ConsoleHotel(HotelInterface):
 def _main():
     # Initialize an object of the class
     test_hotel = HotelManager()
+    # Call private method, _register_user
+    # test_hotel.register_user("123456789011", "Gabriel", "18")
+    # test_hotel.unregister_user("123456789011")
 
     # Initialize an object of the class
     test_console = ConsoleHotel(test_hotel)
@@ -872,5 +935,6 @@ def _main():
 
 if __name__ == "__main__":
     _main()
+
     # ConsoleHotel(HotelManager())._print_menu()
     # ConsoleHotel(HotelManager())._userInput("Enter your choice: "))
