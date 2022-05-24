@@ -7,10 +7,7 @@ This is in theory meant to be used by personal at a given hotel,
 hence the management of seeing SSN easily.
 """
 
-# Pickle or Json dump...
-# Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
-
-from typing import Collection, Any, Callable
+from typing import Collection, Any
 import json
 import os
 from abc import ABCMeta, abstractmethod
@@ -598,6 +595,8 @@ class WebHotel(HotelInterface):
 
 class GuiHotel(HotelInterface):
     # PyImgui implementation
+    # Specific branch (context manager integration by mcoding):
+    # https://github.com/pyimgui/pyimgui/pull/264
     ...
 
 
@@ -777,10 +776,14 @@ class ConsoleHotel(HotelInterface):
 
 
 def _main():
-    test = HotelManager()
-    # print(test)
+    # Initialize an object of the class
+    test_hotel = HotelManager()
 
-    ConsoleHotel(test).run()
+    # Initialize an object of the class
+    test_console = ConsoleHotel(test_hotel)
+
+    # Runs the interface
+    test_console.run()
 
 
 if __name__ == "__main__":
