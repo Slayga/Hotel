@@ -442,8 +442,33 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def edit_booking(self):
-        ...
+    def edit_booking(self, ssn: str, new_room: str = "", message: str = ""):
+        """
+        Called when user is trying to edit a booking. Must be registered to edit booking.
+
+        Args:
+            ssn (str): SSN of user
+            new_room (str, optional): If wished to swap room. Defaults to "".
+            message (str, optional): Messages, can be passed alone or with new_room. Defaults to "".
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if not self.is_ssn_valid(ssn):
+            return False
+
+        if self.is_registered(ssn) and self.is_booked(ssn):
+            if new_room:
+                if new_room.isdigit():
+                    if (self.add_booking(ssn, new_room, message)):
+                        self._update_json()
+                        return True
+            elif message:
+                booked_room = int(self.active[ssn]["room"]) - 1
+                self.rooms[booked_room]["message"] = message
+                self._update_json()
+                return True
+        return False
 
     def add_room(
         self,
@@ -501,8 +526,47 @@ class HotelManager:
                 return True
         return False
 
-    def edit_room(self):
-        ...
+    # Like adding room but all args predefined as ""
+    def edit_room(
+        self,
+        room_id: str,
+        name: str = "",
+        price: str = "",
+        capacity: str = "",
+        state: str = "",
+        description: str = "",
+        misc: list[str] = [],
+    ):
+        """
+        Edits a room in the hotel. Only the fields that are not empty will change.
+
+        Args:
+            room_id (_type_): Room ID (index in room list + 1)
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            capacity (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+        """
+        if room_id.isdigit():
+            room_index = int(room_id) - 1
+            if 0 <= room_index < len(self.rooms):
+                if name:
+                    self.rooms[room_index]["name"] = name
+                if price:
+                    self.rooms[room_index]["price"] = price
+                if capacity:
+                    self.rooms[room_index]["capacity"] = capacity
+                if state:
+                    self.rooms[room_index]["state"] = state
+                if description:
+                    self.rooms[room_index]["description"] = description
+                if misc:
+                    self.rooms[room_index]["misc"] = misc
+                self._update_json()
+                return True
+        return False
 
     def filter_dict(
         self,
