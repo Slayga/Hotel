@@ -1,1 +1,43 @@
-{"users": {"0311051234": {"name": "John", "age": "25"}, "0306071234": {"name": "Doe", "age": "30"}, "123456789011": {"name": "Gabriel", "age": "18"}}, "rooms": [{"name": "JuniorSuite", "price": "19.99c", "capacity": "4", "state": "vacant", "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.", "misc": ["2xDoubleBed", "wifi", "tv", "fridge", "microwave"], "user": "Here the booked user will 'bind' to the room", "message": "Additional message from the user that booked the room"}, {"name": "SeniorSuite", "price": "29.99", "capacity": "2", "state": "occupied", "description": "This is a room fitted for the most senior income earners, who wants that extra capacity and privacy.", "misc": ["1xDoubleBed", "wifi", "tv", "fridge", "microwave"], "user": "0306071234", "message": "Please clean between 8pm-9pm"}], "active": {"0306071234": {"room": "2", "checked_in": false}}}
+{
+    "users": {
+        "123456789011": {
+            "name": "Gabriel",
+            "age": "18"
+        }
+    },
+    "rooms": [
+        {
+            "name": "JuniorSuite",
+            "price": "19.99c",
+            "capacity": "4",
+            "state": "vacant",
+            "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",
+            "misc": [
+                "2xDoubleBed",
+                "wifi",
+                "tv",
+                "fridge",
+                "microwave"
+            ],
+            "user": "",
+            "message": ""
+        },
+        {
+            "name": "SeniorSuite",
+            "price": "29.99",
+            "capacity": "2",
+            "state": "occupied",
+            "description": "This is a room fitted for the most senior income earners, who wants that extra capacity and privacy.",
+            "misc": [
+                "1xDoubleBed",
+                "wifi",
+                "tv",
+                "fridge",
+                "microwave"
+            ],
+            "user": "",
+            "message": ""
+        }
+    ],
+    "active": {}
+}
