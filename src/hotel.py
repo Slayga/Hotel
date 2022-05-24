@@ -132,7 +132,7 @@ class HotelManager:
             filename (str, optional): Optional argument for the name of the file. Defaults to "".
         """
         # Unpacking and loading json_data from given path(Default is None)
-        self.json_handler = JsonHandling(filename)
+        self.json_handler: JsonHandling = JsonHandling(filename)
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
@@ -600,7 +600,7 @@ class HotelManager:
 
     def _pretty_print(self):
         # Unimplemented, intended for debugging only...
-        ...
+        raise NotImplementedError
 
     def _update_json(self):
         """
@@ -738,7 +738,7 @@ class ConsoleHotel(HotelInterface):
         return input(*args, **kwargs)
 
     @staticmethod
-    def clear_console():
+    def _clear_console():
         """
         Clears the console.
         """
@@ -755,7 +755,7 @@ class ConsoleHotel(HotelInterface):
             str | None: str if user input is expected else None
         """
         # Clear console window if user hasn't disabled the option
-        self.clear_console() if not noClear else ...
+        self._clear_console() if not noClear else ...
 
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -777,7 +777,7 @@ class ConsoleHotel(HotelInterface):
         return ""
 
     def _print_hotel_info(self):
-        self.clear_console()
+        self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
         print(self.hotel)
@@ -786,7 +786,7 @@ class ConsoleHotel(HotelInterface):
     def _print_all_vacant(self):
         self.vacant_rooms = self.hotel.filter_dict(self.hotel.rooms,
                                                    {"state": "vacant"})
-        self.clear_console()
+        self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
         print(f"There are {len(self.vacant_rooms)} vacant rooms")
@@ -804,7 +804,7 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _register_user(self):
-        self.clear_console()
+        self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
         print("Register a new user")
@@ -875,7 +875,7 @@ class ConsoleHotel(HotelInterface):
 
     def _add_booking(self):
         ...
-        self.clear_console()
+        self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
         print("Add a new booking")
@@ -939,9 +939,6 @@ class ConsoleHotel(HotelInterface):
 def _main():
     # Initialize an object of the class
     test_hotel = HotelManager()
-    # Call private method, _register_user
-    # test_hotel.register_user("123456789011", "Gabriel", "18")
-    # test_hotel.unregister_user("123456789011")
 
     # Initialize an object of the class
     test_console = ConsoleHotel(test_hotel)
