@@ -338,9 +338,10 @@ class HotelManager:
             # Check if checked in
             if self.active[ssn]["checked_in"]:
                 # Good to check out...
-                booked_room = int(self.active[ssn]["room"]) - 1
-                self.rooms[booked_room]["user"] = ""
-                self.rooms[booked_room]["message"] = "vacant"
+                booked_room_index = int(self.active[ssn]["room"]) - 1
+                self.rooms[booked_room_index]["user"] = ""
+                self.rooms[booked_room_index]["message"] = ""
+                self.rooms[booked_room_index]["state"] = "vacant"
 
                 self.active[ssn]["checked_in"] = False
 
@@ -422,11 +423,11 @@ class HotelManager:
             # Check if not checked in
             if not self.active[ssn]["checked_in"]:
                 # Change room state to vacant
-                booked_room = int(self.active[ssn]["room"]) - 1
+                booked_room_index = int(self.active[ssn]["room"]) - 1
                 # Remove rooms user and message
-                self.rooms[booked_room]["state"] = "vacant"
-                self.rooms[booked_room]["user"] = ""
-                self.rooms[booked_room]["message"] = ""
+                self.rooms[booked_room_index]["state"] = "vacant"
+                self.rooms[booked_room_index]["user"] = ""
+                self.rooms[booked_room_index]["message"] = ""
 
                 # Remove booking from active dict
                 del self.active[ssn]
@@ -866,6 +867,7 @@ class ConsoleHotel(HotelInterface):
                 self._userPrint(result)
 
     def _edit_user(self):
+        # TODO: Implement
         ...
 
     def _unregister_user(self):
@@ -1052,6 +1054,7 @@ class ConsoleHotel(HotelInterface):
                 f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
             )
 
+        # TODO: Finish
         ...
 
     def _print_all_bookings(self):
@@ -1071,12 +1074,15 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _add_room(self):
+        # TODO: Implement
         ...
 
     def _remove_room(self):
+        # TODO: Implement
         ...
 
     def _edit_room(self):
+        # TODO: Implement
         ...
 
     def _print_all_rooms(self):
