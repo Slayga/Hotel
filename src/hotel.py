@@ -298,6 +298,8 @@ class HotelManager:
 
         total_reg += 1
         self.old[ssn]["total registrations"] = str(total_reg)
+        self.old[ssn]["name"] = self.users[ssn]["name"]
+        self.old[ssn]["age"] = self.users[ssn]["age"]
 
         del self.users[ssn]
 
@@ -860,8 +862,11 @@ class ConsoleHotel(HotelInterface):
                 name = self.hotel.old[userSSN]["name"]
                 age = self.hotel.old[userSSN]["age"]
 
+                autofill_msg = str("-" * 7 + "AUTOFILL INFORMATION" + "-" * 7)
+                print(autofill_msg)
                 self._userPrint(f"Name: {name}")
                 self._userPrint(f"Age: {age}")
+                print("-" * len(autofill_msg))
 
                 while True:
                     userInput = self._userInput("(y/n): ")
