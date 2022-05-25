@@ -1,0 +1,861 @@
+<svg
+  height="1328.2757568359375"
+  version="1.1"
+  width="1224.0780029296875"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  style="overflow: hidden; position: relative; left: -0.890625px"
+  viewBox="-407.6226806640625 0 1224.0780029296875 1328.2757568359375"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+    Created with Raphaël 2.3.0
+  </desc>
+  <defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+    <path
+      stroke-linecap="round"
+      d="M5,0 0,2.5 5,5z"
+      id="raphael-marker-block"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    ></path>
+    <marker
+      id="raphael-marker-endblock33-objudx0w"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="red"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objd01t9"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objdbtdr"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objuxfkf"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objwlz0b"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-obj0wihq"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objstxnt"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objps31n"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objz7dls"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objby7pm"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-objb2ieh"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+    <marker
+      id="raphael-marker-endblock33-obj47o3a"
+      markerHeight="3"
+      markerWidth="3"
+      orient="auto"
+      refX="1.5"
+      refY="1.5"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      <use
+        xlink:href="#raphael-marker-block"
+        transform="rotate(180 1.5 1.5) scale(0.6,0.6)"
+        stroke-width="1.6667"
+        fill="black"
+        stroke="none"
+        style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+      ></use>
+    </marker>
+  </defs>
+  <rect
+    x="0"
+    y="0"
+    width="65.0458984375"
+    height="36"
+    rx="20"
+    ry="20"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="st3"
+    transform="matrix(1,0,0,1,164.3232,73.4048)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="st3t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,164.3232,73.4048)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      START
+    </tspan>
+  </text>
+  <path
+    fill="#ffffff"
+    stroke="#000000"
+    d="M35.6326904296875,17.81634521484375L0,35.6326904296875L71.265380859375,71.265380859375L142.53076171875,35.6326904296875L71.265380859375,0L0,35.6326904296875"
+    stroke-width="3"
+    id="cond69"
+    class="flowchart"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    transform="matrix(1,0,0,1,125.5808,215.1769)"
+  ></path>
+  <text
+    x="40.6326904296875"
+    y="35.6326904296875"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="cond69t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,125.5808,215.1769)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      while True
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="381.6923828125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="op88"
+    transform="matrix(1,0,0,1,6,409.847)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="op88t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,6,409.847)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      userChoice = input('Do you want to start the hotel? (y/n): ')
+    </tspan>
+  </text>
+  <path
+    fill="#ffffff"
+    stroke="#000000"
+    d="M85.40478515625,42.702392578125L0,85.40478515625L170.8095703125,170.8095703125L341.619140625,85.40478515625L170.8095703125,0L0,85.40478515625"
+    stroke-width="3"
+    id="cond91"
+    class="flowchart"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    transform="matrix(1,0,0,1,26.0366,501.847)"
+  ></path>
+  <text
+    x="90.40478515625"
+    y="85.40478515625"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="cond91t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,26.0366,501.847)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      if (userChoice.lower() in ['y', 'n'])
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="56.0205078125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="sub95"
+    transform="matrix(1,0,0,1,168.8359,796.0614)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="sub95t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,168.8359,796.0614)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      break
+    </tspan>
+  </text>
+  <path
+    fill="#ffffff"
+    stroke="#000000"
+    d="M77.0665283203125,38.53326416015625L0,77.0665283203125L154.133056640625,154.133056640625L308.26611328125,77.0665283203125L154.133056640625,0L0,77.0665283203125"
+    stroke-width="3"
+    id="cond105"
+    class="flowchart"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    transform="matrix(1,0,0,1,42.7131,896.3997)"
+  ></path>
+  <text
+    x="82.0665283203125"
+    y="77.0665283203125"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="cond105t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,42.7131,896.3997)"
+    stroke-width="1"
+  >
+    <tspan
+      dy="-3.4000015258789062"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      # Start the hotel
+    </tspan>
+    <tspan
+      dy="16.8"
+      x="82.0665283203125"
+      style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    >
+      if ('y' == userChoice.lower())
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="195.2646484375"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="op109"
+    transform="matrix(1,0,0,1,-301.7654,955.4662)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="op109t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,-301.7654,955.4662)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      test_hotel = HotelManager()
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="269.9814453125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="op111"
+    transform="matrix(1,0,0,1,-339.1238,1114.871)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="op111t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,-339.1238,1114.871)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      test_console = ConsoleHotel(test_hotel)
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="153.392578125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="sub113"
+    transform="matrix(1,0,0,1,-280.8293,1274.2758)"
+  ></rect>
+  <rect
+    x="10"
+    y="0"
+    width="133.392578125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    id="sub113i"
+    transform="matrix(1,0,0,1,-280.8293,1274.2758)"
+  ></rect>
+  <text
+    x="20"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="sub113t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,-280.8293,1274.2758)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      test_console.run()
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="49.5625"
+    height="36"
+    rx="20"
+    ry="20"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="e118"
+    transform="matrix(1,0,0,1,573.0442,955.4662)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="e118t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,573.0442,955.4662)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      END
+    </tspan>
+  </text>
+  <rect
+    x="0"
+    y="0"
+    width="140.8486328125"
+    height="36"
+    rx="0"
+    ry="0"
+    fill="#ffffff"
+    stroke="#000000"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+    stroke-width="3"
+    class="flowchart"
+    id="sub99"
+    transform="matrix(1,0,0,1,672.6067,569.2518)"
+  ></rect>
+  <text
+    x="10"
+    y="18"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    id="sub99t"
+    class="flowchartt"
+    transform="matrix(1,0,0,1,672.6067,569.2518)"
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      print('Invalid input!')
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#ff0000"
+    d="M196.84619140625,109.40478515625C196.84619140625,109.40478515625,196.84619140625,180.6225327774082,196.84619140625,206.1816365379313"
+    stroke-width="6"
+    marker-end="url(#raphael-marker-endblock33-objudx0w)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M196.84619140625,286.4422607421875C196.84619140625,286.4422607421875,196.84619140625,383.15144139772747,196.84619140625,405.3454428177"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objd01t9)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <text
+    x="201.84619140625"
+    y="296.4422607421875"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      yes
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M196.84619140625,445.8470458984375C196.84619140625,445.8470458984375,196.84619140625,484.04781675338745,196.84619140625,497.34720621607266"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objdbtdr)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M196.84619140625,672.6566162109375C196.84619140625,672.6566162109375,196.84619140625,769.3657968664775,196.84619140625,791.55979828645"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objuxfkf)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <text
+    x="201.84619140625"
+    y="682.6566162109375"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      yes
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M367.65576171875,587.2518310546875C367.65576171875,587.2518310546875,630.3315550804218,587.2518310546875,668.1040263426348,587.2518310546875"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objwlz0b)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <text
+    x="372.65576171875"
+    y="577.2518310546875"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      no
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M196.84619140625,832.0614013671875C196.84619140625,832.0614013671875,196.84619140625,877.2834232466703,196.84619140625,891.9010885221671"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-obj0wihq)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M42.713134765625,973.4661865234375C42.713134765625,973.4661865234375,-77.07710073958151,973.4661865234375,-101.99440558587935,973.4661865234375"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objstxnt)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <text
+    x="37.713134765625"
+    y="963.4661865234375"
+    text-anchor="end"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: end;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      yes
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M350.979248046875,973.4661865234375C350.979248046875,973.4661865234375,537.0622996396633,973.4661865234375,568.5455893744783,973.4661865234375"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objps31n)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <text
+    x="355.979248046875"
+    y="963.4661865234375"
+    text-anchor="start"
+    font-family='"Arial"'
+    font-size="14px"
+    stroke="none"
+    fill="#000000"
+    style="
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      text-anchor: start;
+      font-family: Arial;
+      font-size: 14px;
+    "
+    stroke-width="1"
+  >
+    <tspan dy="5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)">
+      no
+    </tspan>
+  </text>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M-204.133056640625,991.4661865234375C-204.133056640625,991.4661865234375,-204.133056640625,1088.1753671789775,-204.133056640625,1110.3693685989501"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objz7dls)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M-204.133056640625,1150.8709716796875C-204.133056640625,1150.8709716796875,-204.133056640625,1247.5801523352275,-204.133056640625,1269.7741537552001"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objby7pm)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M-204.133056640625,1310.2757568359375C-204.133056640625,1310.2757568359375,-204.133056640625,1325.2757568359375,-204.133056640625,1325.2757568359375C-204.133056640625,1325.2757568359375,-404.6226806640625,1325.2757568359375,-404.6226806640625,1325.2757568359375C-404.6226806640625,1325.2757568359375,-404.6226806640625,180.1768798828125,-404.6226806640625,180.1768798828125C-404.6226806640625,180.1768798828125,196.84619140625,180.1768798828125,196.84619140625,180.1768798828125C196.84619140625,180.1768798828125,196.84619140625,201.21995162963867,196.84619140625,210.67289401590824"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-objb2ieh)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+  <path
+    fill="none"
+    stroke="#000000"
+    d="M743.031005859375,569.2518310546875C743.031005859375,569.2518310546875,743.031005859375,170.1768798828125,743.031005859375,170.1768798828125C743.031005859375,170.1768798828125,196.84619140625,170.1768798828125,196.84619140625,170.1768798828125C196.84619140625,170.1768798828125,196.84619140625,199.28001713752747,196.84619140625,210.6768511601258"
+    stroke-width="3"
+    marker-end="url(#raphael-marker-endblock33-obj47o3a)"
+    style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0)"
+  ></path>
+</svg>
