@@ -1130,8 +1130,107 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _add_room(self):
-        # TODO: Implement
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Add a room")
+        print("-" * 15)
+
+        # Prompt the user to enter following required information
+        # name: str, price: str, capacity: str, state: str, description: str, misc: list[str]
+        while True:
+            userName = self._userInput("Please enter the name of the room: ")
+            if userName == self._menu_option["exit"]:
+                return
+            if userName:
+                break
+            else:
+                self._userInput(
+                    f"Invalid name. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        while True:
+            userPrice = self._userInput("Please enter the price of the room: ")
+            if userPrice == self._menu_option["exit"]:
+                return
+
+            if userPrice:
+                # Test if float (199.99 is allowed pricing, but isdigit() returns false)):
+                try:
+                    float(userPrice)
+                except ValueError:
+                    self._userInput(
+                        f"Invalid price. Press enter to try again or {self._menu_option['exit']} to exit"
+                    )
+                else:
+                    # On no exception
+
+                    # Checks if the price is of digits (NaN is float and etc.)
+                    if userPrice.replace(".", "").isdigit():
+                        break
+                    else:
+                        self._userInput(
+                            f"Invalid price. Press enter to try again or {self._menu_option['exit']} to exit"
+                        )
+
+            else:
+                self._userInput(
+                    f"Invalid price. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        while True:
+            userCapacity = self._userInput(
+                "Please enter the capacity of the room: ")
+            if userCapacity == self._menu_option["exit"]:
+                return
+            if userCapacity.isdigit():
+                break
+            else:
+                self._userInput(
+                    f"Invalid capacity. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        while True:
+            userState = self._userInput("Please enter the state of the room: ")
+            if userState == self._menu_option["exit"]:
+                return
+            if userState:
+                break
+            else:
+                self._userInput(
+                    f"Invalid state. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        while True:
+            userDescription = self._userInput(
+                "Please enter the description of the room: ")
+            if userDescription == self._menu_option["exit"]:
+                return
+            if userDescription:
+                break
+            else:
+                self._userInput(
+                    f"Invalid description. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        userMisc = []
+        while True:
+            userInput = self._userInput(
+                "Enter miscellaneous information (leave empty to continue): ")
+            if userInput == self._menu_option["exit"]:
+                return
+            if userInput:
+                userMisc.append(userInput)
+            else:
+                break
+
+        if self.hotel.add_room(userName, userPrice, userCapacity, userState,
+                               userDescription, userMisc):
+            self._userPrint("Room added!")
+        else:
+            self._userPrint("Room addition failed!")
+
+        self._userInput("Press enter to continue...")
 
     def _remove_room(self):
         # TODO: Implement
