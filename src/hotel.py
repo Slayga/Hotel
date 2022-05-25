@@ -1450,13 +1450,26 @@ class ConsoleHotel(HotelInterface):
 
 def main():
     # Initialize an object of the class
-    test_hotel = HotelManager()
+    while True:
+        while True:
+            userChoice = input("Do you want to start the hotel? (y/n): ")
+            if userChoice.lower() in ["y", "n"]:
+                break
+            else:
+                print("Invalid input!")
 
-    # Initialize an object of the class
-    test_console = ConsoleHotel(test_hotel)
+        # Start the hotel
+        if "y" == userChoice.lower():
+            test_hotel = HotelManager()
 
-    # Runs the interface
-    test_console.run()
+            # Initialize an object of the class
+            test_console = ConsoleHotel(test_hotel)
+
+            # Runs the interface
+            test_console.run()
+
+        else:
+            return
 
 
 if __name__ == "__main__":
