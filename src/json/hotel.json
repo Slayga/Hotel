@@ -32,32 +32,6 @@
             ],
             "user": "",
             "message": ""
-        },
-        {
-            "name": "BigSuite",
-            "price": "200",
-            "capacity": "2",
-            "state": "vacant",
-            "description": "The biggest of them biggest",
-            "misc": [
-                "1xDoubleBed",
-                "Wifi",
-                "TV"
-            ],
-            "user": "",
-            "message": ""
-        },
-        {
-            "name": "MediumBed",
-            "price": "9.99",
-            "capacity": "1",
-            "state": "vacant",
-            "description": "Simple and elegant for cheap",
-            "misc": [
-                "1xSimpleBed"
-            ],
-            "user": "",
-            "message": ""
         }
     ],
     "active": {},
