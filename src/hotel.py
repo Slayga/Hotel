@@ -154,7 +154,7 @@ class HotelManager:
         self.users: dict[str, dict[str, str]]
         self.rooms: list[dict[str, str | list[str]]]
         self.active: dict[str, dict[str, str | bool]]
-        self.old: dict[str, int]
+        self.old: dict[str, dict[str, str]]
 
     def __str__(self):
         """
@@ -182,6 +182,7 @@ class HotelManager:
         # Check if a user is already registered
         if self.is_registered(ssn):
             return "User with given ssn already exists"
+
         # Check if age is a number
         if not age.isdigit():
             return "Age must be a number"
@@ -189,6 +190,18 @@ class HotelManager:
         self.users[ssn] = {"name": name, "age": age}
         self._update_json()
         return True
+
+    def been_registered(self, ssn: str) -> bool:
+        """
+        Checks if a user has been registered.
+
+        Args:
+            ssn (str): string of 12 characters representing a user's social security number
+
+        Returns:
+            bool: True if user is registered, False if not
+        """
+        return ssn in self.old
 
     def is_registered(self, ssn: str) -> bool:
         """
@@ -274,13 +287,18 @@ class HotelManager:
             return "Invalid ssn"
 
         # Check if a user is already registered
-        if ssn not in self.users:
+        if not self.is_registered(ssn):
             return "User with given ssn does not exist"
-        # Else add user to self.old and remove user from self.users with ssn as the key
-        if ssn in self.old:
-            self.old[ssn] += 1
+
+        # Total registration count
+        if "total registrations" in self.old[ssn]:
+            total_reg = int(self.old[ssn]["total registrations"])
         else:
-            self.old[ssn] = 1
+            total_reg = 0
+
+        total_reg += 1
+        self.old[ssn]["total registrations"] = str(total_reg)
+
         del self.users[ssn]
 
         # If user is booked, remove from active and update room
@@ -832,6 +850,37 @@ class ConsoleHotel(HotelInterface):
             if userSSN == self._menu_option["exit"]:
                 break
 
+            if self.hotel.is_registered(userSSN):
+                self._userPrint("User already registered")
+                break
+            elif self.hotel.been_registered(userSSN):
+                self._userPrint(
+                    "You have been registered before! Do you want to autofill the following information?"
+                )
+                name = self.hotel.old[userSSN]["name"]
+                age = self.hotel.old[userSSN]["age"]
+
+                self._userPrint(f"Name: {name}")
+                self._userPrint(f"Age: {age}")
+
+                while True:
+                    userInput = self._userInput("(y/n): ")
+                    if userInput == "y":
+                        if type(result := self.hotel.register_user(
+                                userSSN, name, age)) == bool:
+                            return
+                        else:
+                            self._userPrint("Something went wrong:", result)
+                            self._userInput(
+                                "Press enter to enter name and age manually..."
+                            )
+                            break
+
+                    elif userInput == "n":
+                        break
+                    else:
+                        self._userPrint("Invalid input")
+
             while (userName := self._userInput("Enter your name: ")
                    ) != self._menu_option["exit"]:
                 if userName:
@@ -865,6 +914,8 @@ class ConsoleHotel(HotelInterface):
             else:
                 # Prints the error message
                 self._userPrint(result)
+
+            self._userInput("Press enter to continue...")
 
     def _edit_user(self):
         # TODO: Implement
