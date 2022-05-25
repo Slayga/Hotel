@@ -1,18 +1,18 @@
-# Psuedokod för Hotelbokning
+# Pseudokod för Hotell bokning
 
 - Programstart
 
-- Impoterar bibliotek
+- Importerar bibliotek
 
-- Definerar klassen DataHandling med attribruten Filnamn och Path
+- Definierar klassen DataHandling med attributen Filnamn och Path
 
   - Kollar om Filen existerar, om inte skapar ny Fil
-  - Definerar två metoder för att läsa och skriva data till filen
+  - Definierar två metoder för att läsa och skriva data till filen
 
-- Definerar klassen HotelManager, som hanterar datan och bokningar via diverse metoder
+- Definierar klassen HotelManager, som hanterar data och bokningar via diverse metoder
 
-- Definerar Parent-klassen HotellInterface
+- Definierar Parent-klassen HotellInterface
 
-  - Definerar klasserna KonsolHotell, GuiHotell och WebHotell som ärver från HotellInterface
+  - Definierar klasserna KonsolHotell, GuiHotell och WebHotell som ärver från HotellInterface
 
 - Initierar Hotel objekt
