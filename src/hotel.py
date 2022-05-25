@@ -164,7 +164,7 @@ class HotelManager:
         """
         # Filter dict to get only vacant rooms
         vacant_room = self.filter_dict(self.rooms, {"state": "vacant"})
-        return f"Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }"
+        return f"Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 } \nRegistered users: {len(self.users)}"
 
     def register_user(self, ssn: str, name: str, age: str) -> str | bool:
         """
@@ -692,29 +692,16 @@ class ConsoleHotel(HotelInterface):
         # Object instance of HotelManager class
         self.hotel = hotel
 
-        # Console related attributes, avoid having exit value as a number(interferes with options menu)
+        # Console related attributes, avoid having exit value as a number(interferes with options menu
         self._menu_option = {
             "header": "Nimbus Hotel",
             "description":
             "Welcome to Nimbus Hotel's Navigation Menu.\nPlease select an option.",
-            # Options values are all HotelManager methods
             "options": {
                 "Hotel Info": self._print_hotel_info,
-                "View all vacant rooms": self._print_all_vacant,
-                "Register new user": self._register_user,
-                "Edit user": self._edit_user,
-                "Unregister user": self._unregister_user,
-                "View all users": self._print_all_users,
-                "Add booking": self._add_booking,
-                "Edit booking": self._edit_booking,
-                "Remove booking": self._remove_booking,
-                "View all bookings": self._print_all_bookings,
-                "Add room": self._add_room,
-                "Edit room": self._edit_room,
-                "Remove room": self._remove_room,
-                "View all rooms": self._print_all_rooms,
-                "Check in": self._check_in,
-                "Check out": self._check_out,
+                "User Menu": self._menu_user,
+                "Booking Menu": self._menu_booking,
+                "Room Menu": self._menu_room,
             },
             "exit": "#",
         }
@@ -729,17 +716,18 @@ class ConsoleHotel(HotelInterface):
             # Updates the hotels internal information
             self.hotel._update_json()
             # Prints the menu and gets input
-            user_input = self._print_menu()
+            user_input = self._print_menu(self._menu_option)
 
             if user_input.isdigit():
                 # Checks if the user input is within the range of allowed options
-                if int(user_input) in range(0,
-                                            len(self._menu_option["options"])):
+                if int(user_input) in range(
+                        1,
+                        len(self._menu_option["options"]) + 1):
                     # Calls the corresponding method to call.
                     # For example user_input = 1 will call self._print_all_vacant()
                     self._menu_option["options"][list(
-                        self._menu_option["options"].keys())[int(
-                            user_input)]]()
+                        self._menu_option["options"].keys())[int(user_input) -
+                                                             1]]()
 
             elif user_input == self._menu_option["exit"]:
                 # Update json_data before exiting
@@ -773,37 +761,122 @@ class ConsoleHotel(HotelInterface):
         """
         os.system("cls" if os.name == "nt" else "clear")
 
-    def _print_menu(self, noInput=False, noClear=False) -> str:
-        """
-        Prints the predefined menu options
+    def _menu_user(self):
+        """Menu for user related actions"""
+        # Menu options
+        self._menu_user_option = {
+            "header": "User Menu",
+            "description": "User correlated actions",
+            "options": {
+                "View all users": self._print_all_users,
+                "Register new user": self._register_user,
+                "Edit user": self._edit_user,
+                "Unregister user": self._unregister_user,
+            },
+            "exit": self._menu_option["exit"],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_user_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option["exit"]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_user_option) + 1):
+                # Call the function associated with the option
+                self._menu_user_option["options"][list(
+                    self._menu_user_option["options"].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print("Invalid input, try again.")
 
-        Args:
-            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+    def _menu_booking(self):
+        """Menu for booking related actions"""
+        # Menu options
+        self._menu_booking_option = {
+            "header": "Booking Menu",
+            "description": "Booking correlated actions",
+            "options": {
+                "Add booking": self._add_booking,
+                "Edit booking": self._edit_booking,
+                "Remove booking": self._remove_booking,
+                "View all bookings": self._print_all_bookings,
+            },
+            "exit": self._menu_option["exit"],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_booking_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option["exit"]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_booking_option) + 1):
+                # Call the function associated with the option
+                self._menu_booking_option["options"][list(
+                    self._menu_booking_option["options"].keys())[
+                        int(user_input) - 1]]()
+            else:
+                print("Invalid input, try again.")
 
-        Returns:
-            str | None: str if user input is expected else None
-        """
-        # Clear console window if user hasn't disabled the option
-        self._clear_console() if not noClear else ...
+    def _menu_room(self):
+        """Menu for room related actions"""
+        # Menu options
+        self._menu_room_option = {
+            "header": "Room Menu",
+            "description": "Room correlated actions",
+            "options": {
+                "Add room": self._add_room,
+                "Edit room": self._edit_room,
+                "Remove room": self._remove_room,
+                "View all rooms": self._print_all_rooms,
+            },
+            "exit": self._menu_option["exit"],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_room_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option["exit"]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_room_option) + 1):
+                # Call the function associated with the option
+                self._menu_room_option["options"][list(
+                    self._menu_room_option["options"].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print("Invalid input, try again.")
 
-        print(self._menu_option["header"])
-        print("=" * len(self._menu_option["header"]))
-        print(self._menu_option["description"])
-        # Prints the menu options
-        print("-" * max(len(opt) for opt in self._menu_option["options"]))
-        for index, option in enumerate(self._menu_option["options"]):
-            self._userPrint(f"[{index}] {option}")
-
-        # Print exit option
-        self._userPrint(
-            f"[{self._menu_option['exit']}] Exit or return to top level menu")
-        print("")
-        # If no input is required, return None else return user input
-        if not noInput:
-            return self._userInput("Please select an option: ")
-
-        # If noInput is true, returns an empty string
-        return ""
+    def _print_menu(self,
+                    menu: dict[str, Any],
+                    noInput=False,
+                    noClear=False) -> str:
+        """Prints the menu and returns the user input"""
+        # Print menu
+        if not noClear:
+            self._clear_console()
+        print(menu["header"])
+        print("=" * len(menu["header"]))
+        print(menu["description"])
+        print("-" * 15)
+        for index, option in enumerate(menu["options"]):
+            print(f"[{index+1}]: {option}")
+        print(f"[{menu['exit']}]: Exit or return to top level menu")
+        print()
+        # Get user input
+        if noInput:
+            return ""
+        return self._userInput("Please select an option: ")
 
     def _print_hotel_info(self):
         self._clear_console()
