@@ -1,6 +1,6 @@
 # Documentation Hotel
 
-About everything related to the documentation about [hotel.py](../src/hotel.py) is in this directory([docs](../docs)).
+Everything related to [hotel.py](../src/hotel.py)'s documentation is in this directory([docs](../docs)).
 
 ## UML / Images
 
