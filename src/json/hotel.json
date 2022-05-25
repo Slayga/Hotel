@@ -5,7 +5,7 @@
             "name": "JuniorSuite",
             "price": "19.99c",
             "capacity": "4",
-            "state": "occupied",
+            "state": "vacant",
             "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",
             "misc": [
                 "2xDoubleBed",
@@ -15,7 +15,7 @@
                 "microwave"
             ],
             "user": "",
-            "message": "vacant"
+            "message": ""
         },
         {
             "name": "SeniorSuite",
