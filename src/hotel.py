@@ -1444,7 +1444,7 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
 
-def _main():
+def main():
     # Initialize an object of the class
     test_hotel = HotelManager()
 
@@ -1456,7 +1456,4 @@ def _main():
 
 
 if __name__ == "__main__":
-    _main()
-
-    # ConsoleHotel(HotelManager())._print_menu()
-    # ConsoleHotel(HotelManager())._userInput("Enter your choice: "))
+    main()
