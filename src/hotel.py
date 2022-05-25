@@ -675,6 +675,8 @@ class HotelInterface(metaclass=ABCMeta):
 
 class WebHotel(HotelInterface):
     # Django or Flask implementation
+
+    #! NOT IMPLEMENTED
     ...
 
 
@@ -682,6 +684,8 @@ class GuiHotel(HotelInterface):
     # PyImgui implementation
     # Specific branch (context manager integration by mcoding):
     # https://github.com/pyimgui/pyimgui/pull/264
+
+    #! NOT IMPLEMENTED
     ...
 
 
