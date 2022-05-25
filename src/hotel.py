@@ -1233,8 +1233,50 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _remove_room(self):
-        # TODO: Implement
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Remove a room")
+        print("-" * 15)
+
+        # Print all rooms, and prompt user to enter room number, confirm with room name
+        self._userPrint(
+            "All rooms will first be displayed, please note which room number for removal."
+        )
+        self._userInput("Press enter to continue...")
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput("Chose room number: ")
+            if userNumber == self._menu_option["exit"]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f"Invalid room number. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room["name"]
+
+        while True:
+            userName = self._userInput(f"Enter [{roomName}] to confirm: ")
+            if userName == self._menu_option["exit"]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f"Invalid room name. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        if self.hotel.remove_room(userNumber):
+            self._userPrint("Room removed!")
+        else:
+            self._userPrint("Room removal failed!")
+
+        self._userInput("Press enter to continue...")
 
     def _edit_room(self):
         # TODO: Implement
