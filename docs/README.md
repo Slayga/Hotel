@@ -13,7 +13,7 @@ Also an outdated variant of the pseudocode of the original program [pseudocode.m
 
 ## [Hotel.html](./hotel.html)
 
-The html file is based on all comments done in the source code. It's use is to make it simpler for newcomers to find and use the correct methods.
+The html file is based on all comments done in the source code. It's used for understanding what does what and how you should call methods or initialize objects.
 
 ## [Hotel.md](./hotel.md)
 
