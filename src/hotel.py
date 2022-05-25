@@ -10,6 +10,7 @@ hence the management of seeing SSN easily.
 from abc import ABCMeta, abstractmethod
 import json
 import os
+# Typing is used for type-hinting
 from typing import Collection, Any
 
 
@@ -70,7 +71,7 @@ class JsonHandling:
         """Setter for filename"""
         # Instead of raising an exception on no 'filename' a fallback exists.
         self.__fallback = "hotel.json"
-        # Evaluate whetever the custom value(if given is a valid file)
+        # Evaluate whatever the custom value(if given is a valid file)
         if value:
             if value.endswith(".json"):
                 self._filename = value
