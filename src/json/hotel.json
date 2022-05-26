@@ -1,15 +1,15 @@
 {
     "users": {
         "123456789011": {
-            "name": "TestRegEdit",
+            "name": "Test",
             "age": "19"
         }
     },
     "rooms": [
         {
             "name": "JuniorSuite",
-            "price": "20.01",
-            "capacity": "5",
+            "price": "19.99",
+            "capacity": "4",
             "state": "vacant",
             "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",
             "misc": [
@@ -39,12 +39,17 @@
             "message": ""
         }
     ],
-    "active": {},
+    "active": {
+        "123456789011": {
+            "room": "1",
+            "checked_in": false
+        }
+    },
     "old": {
         "123456789011": {
-            "name": "TestRegEdit",
+            "name": "TestReg",
             "age": "19",
-            "total registrations": "8"
+            "total registrations": "12"
         }
     }
 }
