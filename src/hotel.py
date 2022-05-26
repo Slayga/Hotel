@@ -530,7 +530,7 @@ class HotelManager:
                     # Change room state to vacant, returns message and ssn
                     if type(result := self._change_room_state(
                             old_room)) == tuple:
-                        old_message, old_ssn = result
+                        old_message, old_ssn = result  # type: ignore
                         if (self.add_booking(old_ssn,
                                              new_room,
                                              old_message,
