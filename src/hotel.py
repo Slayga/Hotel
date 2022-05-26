@@ -1519,8 +1519,84 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _edit_room(self):
-        # TODO: Implement
-        ...
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Edit a room")
+        print("-" * 15)
+
+        self._userPrint(
+            "All rooms will first be displayed, please note which room number for edit."
+        )
+        self._userInput("Press enter to continue...")
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput("Chose room number: ")
+            if userNumber == self._menu_option["exit"]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f"Invalid room number. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room["name"]
+
+        while True:
+            userName = self._userInput(f"Enter [{roomName}] to confirm: ")
+            if userName == self._menu_option["exit"]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f"Invalid room name. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
+
+        while True:
+            self._clear_console()
+            print(self._menu_option["header"])
+            print("=" * len(self._menu_option["header"]))
+            print("Edit a room")
+            print("-" * 15)
+            print(f"Editing room: {userNumber} - {room['name']}")
+            print("With following current Information:")
+            print("-" * 15)
+            for index, info in enumerate(room):
+                # Exclude keys, user and message
+                if info not in ["user", "message", "state"]:
+                    self._userPrint(f"[{index+1}] {info}: {room[info]}")
+            self._userPrint(f"[{self._menu_option['exit']}]: Exit")
+            print("-" * 15)
+            print()
+
+            userChoice = self._userInput("Enter your choice: ")
+            if userChoice == self._menu_option["exit"]:
+                return
+
+            if userChoice.isdigit():
+                userChoice = int(userChoice) - 1
+                if userChoice in range(len(room)):
+                    userInput = self._userInput(
+                        f"Enter new {list(room.keys())[userChoice]}: ")
+                    # userInput = self._userInput(
+                    #     f"Enter new {room[list(room.keys())[userChoice]]}: ")
+                    if userInput == self._menu_option["exit"]:
+                        pass
+                    else:
+                        room[list(room.keys())[userChoice]] = userInput
+                else:
+                    self._userInput(
+                        f"Invalid choice. Press enter to try again or {self._menu_option['exit']} to exit"
+                    )
+
+            else:
+                self._userInput(
+                    f"Invalid choice. Press enter to try again or {self._menu_option['exit']} to exit"
+                )
 
     def _print_all_rooms(self):
         self._clear_console()
