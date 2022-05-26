@@ -596,6 +596,12 @@ class HotelManager:
         if room_nr.isdigit():
             room_index = int(room_nr) - 1
             if 0 <= room_index < len(self.rooms):
+                # Check if room is booked, handle accordingly
+                if self.rooms[room_index]["user"]:
+                    self.remove_booking(
+                        self.rooms[room_index]["user"],  # type: ignore
+                        unregister=False)
+
                 del self.rooms[room_index]
                 self._update_json()
                 return True
@@ -768,6 +774,8 @@ class ConsoleHotel(HotelInterface):
                 "User Menu": self._menu_user,
                 "Booking Menu": self._menu_booking,
                 "Room Menu": self._menu_room,
+                "Check in": self._check_in,
+                "Check out": self._check_out,
             },
             "exit": "#",
         }
@@ -1479,17 +1487,6 @@ class ConsoleHotel(HotelInterface):
                 )
 
         while True:
-            userState = self._userInput("Please enter the state of the room: ")
-            if userState == self._menu_option["exit"]:
-                return
-            if userState:
-                break
-            else:
-                self._userInput(
-                    f"Invalid state. Press enter to try again or {self._menu_option['exit']} to exit"
-                )
-
-        while True:
             userDescription = self._userInput(
                 "Please enter the description of the room: ")
             if userDescription == self._menu_option["exit"]:
@@ -1512,8 +1509,14 @@ class ConsoleHotel(HotelInterface):
             else:
                 break
 
-        if self.hotel.add_room(userName, userPrice, userCapacity, userState,
-                               userDescription, userMisc):
+        if self.hotel.add_room(
+                userName,
+                userPrice,
+                userCapacity,
+                "vacant",
+                userDescription,
+                userMisc,
+        ):
             self._userPrint("Room added!")
         else:
             self._userPrint("Room addition failed!")
