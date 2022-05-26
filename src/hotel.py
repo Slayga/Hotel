@@ -299,6 +299,12 @@ class HotelManager:
             # Removes current booking, but does not unregister the user(yet)
             self.remove_booking(ssn, False)
         # Total registration count
+        if ssn not in self.old:
+            self.old[ssn] = {}
+
+        self.old[ssn]["name"] = self.users[ssn]["name"]
+        self.old[ssn]["age"] = self.users[ssn]["age"]
+
         if "total registrations" in self.old[ssn]:
             total_reg = int(self.old[ssn]["total registrations"])
         else:
@@ -306,8 +312,6 @@ class HotelManager:
 
         total_reg += 1
         self.old[ssn]["total registrations"] = str(total_reg)
-        self.old[ssn]["name"] = self.users[ssn]["name"]
-        self.old[ssn]["age"] = self.users[ssn]["age"]
 
         del self.users[ssn]
 
