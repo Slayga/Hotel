@@ -260,8 +260,12 @@ class HotelManager:
                 # Edit booking ssn
                 if self.is_booked(ssn):
                     self.active[new_ssn] = self.active.pop(ssn)
-                    booked_room = int(self.active[new_ssn]["room"])
-                    self.rooms[booked_room]["user"] = new_ssn
+                    booked_room_index = int(self.active[new_ssn]["room"]) -1
+                    self.rooms[booked_room_index]["user"] = new_ssn
+
+                # Edit old ssn
+                if ssn in self.old:
+                    self.old[new_ssn] = self.old.pop(ssn)
                 # To not interfere with multiple changes
                 ssn = new_ssn
             if name:
@@ -933,13 +937,23 @@ class ConsoleHotel(HotelInterface):
         return self._userInput("Please select an option: ")
 
     def _print_hotel_info(self):
+        """
+        Prints the hotel information.
+        """
         self._clear_console()
+
+        # Print menu header; hotel name
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
+        # Prints the instance of the hotel, returns hotel information...
         print(self.hotel)
         self._userInput("Press enter to continue...")
 
     def _print_all_vacant(self):
+        """
+        Prints all vacant rooms.
+        """
+        # Gets all rooms that are vacant.
         self.vacant_rooms = self.hotel.filter_dict(self.hotel.rooms,
                                                    {"state": "vacant"})
         self._clear_console()
@@ -960,6 +974,9 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _register_user(self):
+        """
+        Registers a new user.
+        """
         self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -978,7 +995,7 @@ class ConsoleHotel(HotelInterface):
                     )
 
             if userSSN == self._menu_option["exit"]:
-                break
+                return
 
             if self.hotel.is_registered(userSSN):
                 self._userPrint("User already registered")
@@ -1024,7 +1041,7 @@ class ConsoleHotel(HotelInterface):
                     )
 
             if userName == self._menu_option["exit"]:
-                break
+                return
 
             while (userAge := self._userInput("Enter your age: ")
                    ) != self._menu_option["exit"]:
@@ -1036,19 +1053,21 @@ class ConsoleHotel(HotelInterface):
                         "Age is invalid, make sure its a number only")
 
             if userAge == self._menu_option["exit"]:
-                break
+                return
 
             if type(result := self.hotel.register_user(userSSN, userName,
                                                        userAge)) == bool:
                 # Registered user if the result is a bool
                 self._userPrint("User registered")
                 self._userInput("Press enter to continue")
-                break
+                return
             else:
                 # Prints the error message
                 self._userPrint(result)
+                self._userInput("Press enter to continue...")
+                return
 
-            self._userInput("Press enter to continue...")
+        self._userInput("Press enter to continue...")
 
     def _edit_user(self):
         self._clear_console()
@@ -1073,11 +1092,13 @@ class ConsoleHotel(HotelInterface):
             print("What to edit?")
             print("-" * 15)
 
+            self._userPrint(f"SSN: {userSsn}")
             self._userPrint(f"Name: {name}")
             self._userPrint(f"Age: {age}")
             self._userPrint("-" * 15)
-            self._userPrint("[1]: Change name")
-            self._userPrint("[2]: Change age")
+            self._userPrint("[1]: Change SSN")
+            self._userPrint("[2]: Change name")
+            self._userPrint("[3]: Change age")
             self._userPrint("[#]: Exit")
             print()
             userInput = self._userInput("Please select an option: ")
@@ -1086,6 +1107,25 @@ class ConsoleHotel(HotelInterface):
                 return
 
             elif userInput == "1":
+                while True:
+                    newSsn = self._userInput("Enter new SSN: ")
+                    if self.hotel.is_ssn_valid(newSsn):
+                        break
+                    else:
+                        self._userPrint(
+                            "SSN is invalid, make sure its following format: YYYYMMDDXXXX"
+                        )
+                if type(result := self.hotel.edit_user(
+                        userSsn, new_ssn=newSsn)) == bool:
+                    self._userPrint("SSN changed")
+                    self._userInput("Press enter to continue...")
+                    return
+                else:
+                    self._userPrint(result)
+                    self._userInput("Press enter to continue...")
+                    return
+
+            elif userInput == "2":
                 while True:
                     newName = self._userInput("Enter new name: ")
                     if newName:
@@ -1101,7 +1141,7 @@ class ConsoleHotel(HotelInterface):
 
                 self._userInput("Press enter to continue...")
 
-            elif userInput == "2":
+            elif userInput == "3":
                 while True:
                     newAge = self._userInput("Enter new age: ")
                     if newAge.isdigit():
