@@ -744,9 +744,17 @@ class GuiHotel(HotelInterface):
 
 
 class ConsoleHotel(HotelInterface):
-    """Normal console (print) implementation"""
+    """
+    ConsoleHotel is a console based interface for the hotel.
+    """
 
     def __init__(self, hotel: HotelManager):
+        """
+        Constructor for the ConsoleHotel object. Initializes the hotel object that it will connect to.
+
+        Args:
+            hotel (HotelManager): hotel object
+        """
         # Object instance of HotelManager class
         self.hotel = hotel
 
