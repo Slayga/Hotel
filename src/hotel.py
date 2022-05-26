@@ -1051,9 +1051,6 @@ class ConsoleHotel(HotelInterface):
             self._userInput("Press enter to continue...")
 
     def _edit_user(self):
-        # TODO: Implement
-        # NOTE: Similar functionality as _edit_room?
-
         self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
