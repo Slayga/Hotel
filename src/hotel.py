@@ -1107,7 +1107,7 @@ class ConsoleHotel(HotelInterface):
             self._userPrint("[1]: Change SSN")
             self._userPrint("[2]: Change name")
             self._userPrint("[3]: Change age")
-            self._userPrint("[#]: Exit")
+            self._userPrint(f"[{self._menu_option['exit']}]: Exit")
             print()
             userInput = self._userInput("Please select an option: ")
 
@@ -1360,7 +1360,7 @@ class ConsoleHotel(HotelInterface):
             print("-" * 15)
             self._userPrint("[1]: Change message")
             self._userPrint("[2]: Change room")
-            self._userPrint("[#]: Exit")
+            self._userPrint(f"[{self._menu_option['exit']}]: Exit")
 
             userChoice = self._userInput("Enter your choice: ")
             if userChoice == self._menu_option["exit"]:
