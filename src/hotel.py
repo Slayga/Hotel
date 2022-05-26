@@ -1189,6 +1189,7 @@ class ConsoleHotel(HotelInterface):
             )
 
         # TODO: Finish
+        # NOTE: How? Let user choose what to edit? Leave blank to not edit?
         ...
 
     def _print_all_bookings(self):
