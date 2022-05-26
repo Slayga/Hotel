@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>hotel API documentation</title>
-<meta name="description" content="Project: Hotel managment system …" />
+<meta name="description" content="Project: Hotel management system …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,7 +22,7 @@
 <h1 class="title">Module <code>hotel</code></h1>
 </header>
 <section id="section-intro">
-<p>Project: Hotel managment system </p>
+<p>Project: Hotel management system </p>
 <p>Name: Gabriel Engberg, Viggo Rubin </p>
 <p>Date: 28-02-2022 </p>
 <p>Info: Main running file for hotel application. </p>
@@ -33,7 +33,7 @@ hence the management of seeing SSN easily.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Project: Hotel managment system \n
+Project: Hotel management system \n
 Name: Gabriel Engberg, Viggo Rubin \n
 Date: 28-02-2022 \n
 Info: Main running file for hotel application. \n
@@ -41,13 +41,11 @@ This is in theory meant to be used by personal at a given hotel,
 hence the management of seeing SSN easily.
 &#34;&#34;&#34;
 
-# Pickle or Json dump...
-# Tkinter...Imgui? https://github.com/pyimgui/pyimgui/pull/264
-
-from typing import Collection, Any
+from abc import ABCMeta, abstractmethod
 import json
 import os
-from abc import ABCMeta, abstractmethod
+# Typing is used for type-hinting
+from typing import Collection, Any
 
 
 class JsonHandling:
@@ -107,7 +105,7 @@ class JsonHandling:
         &#34;&#34;&#34;Setter for filename&#34;&#34;&#34;
         # Instead of raising an exception on no &#39;filename&#39; a fallback exists.
         self.__fallback = &#34;hotel.json&#34;
-        # Evaluate whetever the custom value(if given is a valid file)
+        # Evaluate whatever the custom value(if given is a valid file)
         if value:
             if value.endswith(&#34;.json&#34;):
                 self._filename = value
@@ -163,38 +161,35 @@ class HotelManager:
     &#34;&#34;&#34;
 
     def __init__(self, filename: str = &#34;&#34;):
-        &#34;&#34;&#34;Constructor for HotelManager
+        &#34;&#34;&#34;
+        Constructor for HotelManager
 
         Args:
             filename (str, optional): Optional argument for the name of the file. Defaults to &#34;&#34;.
         &#34;&#34;&#34;
         # Unpacking and loading json_data from given path(Default is None)
-        self.json_handler = JsonHandling(filename)
+        self.json_handler: JsonHandling = JsonHandling(filename)
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
-        )
-        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
-        )
+        self.users = (self.json_data[&#34;users&#34;]
+                      if &#34;users&#34; in self.json_data else dict())
+        self.rooms = (self.json_data[&#34;rooms&#34;]
+                      if &#34;rooms&#34; in self.json_data else list())
         # All &#39;active&#39; bookings are stored in active
-        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
-        )
+        self.active = (self.json_data[&#34;active&#34;]
+                       if &#34;active&#34; in self.json_data else dict())
         self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
-        # Used when packing or updating json_data
-        self._extracted = {
-            &#34;users&#34;: self.users,
-            &#34;rooms&#34;: self.rooms,
-            &#34;active&#34;: self.active,
-            &#34;old&#34;: self.old,
-        }
 
-        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        # Updates the file incase one of the values wasn&#39;t in the file
+        self._update_json()
+
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking... Ignore
         self.json_data: dict[str, Any]
         self.users: dict[str, dict[str, str]]
         self.rooms: list[dict[str, str | list[str]]]
         self.active: dict[str, dict[str, str | bool]]
-        self.old: dict[str, int]
+        self.old: dict[str, dict[str, str]]
 
     def __str__(self):
         &#34;&#34;&#34;
@@ -203,7 +198,7 @@ class HotelManager:
         &#34;&#34;&#34;
         # Filter dict to get only vacant rooms
         vacant_room = self.filter_dict(self.rooms, {&#34;state&#34;: &#34;vacant&#34;})
-        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }&#34;
+        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 } \nRegistered users: {len(self.users)}&#34;
 
     def register_user(self, ssn: str, name: str, age: str) -&gt; str | bool:
         &#34;&#34;&#34;
@@ -220,14 +215,28 @@ class HotelManager:
             str | bool: str on failure, boolean(True) on success
         &#34;&#34;&#34;
         # Check if a user is already registered
-        if ssn in self.users:
+        if self.is_registered(ssn):
             return &#34;User with given ssn already exists&#34;
+
         # Check if age is a number
         if not age.isdigit():
             return &#34;Age must be a number&#34;
         # Else add user to self.users with ssn as the key
         self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+        self._update_json()
         return True
+
+    def been_registered(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks if a user has been registered.
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+
+        Returns:
+            bool: True if user is registered, False if not
+        &#34;&#34;&#34;
+        return ssn in self.old
 
     def is_registered(self, ssn: str) -&gt; bool:
         &#34;&#34;&#34;
@@ -241,11 +250,71 @@ class HotelManager:
         &#34;&#34;&#34;
         return ssn in self.users
 
-    def unregister_user(self, ssn) -&gt; bool | str:
+    def is_ssn_valid(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;Evaluate if ssn is valid
+
+        Args:
+            ssn (str): Social security number.
+
+        Returns:
+            bool: True on success, False otherwise
+        &#34;&#34;&#34;
+        # Removes all dashes and spaces
+        ssn = ssn.replace(&#34;-&#34;, &#34;&#34;).replace(&#34; &#34;, &#34;&#34;)
+        if ssn.isdigit():
+            if len(ssn) == 12:
+                return True
+        return False
+
+    def edit_user(self,
+                  ssn: str,
+                  name: str = &#34;&#34;,
+                  age: str = &#34;&#34;,
+                  new_ssn: str = &#34;&#34;) -&gt; bool:
+        &#34;&#34;&#34;
+        Edits a user&#39;s information.
+
+        Args:
+            ssn (str): SSN of the CURRENTLY registered user, provide new_ssn to edit this
+            name (str, optional): New name. Defaults to &#34;&#34;.
+            age (str, optional): New age. Defaults to &#34;&#34;.
+            new_ssn (str, optional): New ssn. Defaults to &#34;&#34;.
+
+        Returns:
+            bool: True on success, False otherwise
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
+        if self.is_registered(ssn):
+            # If new ssn is provided, the key must be updated.
+            if new_ssn:
+                # Changes key in self.users to new_ssn(pop returns the value hence the assignment below)
+                self.users[new_ssn] = self.users.pop(ssn)
+                # Edit booking ssn
+                if self.is_booked(ssn):
+                    self.active[new_ssn] = self.active.pop(ssn)
+                    booked_room_index = int(self.active[new_ssn][&#34;room&#34;]) - 1
+                    self.rooms[booked_room_index][&#34;user&#34;] = new_ssn
+
+                # Edit old ssn
+                if ssn in self.old:
+                    self.old[new_ssn] = self.old.pop(ssn)
+                # To not interfere with multiple changes
+                ssn = new_ssn
+            if name:
+                self.users[ssn][&#34;name&#34;] = name
+            if age:
+                self.users[ssn][&#34;age&#34;] = age
+            self._update_json()
+            return True
+        # User is not registered
+        return False
+
+    def unregister_user(self, ssn: str) -&gt; bool | str:
         &#34;&#34;&#34;
         Unregister a user from the HotelManager.
         Will return a string or boolean depending on success.
-        (Type check for the str or bool)
 
         Args:
             ssn (str): string of 12 characters representing a user&#39;s social security number
@@ -253,12 +322,30 @@ class HotelManager:
         Returns:
             str | bool: str on failure, boolean(True) on success
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return &#34;Invalid ssn&#34;
+
         # Check if a user is already registered
-        if ssn not in self.users:
+        if not self.is_registered(ssn):
             return &#34;User with given ssn does not exist&#34;
-        # Else add user to self.old and remove user from self.users with ssn as the key
-        self.old[ssn] += 1
+
+        if self.is_booked(ssn):
+            # Removes current booking, but does not unregister the user(yet)
+            self.remove_booking(ssn, False)
+        # Total registration count
+        if &#34;total registrations&#34; in self.old[ssn]:
+            total_reg = int(self.old[ssn][&#34;total registrations&#34;])
+        else:
+            total_reg = 0
+
+        total_reg += 1
+        self.old[ssn][&#34;total registrations&#34;] = str(total_reg)
+        self.old[ssn][&#34;name&#34;] = self.users[ssn][&#34;name&#34;]
+        self.old[ssn][&#34;age&#34;] = self.users[ssn][&#34;age&#34;]
+
         del self.users[ssn]
+
+        self._update_json()
         return True
 
     def check_in(self, ssn: str) -&gt; bool:
@@ -271,12 +358,15 @@ class HotelManager:
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists
-        if ssn in self.users:
+        if self.is_registered(ssn):
             # Check if already booked
-            if ssn in self.active:
+            if self.is_booked(ssn):
                 # Check if not checked in
-                if not self.users[ssn][&#34;checked_in&#34;]:
+                if not self.active[ssn][&#34;checked_in&#34;]:
                     # Good to check in...
                     self.active[ssn][&#34;checked_in&#34;] = True
                     self._update_json()
@@ -284,80 +374,127 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def check_out(self, ssn: str) -&gt; bool:
+    def check_out(self, ssn: str, unregister: bool) -&gt; bool:
         &#34;&#34;&#34;
         Called when user is trying to check out to hotel
 
         Args:
             ssn (str): ssn of user wanting to check out
+            unregister (bool): Boolean on whether to unregister user or not
 
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if checked in
             if self.active[ssn][&#34;checked_in&#34;]:
                 # Good to check out...
+                booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+                self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+
                 self.active[ssn][&#34;checked_in&#34;] = False
-                # Increment times stayed at the hotel
-                self.old[ssn] += 1
+
                 # Remove booking from active dict
                 del self.active[ssn]
+                if unregister:
+                    self.unregister_user(ssn)
                 # Update json_data
                 self._update_json()
                 return True
         # If the controlstructure failed, returns False.
         return False
 
-    def add_booking(self, ssn: str, room: str) -&gt; bool:
+    def add_booking(self,
+                    ssn: str,
+                    room: str,
+                    message: str = &#34;&#34;,
+                    _override_is_booked=False) -&gt; bool:
         &#34;&#34;&#34;
         Called when user is booking a room. Must be registered to add booking.
 
         Args:
             ssn (str): ssn of user\n
             room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+            message (str, optional): message from user. Defaults to &#34;&#34;.
+            _override_is_booked (bool, optional): Overrides the check for already book 
+            (use with precaution). Defaults to False.
 
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists and NOT already booked
-        if ssn in self.users and ssn not in self.active:
-            if room.isdigit():
-                # Convert to int and move one step back for correct indexing
-                room_index = int(room) - 1
-                # Check if room is in range
-                if 0 &lt;= room_index &lt; len(self.rooms):
-                    #  Check if room is vacant
-                    if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
-                        # Change room state to occupied
-                        self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
-                        # Add booking to active dict
-                        self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
-                        # Update json_data
-                        self._update_json()
-                        return True
+
+        if self.is_registered(ssn):
+            if not self.is_booked(ssn) or _override_is_booked:
+                if room.isdigit():
+                    # Convert to int and move one step back for correct indexing
+                    room_index = int(room) - 1
+                    # Check if room is in range
+                    if 0 &lt;= room_index &lt; len(self.rooms):
+                        #  Check if room is vacant
+                        if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                            # Change room state to occupied
+                            self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                            self.rooms[room_index][&#34;user&#34;] = ssn
+                            self.rooms[room_index][&#34;message&#34;] = message
+                            # Add booking to active dict
+                            self.active[ssn] = {
+                                &#34;room&#34;: room,
+                                &#34;checked_in&#34;: False
+                            }
+                            # Update json_data
+                            self._update_json()
+                            return True
         # If the controlstructure failed, returns False.
         return False
 
-    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+    def is_booked(self, ssn: str) -&gt; bool:
         &#34;&#34;&#34;
-        Called when user is removing a booking. Must be registered to remove booking.
+        Returns a boolean depending on whether a user is booked or not.
 
         Args:
-            ssn (str): ssn of user\n
-            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+            ssn (str): SSN of user
 
         Returns:
-            bool: Boolean on success or failure
+            bool: True if a user is booked, False otherwise
         &#34;&#34;&#34;
+        return ssn in self.active
+
+    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to remove a booking. Must be registered to remove booking.
+
+        Args:
+            ssn (str): _description_
+            unregister (bool): unregister the user when removing booking
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if not checked in
             if not self.active[ssn][&#34;checked_in&#34;]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn][&#34;room&#34;]) -
-                           1][&#34;state&#34;] = &#34;vacant&#34;
+                booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+                # Remove rooms user and message
+                self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+                self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -371,8 +508,76 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def edit_booking(self):
-        ...
+    def _change_room_state(self,
+                           room_number: str,
+                           state: str = &#34;vacant&#34;) -&gt; tuple[str, str] | bool:
+        &#34;&#34;&#34;
+        Manually change rooms state, private method as it is supposed to only 
+        be called when editing a booking.
+
+        Args:
+            room_number (str): Room number, (not index)
+            state (str, optional): What state (optional incase further implementation). Defaults to &#34;vacant&#34;.
+
+        Returns:
+            bool: True on success, else False
+        &#34;&#34;&#34;
+
+        if room_number.isdigit():
+            # Convert to int and move one step back for correct indexing
+            room_index = int(room_number) - 1
+            # Check if room is in range
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                # Manually change state (note it does not care about user or message):
+                self.rooms[room_index][&#34;state&#34;] = state
+                message = str(self.rooms[room_index][&#34;message&#34;])
+                ssn = str(self.rooms[room_index][&#34;user&#34;])
+
+                # Unset message and user
+                self.rooms[room_index][&#34;message&#34;] = &#34;&#34;
+                self.rooms[room_index][&#34;user&#34;] = &#34;&#34;
+
+                # Update json_data
+                self._update_json()
+                return (message, ssn)
+        return False
+
+    def edit_booking(self, ssn: str, new_room: str = &#34;&#34;, message: str = &#34;&#34;):
+        &#34;&#34;&#34;
+        Called when user is trying to edit a booking. Must be registered to edit booking.
+
+        Args:
+            ssn (str): SSN of user
+            new_room (str, optional): If wished to swap room. Defaults to &#34;&#34;.
+            message (str, optional): Messages, can be passed alone or with new_room. Defaults to &#34;&#34;.
+
+        Returns:
+            bool: True if successful, False otherwise
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
+        if self.is_registered(ssn) and self.is_booked(ssn):
+            if new_room:
+                if new_room.isdigit():
+                    old_room = str(self.active[ssn][&#34;room&#34;])
+                    # Change room state to vacant, returns message and ssn
+                    if type(result := self._change_room_state(
+                            old_room)) == tuple:
+                        old_message, old_ssn = result  # type: ignore
+                        if (self.add_booking(old_ssn,
+                                             new_room,
+                                             old_message,
+                                             _override_is_booked=True)):
+
+                            self._update_json()
+                            return True
+            elif message:
+                booked_room = int(self.active[ssn][&#34;room&#34;]) - 1
+                self.rooms[booked_room][&#34;message&#34;] = message
+                self._update_json()
+                return True
+        return False
 
     def add_room(
         self,
@@ -399,25 +604,77 @@ class HotelManager:
         &#34;&#34;&#34;
         user: str = &#34;&#34;
         message: str = &#34;&#34;
-        self.rooms.append(
-            {
-                &#34;name&#34;: name,
-                &#34;price&#34;: price,
-                &#34;capacity&#34;: capacity,
-                &#34;state&#34;: state,
-                &#34;description&#34;: description,
-                &#34;misc&#34;: misc,
-                &#34;user&#34;: user,
-                &#34;message&#34;: message,
-            }
-        )
+        self.rooms.append({
+            &#34;name&#34;: name,
+            &#34;price&#34;: price,
+            &#34;capacity&#34;: capacity,
+            &#34;state&#34;: state,
+            &#34;description&#34;: description,
+            &#34;misc&#34;: misc,
+            &#34;user&#34;: user,
+            &#34;message&#34;: message,
+        })
+        self._update_json()
         return True
 
-    def remove_room(self):
-        ...
+    def remove_room(self, room_nr: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Removes a room from the hotel.
 
-    def edit_room(self):
-        ...
+        Args:
+            room_nr (str): Room nr (index in room list + 1)
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        &#34;&#34;&#34;
+        if room_nr.isdigit():
+            room_index = int(room_nr) - 1
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                del self.rooms[room_index]
+                self._update_json()
+                return True
+        return False
+
+    def edit_room(
+        self,
+        room_id: str,
+        name: str = &#34;&#34;,
+        price: str = &#34;&#34;,
+        capacity: str = &#34;&#34;,
+        state: str = &#34;&#34;,
+        description: str = &#34;&#34;,
+        misc: list[str] = [],
+    ):
+        &#34;&#34;&#34;
+        Edits a room in the hotel. Only the fields that are not empty will change.
+
+        Args:
+            room_id (_type_): Room ID (index in room list + 1)
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            capacity (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+        &#34;&#34;&#34;
+        if room_id.isdigit():
+            room_index = int(room_id) - 1
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                if name:
+                    self.rooms[room_index][&#34;name&#34;] = name
+                if price:
+                    self.rooms[room_index][&#34;price&#34;] = price
+                if capacity:
+                    self.rooms[room_index][&#34;capacity&#34;] = capacity
+                if state:
+                    self.rooms[room_index][&#34;state&#34;] = state
+                if description:
+                    self.rooms[room_index][&#34;description&#34;] = description
+                if misc:
+                    self.rooms[room_index][&#34;misc&#34;] = misc
+                self._update_json()
+                return True
+        return False
 
     def filter_dict(
         self,
@@ -455,33 +712,35 @@ class HotelManager:
             return data
 
     def _pretty_print(self):
-        ...
+        # Unimplemented, intended for debugging only...
+        raise NotImplementedError
 
     def _update_json(self):
         &#34;&#34;&#34;
         Updates data structure with new json_data and loads the new json_data
         &#34;&#34;&#34;
-        # Updates each dict in self.json_data
-        for key, value in self._extracted.items():
-            self.json_data.update({key: value})
+        self.json_data[&#34;rooms&#34;] = self.rooms
+        self.json_data[&#34;active&#34;] = self.active
+        self.json_data[&#34;users&#34;] = self.users
+        self.json_data[&#34;old&#34;] = self.old
 
         # Same practice as constructor
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
-        )
-        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
-        )
-        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
-        )
+        self.users = (self.json_data[&#34;users&#34;]
+                      if &#34;users&#34; in self.json_data else dict())
+        self.rooms = (self.json_data[&#34;rooms&#34;]
+                      if &#34;rooms&#34; in self.json_data else list())
+        self.active = (self.json_data[&#34;active&#34;]
+                       if &#34;active&#34; in self.json_data else dict())
         self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
 
 
 class HotelInterface(metaclass=ABCMeta):
     &#34;&#34;&#34;
     All classes that &#34;connect&#34; to the hotel is derived from HotelInterface.
-    An abstract class that predefines implementations requirements.
+    An abstract class that predefined implementations requirements.
     &#34;&#34;&#34;
 
     @abstractmethod
@@ -504,33 +763,45 @@ class HotelInterface(metaclass=ABCMeta):
 
 class WebHotel(HotelInterface):
     # Django or Flask implementation
+
+    #! NOT IMPLEMENTED
     ...
 
 
 class GuiHotel(HotelInterface):
     # PyImgui implementation
+    # Specific branch (context manager integration by mcoding):
+    # https://github.com/pyimgui/pyimgui/pull/264
+
+    #! NOT IMPLEMENTED
     ...
 
 
 class ConsoleHotel(HotelInterface):
-    &#34;&#34;&#34;Normal console (print) implementation&#34;&#34;&#34;
+    &#34;&#34;&#34;
+    ConsoleHotel is a console based interface for the hotel.
+    &#34;&#34;&#34;
 
     def __init__(self, hotel: HotelManager):
+        &#34;&#34;&#34;
+        Constructor for the ConsoleHotel object. Initializes the hotel object that it will connect to.
+
+        Args:
+            hotel (HotelManager): hotel object
+        &#34;&#34;&#34;
         # Object instance of HotelManager class
         self.hotel = hotel
 
-        # Console related attributes
+        # Console related attributes, avoid having exit value as a number(interferes with options menu
         self._menu_option = {
             &#34;header&#34;: &#34;Nimbus Hotel&#34;,
-            &#34;description&#34;: &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
+            &#34;description&#34;:
+            &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
             &#34;options&#34;: {
                 &#34;Hotel Info&#34;: self._print_hotel_info,
-                &#34;View all vacant rooms&#34;: self._print_all_vacant,
-                &#34;Add Booking&#34;: self._add_booking,
-                &#34;Register&#34;: self._register_user,
-                &#34;Book&#34;: self._add_booking,
-                &#34;Check-in&#34;: self._check_in,
-                &#34;Check-out&#34;: self._check_out,
+                &#34;User Menu&#34;: self._menu_user,
+                &#34;Booking Menu&#34;: self._menu_booking,
+                &#34;Room Menu&#34;: self._menu_room,
             },
             &#34;exit&#34;: &#34;#&#34;,
         }
@@ -542,16 +813,21 @@ class ConsoleHotel(HotelInterface):
         &#34;&#34;&#34;
         # Main loop
         while True:
+            # Updates the hotels internal information
+            self.hotel._update_json()
             # Prints the menu and gets input
-            user_input = self._print_menu()
+            user_input = self._print_menu(self._menu_option)
 
-            if user_input.isdigit():  # type: ignore
-                if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
-                    # If input is a number, execute the corresponding function
-                    self._menu_option[&#34;options&#34;][
-                        list(self._menu_option[&#34;options&#34;].keys())[
-                            int(user_input)]
-                    ]()
+            if user_input.isdigit():
+                # Checks if the user input is within the range of allowed options
+                if int(user_input) in range(
+                        1,
+                        len(self._menu_option[&#34;options&#34;]) + 1):
+                    # Calls the corresponding method to call.
+                    # For example user_input = 1 will call self._print_all_vacant()
+                    self._menu_option[&#34;options&#34;][list(
+                        self._menu_option[&#34;options&#34;].keys())[int(user_input) -
+                                                             1]]()
 
             elif user_input == self._menu_option[&#34;exit&#34;]:
                 # Update json_data before exiting
@@ -579,63 +855,157 @@ class ConsoleHotel(HotelInterface):
         return input(*args, **kwargs)
 
     @staticmethod
-    def clear_console():
+    def _clear_console():
         &#34;&#34;&#34;
         Clears the console.
         &#34;&#34;&#34;
         os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)
 
-    def _print_menu(self, noInput=False, noClear=False) -&gt; str:
-        &#34;&#34;&#34;
-        Prints the predefined menu options
+    def _menu_user(self):
+        &#34;&#34;&#34;Menu for user related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_user_option = {
+            &#34;header&#34;: &#34;User Menu&#34;,
+            &#34;description&#34;: &#34;User correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;View all users&#34;: self._print_all_users,
+                &#34;Register new user&#34;: self._register_user,
+                &#34;Edit user&#34;: self._edit_user,
+                &#34;Unregister user&#34;: self._unregister_user,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_user_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_user_option) + 1):
+                # Call the function associated with the option
+                self._menu_user_option[&#34;options&#34;][list(
+                    self._menu_user_option[&#34;options&#34;].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        Args:
-            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+    def _menu_booking(self):
+        &#34;&#34;&#34;Menu for booking related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_booking_option = {
+            &#34;header&#34;: &#34;Booking Menu&#34;,
+            &#34;description&#34;: &#34;Booking correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;Add booking&#34;: self._add_booking,
+                &#34;Edit booking&#34;: self._edit_booking,
+                &#34;Remove booking&#34;: self._remove_booking,
+                &#34;View all bookings&#34;: self._print_all_bookings,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_booking_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_booking_option) + 1):
+                # Call the function associated with the option
+                self._menu_booking_option[&#34;options&#34;][list(
+                    self._menu_booking_option[&#34;options&#34;].keys())[
+                        int(user_input) - 1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        Returns:
-            str | None: str if user input is expected else None
-        &#34;&#34;&#34;
-        # Clear console window if user hasn&#39;t disabled the option
-        self.clear_console() if not noClear else ...
+    def _menu_room(self):
+        &#34;&#34;&#34;Menu for room related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_room_option = {
+            &#34;header&#34;: &#34;Room Menu&#34;,
+            &#34;description&#34;: &#34;Room correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;Add room&#34;: self._add_room,
+                &#34;Edit room&#34;: self._edit_room,
+                &#34;Remove room&#34;: self._remove_room,
+                &#34;View all rooms&#34;: self._print_all_rooms,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_room_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_room_option) + 1):
+                # Call the function associated with the option
+                self._menu_room_option[&#34;options&#34;][list(
+                    self._menu_room_option[&#34;options&#34;].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        print(self._menu_option[&#34;header&#34;])
-        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
-        print(self._menu_option[&#34;description&#34;])
-        # Prints the menu options
-        print(&#34;-&#34; * max(len(opt) for opt in self._menu_option[&#34;options&#34;]))
-        for index, option in enumerate(self._menu_option[&#34;options&#34;]):
-            self._userPrint(f&#34;[{index}] {option}&#34;)
-
-        # Print exit option
-        self._userPrint(
-            f&#34;[{self._menu_option[&#39;exit&#39;]}] Exit or return to top level menu&#34;
-        )
-        print(&#34;&#34;)
-        # If no input is required, return None else return user input
-        if not noInput:
-            return self._userInput(&#34;Please select an option: &#34;)
-
-        # If noInput is true, returns an empty string
-        return &#34;&#34;
+    def _print_menu(self,
+                    menu: dict[str, Any],
+                    noInput=False,
+                    noClear=False) -&gt; str:
+        &#34;&#34;&#34;Prints the menu and returns the user input&#34;&#34;&#34;
+        # Print menu
+        if not noClear:
+            self._clear_console()
+        print(menu[&#34;header&#34;])
+        print(&#34;=&#34; * len(menu[&#34;header&#34;]))
+        print(menu[&#34;description&#34;])
+        print(&#34;-&#34; * 15)
+        for index, option in enumerate(menu[&#34;options&#34;]):
+            print(f&#34;[{index+1}]: {option}&#34;)
+        print(f&#34;[{menu[&#39;exit&#39;]}]: Exit or return to top level menu&#34;)
+        print()
+        # Get user input
+        if noInput:
+            return &#34;&#34;
+        return self._userInput(&#34;Please select an option: &#34;)
 
     def _print_hotel_info(self):
-        self.clear_console()
+        &#34;&#34;&#34;
+        Prints the hotel information.
+        &#34;&#34;&#34;
+        self._clear_console()
+
+        # Print menu header; hotel name
         print(self._menu_option[&#34;header&#34;])
         print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        # Prints the instance of the hotel, returns hotel information...
         print(self.hotel)
         self._userInput(&#34;Press enter to continue...&#34;)
 
     def _print_all_vacant(self):
-        self.vacant_rooms = self.hotel.filter_dict(
-            self.hotel.rooms, {&#34;state&#34;: &#34;vacant&#34;}
-        )
-        self.clear_console()
+        &#34;&#34;&#34;
+        Prints all vacant rooms.
+        &#34;&#34;&#34;
+        # Gets all rooms that are vacant.
+        self.vacant_rooms = self.hotel.filter_dict(self.hotel.rooms,
+                                                   {&#34;state&#34;: &#34;vacant&#34;})
+        self._clear_console()
         print(self._menu_option[&#34;header&#34;])
         print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
         print(f&#34;There are {len(self.vacant_rooms)} vacant rooms&#34;)
         print(&#34;-&#34; * 15)
         # Print out all room information here
         for room in self.vacant_rooms:
+            print(f&#34;Room Number:  {self.hotel.rooms.index(room)+1}&#34;)
             print(f&#34;Type: {room[&#39;name&#39;]}&#34;)
             print(f&#34;State: {room[&#39;state&#39;]}&#34;)
             print(f&#34;Price: {room[&#39;price&#39;]}c&#34;)
@@ -645,57 +1015,785 @@ class ConsoleHotel(HotelInterface):
             print(&#34;-&#34; * 15)
         self._userInput(&#34;Press enter to continue...&#34;)
 
-    def _add_booking(self):
-        while not self.hotel.is_registered(
-            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))
-        ):
-            self._userInput(
-                &#34;Invalid SSN. Press enter to try again or # to exit&#34;)
-        userRoom = self._userInput(&#34;Please enter the room number: &#34;)
-
-        if self.hotel.add_booking(userSsn, userRoom):
-            self._userPrint(&#34;Booking successful!&#34;)
-        else:
-            self._userPrint(&#34;Booking failed!&#34;)
-        self._userInput(&#34;Press enter to continue...&#34;)
-        ...
-
-    def _remove_booking(self):
-        ...
-
-    def _edit_booking(self):
-        ...
-
-    def _add_room(self):
-        ...
-
-    def _remove_room(self):
-        ...
-
     def _register_user(self):
+        &#34;&#34;&#34;
+        Registers a new user.
+        &#34;&#34;&#34;
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Register a new user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput(&#34;Enter your SSN (12 characters): &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    break
+                else:
+                    self._userPrint(
+                        &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                    )
+
+            if userSSN == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if self.hotel.is_registered(userSSN):
+                self._userPrint(&#34;User already registered&#34;)
+                break
+            elif self.hotel.been_registered(userSSN):
+                self._userPrint(
+                    &#34;You have been registered before! Do you want to autofill the following information?&#34;
+                )
+                name = self.hotel.old[userSSN][&#34;name&#34;]
+                age = self.hotel.old[userSSN][&#34;age&#34;]
+
+                autofill_msg = str(&#34;-&#34; * 7 + &#34;AUTOFILL INFORMATION&#34; + &#34;-&#34; * 7)
+                print(autofill_msg)
+                self._userPrint(f&#34;Name: {name}&#34;)
+                self._userPrint(f&#34;Age: {age}&#34;)
+                print(&#34;-&#34; * len(autofill_msg))
+
+                while True:
+                    userInput = self._userInput(&#34;(y/n): &#34;)
+                    if userInput == &#34;y&#34;:
+                        if type(result := self.hotel.register_user(
+                                userSSN, name, age)) == bool:
+                            return
+                        else:
+                            self._userPrint(&#34;Something went wrong:&#34;, result)
+                            self._userInput(
+                                &#34;Press enter to enter name and age manually...&#34;
+                            )
+                            break
+
+                    elif userInput == &#34;n&#34;:
+                        break
+                    else:
+                        self._userPrint(&#34;Invalid input&#34;)
+
+            while (userName := self._userInput(&#34;Enter your name: &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if userName:
+                    break
+                else:
+                    self._userPrint(
+                        &#34;Name is invalid, make sure its following format: Firstname Lastname&#34;
+                    )
+
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+
+            while (userAge := self._userInput(&#34;Enter your age: &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+
+                if userAge.isdigit():
+                    break
+                else:
+                    self._userPrint(
+                        &#34;Age is invalid, make sure its a number only&#34;)
+
+            if userAge == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if type(result := self.hotel.register_user(userSSN, userName,
+                                                       userAge)) == bool:
+                # Registered user if the result is a bool
+                self._userPrint(&#34;User registered&#34;)
+                self._userInput(&#34;Press enter to continue&#34;)
+                return
+            else:
+                # Prints the error message
+                self._userPrint(result)
+                self._userInput(&#34;Press enter to continue...&#34;)
+                return
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _edit_user(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            name = self.hotel.users[userSsn][&#34;name&#34;]
+            age = self.hotel.users[userSsn][&#34;age&#34;]
+            self._clear_console()
+
+            print(&#34;What to edit?&#34;)
+            print(&#34;-&#34; * 15)
+
+            self._userPrint(f&#34;SSN: {userSsn}&#34;)
+            self._userPrint(f&#34;Name: {name}&#34;)
+            self._userPrint(f&#34;Age: {age}&#34;)
+            self._userPrint(&#34;-&#34; * 15)
+            self._userPrint(&#34;[1]: Change SSN&#34;)
+            self._userPrint(&#34;[2]: Change name&#34;)
+            self._userPrint(&#34;[3]: Change age&#34;)
+            self._userPrint(&#34;[#]: Exit&#34;)
+            print()
+            userInput = self._userInput(&#34;Please select an option: &#34;)
+
+            if userInput == self._menu_option[&#34;exit&#34;]:
+                return
+
+            elif userInput == &#34;1&#34;:
+                while True:
+                    newSsn = self._userInput(&#34;Enter new SSN: &#34;)
+                    if self.hotel.is_ssn_valid(newSsn):
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                        )
+                if type(result := self.hotel.edit_user(
+                        userSsn, new_ssn=newSsn)) == bool:
+                    self._userPrint(&#34;SSN changed&#34;)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+                    return
+                else:
+                    self._userPrint(result)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+                    return
+
+            elif userInput == &#34;2&#34;:
+                while True:
+                    newName = self._userInput(&#34;Enter new name: &#34;)
+                    if newName:
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;Name is invalid, make sure its following format: Firstname Lastname OR Firstname&#34;
+                        )
+                if self.hotel.edit_user(userSsn, name=newName):
+                    self._userPrint(&#34;Name changed&#34;)
+                else:
+                    self._userPrint(&#34;Name change failed&#34;)
+
+                self._userInput(&#34;Press enter to continue...&#34;)
+
+            elif userInput == &#34;3&#34;:
+                while True:
+                    newAge = self._userInput(&#34;Enter new age: &#34;)
+                    if newAge.isdigit():
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;Age is invalid, make sure its a number&#34;)
+                if self.hotel.edit_user(userSsn, age=newAge):
+                    self._userPrint(&#34;Age changed&#34;)
+                else:
+                    self._userPrint(&#34;Age change failed&#34;)
+
+                self._userInput(&#34;Press enter to continue...&#34;)
         ...
 
     def _unregister_user(self):
-        ...
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Unregister a user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput(&#34;Enter your SSN (12 characters): &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    # Checks if the SSN is valid
+                    self._userPrint(&#34;SSN is valid&#34;)
+                    break
+                else:
+                    self._userPrint(
+                        &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                    )
+
+            if userSSN == self._menu_option[&#34;exit&#34;]:
+                break
+
+            if type(result := self.hotel.unregister_user(userSSN)) == bool:
+                # Unregistered user if the result is a bool
+                self._userPrint(&#34;User unregistered&#34;)
+            else:
+                # Prints the error message
+                self._userPrint(result)
+            self._userInput(&#34;Press enter to continue&#34;)
+            break
+
+    def _print_all_users(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All users&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all user information here
+        for index, (k, v) in enumerate(self.hotel.users.items()):
+            print(f&#34;User {index+1}:&#34;)
+            print(&#34;SSN:&#34;, k)
+            print(&#34;Name:&#34;, v[&#34;name&#34;])
+            print(&#34;Age:&#34;, v[&#34;age&#34;])
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Add a new booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        # Check if already booked:
+        if self.hotel.is_booked(userSsn):
+            self._userInput(
+                f&#34;You already have a booking. Press enter to continue&#34;)
+            return
+
+        while True:
+            self._userPrint(
+                &#34;Enter a room number or &#39;rooms&#39; to see all vacant rooms&#34;)
+            userRoom = self._userInput(&#34;Enter your choice: &#34;)
+            if userRoom == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userRoom == &#34;rooms&#34;:
+                self._print_all_vacant()
+
+            elif userRoom.isdigit() and int(userRoom) in range(
+                    1,
+                    len(self.hotel.rooms) + 1):
+                # Lowers the number by one step (index starts at 0)
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            # Prompt user if they want to add message to staff.
+            userMessage = self._userInput(
+                &#34;Do you want to add a message to the staff? (y/n): &#34;)
+            if userMessage == self._menu_option[&#34;exit&#34;]:
+                return
+            if userMessage.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        # If user wants to add message to staff, prompt for message.
+        if userMessage.lower() == &#34;y&#34;:
+            while True:
+                userMessage = self._userInput(&#34;Please enter your message: &#34;)
+                if userMessage == self._menu_option[&#34;exit&#34;]:
+                    return
+                if userMessage:
+                    break
+                else:
+                    self._userInput(
+                        f&#34;Invalid message. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+        else:
+            userMessage = &#34;&#34;
+
+        if self.hotel.add_booking(userSsn, userRoom, userMessage):
+            self._userPrint(&#34;Booking successful!&#34;)
+        else:
+            self._userPrint(
+                &#34;Booking failed! (Make sure room is vacant and its the right number)&#34;
+            )
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _remove_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Remove a booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            userUnregister = self._userInput(
+                &#34;Do you want to unregister the user? (y/n): &#34;)
+            if userUnregister == self._menu_option[&#34;exit&#34;]:
+                return
+            if userUnregister.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if userUnregister.lower() == &#34;y&#34;:
+            userUnregister = True
+        else:
+            userUnregister = False
+
+        if self.hotel.remove_booking(userSsn, userUnregister):
+            self._userPrint(&#34;Booking removed!&#34;)
+        else:
+            self._userPrint(&#34;Un-booking failed!, contact an admin&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+        return
+
+    def _edit_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit a booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            booked_room = self.hotel.active[userSsn][&#34;room&#34;]
+            message = self.hotel.rooms[int(booked_room) - 1][&#34;message&#34;]
+            self._clear_console()
+
+            print(&#34;What to edit?&#34;)
+            print(&#34;-&#34; * 15)
+            self._userPrint(f&#34;You are currently booked in room {booked_room}&#34;)
+            self._userPrint(f&#34;You provided the following message: {message}&#34;)
+            print(&#34;-&#34; * 15)
+            self._userPrint(&#34;[1]: Change message&#34;)
+            self._userPrint(&#34;[2]: Change room&#34;)
+            self._userPrint(&#34;[#]: Exit&#34;)
+
+            userChoice = self._userInput(&#34;Enter your choice: &#34;)
+            if userChoice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userChoice == &#34;1&#34;:
+                print(&#34;-&#34; * 15)
+                self._userPrint(&#34;Current message:&#34;, message)
+                print(&#34;-&#34; * 15)
+                userMessage = self._userInput(&#34;New message: &#34;)
+                if userMessage == self._menu_option[&#34;exit&#34;]:
+                    return
+                if self.hotel.edit_booking(userSsn, message=userMessage):
+                    self._userPrint(&#34;Message changed!&#34;)
+                else:
+                    self._userPrint(&#34;Message change failed!&#34;)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+
+            elif userChoice == &#34;2&#34;:
+                while True:
+                    print(&#34;-&#34; * 15)
+                    self._userPrint(&#34;Current room:&#34;, booked_room)
+                    self._userPrint(
+                        &#34;Enter [rooms] to see all vacant rooms to book&#34;)
+                    print(&#34;-&#34; * 15)
+                    userRoom = self._userInput(&#34;New room: &#34;)
+                    if userRoom == self._menu_option[&#34;exit&#34;]:
+                        return
+
+                    if userRoom == &#34;rooms&#34;:
+                        self._print_all_vacant()
+                        continue
+
+                    elif self.hotel.edit_booking(userSsn, new_room=userRoom):
+                        self._userPrint(&#34;Room changed!&#34;)
+                        break
+                    else:
+                        self._userPrint(&#34;Room change failed!&#34;)
+                        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _print_all_bookings(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All bookings&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all user information here
+        for index, (k, v) in enumerate(self.hotel.active.items()):
+            print(f&#34;Booking {index+1}:&#34;)
+            print(&#34;SSN:&#34;, k)
+            print(&#34;Room:&#34;, v[&#34;room&#34;])
+            print(&#34;Message:&#34;, self.hotel.rooms[int(v[&#34;room&#34;]) - 1][&#34;message&#34;])
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Add a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt the user to enter following required information
+        # name: str, price: str, capacity: str, state: str, description: str, misc: list[str]
+        while True:
+            userName = self._userInput(&#34;Please enter the name of the room: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userPrice = self._userInput(&#34;Please enter the price of the room: &#34;)
+            if userPrice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userPrice:
+                # Test if float (199.99 is allowed pricing, but isdigit() returns false)):
+                try:
+                    float(userPrice)
+                except ValueError:
+                    self._userInput(
+                        f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+                else:
+                    # On no exception
+
+                    # Checks if the price is of digits (NaN is float and etc.)
+                    if userPrice.replace(&#34;.&#34;, &#34;&#34;).isdigit():
+                        break
+                    else:
+                        self._userInput(
+                            f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                        )
+
+            else:
+                self._userInput(
+                    f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userCapacity = self._userInput(
+                &#34;Please enter the capacity of the room: &#34;)
+            if userCapacity == self._menu_option[&#34;exit&#34;]:
+                return
+            if userCapacity.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid capacity. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userState = self._userInput(&#34;Please enter the state of the room: &#34;)
+            if userState == self._menu_option[&#34;exit&#34;]:
+                return
+            if userState:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid state. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userDescription = self._userInput(
+                &#34;Please enter the description of the room: &#34;)
+            if userDescription == self._menu_option[&#34;exit&#34;]:
+                return
+            if userDescription:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid description. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        userMisc = []
+        while True:
+            userInput = self._userInput(
+                &#34;Enter miscellaneous information (leave empty to continue): &#34;)
+            if userInput == self._menu_option[&#34;exit&#34;]:
+                return
+            if userInput:
+                userMisc.append(userInput)
+            else:
+                break
+
+        if self.hotel.add_room(userName, userPrice, userCapacity, userState,
+                               userDescription, userMisc):
+            self._userPrint(&#34;Room added!&#34;)
+        else:
+            self._userPrint(&#34;Room addition failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _remove_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Remove a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Print all rooms, and prompt user to enter room number, confirm with room name
+        self._userPrint(
+            &#34;All rooms will first be displayed, please note which room number for removal.&#34;
+        )
+        self._userInput(&#34;Press enter to continue...&#34;)
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput(&#34;Chose room number: &#34;)
+            if userNumber == self._menu_option[&#34;exit&#34;]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room[&#34;name&#34;]
+
+        while True:
+            userName = self._userInput(f&#34;Enter [{roomName}] to confirm: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if self.hotel.remove_room(userNumber):
+            self._userPrint(&#34;Room removed!&#34;)
+        else:
+            self._userPrint(&#34;Room removal failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _edit_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        self._userPrint(
+            &#34;All rooms will first be displayed, please note which room number for edit.&#34;
+        )
+        self._userInput(&#34;Press enter to continue...&#34;)
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput(&#34;Chose room number: &#34;)
+            if userNumber == self._menu_option[&#34;exit&#34;]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room[&#34;name&#34;]
+
+        while True:
+            userName = self._userInput(f&#34;Enter [{roomName}] to confirm: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            self._clear_console()
+            print(self._menu_option[&#34;header&#34;])
+            print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+            print(&#34;Edit a room&#34;)
+            print(&#34;-&#34; * 15)
+            print(f&#34;Editing room: {userNumber} - {room[&#39;name&#39;]}&#34;)
+            print(&#34;With following current Information:&#34;)
+            print(&#34;-&#34; * 15)
+            for index, info in enumerate(room):
+                # Exclude keys, user and message
+                if info not in [&#34;user&#34;, &#34;message&#34;, &#34;state&#34;]:
+                    self._userPrint(f&#34;[{index+1}] {info}: {room[info]}&#34;)
+            self._userPrint(f&#34;[{self._menu_option[&#39;exit&#39;]}]: Exit&#34;)
+            print(&#34;-&#34; * 15)
+            print()
+
+            userChoice = self._userInput(&#34;Enter your choice: &#34;)
+            if userChoice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userChoice.isdigit():
+                userChoice = int(userChoice) - 1
+                if userChoice in range(len(room)):
+                    userInput = self._userInput(
+                        f&#34;Enter new {list(room.keys())[userChoice]}: &#34;)
+                    # userInput = self._userInput(
+                    #     f&#34;Enter new {room[list(room.keys())[userChoice]]}: &#34;)
+                    if userInput == self._menu_option[&#34;exit&#34;]:
+                        pass
+                    else:
+                        room[list(room.keys())[userChoice]] = userInput
+                else:
+                    self._userInput(
+                        f&#34;Invalid choice. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+
+            else:
+                self._userInput(
+                    f&#34;Invalid choice. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+    def _print_all_rooms(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All Rooms&#34;)
+        print(&#34;-&#34; * 15)
+
+        for index, room in enumerate(self.hotel.rooms):
+            print(f&#34;Room: {index+1}:&#34;)
+            print(f&#34;Name: {room[&#39;name&#39;]}&#34;)
+            print(f&#34;Price: {room[&#39;price&#39;]}&#34;)
+            print(f&#34;Capacity: {room[&#39;capacity&#39;]}&#34;)
+            print(f&#34;State: {room[&#39;state&#39;]}&#34;)
+            print(f&#34;Description: {room[&#39;description&#39;]}&#34;)
+            print(f&#34;Miscellaneous: {&#39;, &#39;.join(room[&#39;misc&#39;])}&#34;)
+            print(f&#34;User: {room[&#39;user&#39;]}&#34;)
+            print(f&#34;Message: {room[&#39;message&#39;]}&#34;)
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
 
     def _check_in(self):
-        ...
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Check in&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        if self.hotel.check_in(userSsn):
+            self._userPrint(&#34;Check in successful!&#34;)
+
+        else:
+            self._userPrint(&#34;Check in failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
 
     def _check_out(self):
-        ...
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Check out&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        # Prompt user about un-registration on checkout.
+        while True:
+            userUnregister = self._userInput(
+                &#34;Do you want to unregister the user? (y/n): &#34;)
+            if userUnregister == self._menu_option[&#34;exit&#34;]:
+                return
+            if userUnregister.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if userUnregister.lower() == &#34;y&#34;:
+            userUnregister = True
+        else:
+            userUnregister = False
+
+        if self.hotel.check_out(userSsn, userUnregister):
+            self._userPrint(&#34;Check out successful!&#34;)
+
+        else:
+            self._userPrint(&#34;Check out failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
 
 
 def _main():
-    test = HotelManager()
-    # print(test)
+    # Initialize an object of the class
+    while True:
+        while True:
+            userChoice = input(&#34;Do you want to start the hotel? (y/n): &#34;)
+            if userChoice.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                print(&#34;Invalid input!&#34;)
 
-    ConsoleHotel(test).run()
+        # Start the hotel
+        if &#34;y&#34; == userChoice.lower():
+            test_hotel = HotelManager()
+
+            # Initialize an object of the class
+            test_console = ConsoleHotel(test_hotel)
+
+            # Runs the interface
+            test_console.run()
+
+        else:
+            return
 
 
 if __name__ == &#34;__main__&#34;:
-    _main()
-    # ConsoleHotel(HotelManager())._print_menu()
-    # ConsoleHotel(HotelManager())._userInput(&#34;Enter your choice: &#34;))</code></pre>
+    _main()</code></pre>
 </details>
 </section>
 <section>
@@ -712,33 +1810,42 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>hotel: <a title="hotel.HotelManager" href="#hotel.HotelManager">HotelManager</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Normal console (print) implementation</p>
-<p>Initializes the hotel object that it will connect to</p>
-<p>Expected Args:
-hotel (HotelManager): HotelManager object</p></div>
+<div class="desc"><p>ConsoleHotel is a console based interface for the hotel.</p>
+<p>Constructor for the ConsoleHotel object. Initializes the hotel object that it will connect to.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hotel</code></strong> :&ensp;<code><a title="hotel.HotelManager" href="#hotel.HotelManager">HotelManager</a></code></dt>
+<dd>hotel object</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ConsoleHotel(HotelInterface):
-    &#34;&#34;&#34;Normal console (print) implementation&#34;&#34;&#34;
+    &#34;&#34;&#34;
+    ConsoleHotel is a console based interface for the hotel.
+    &#34;&#34;&#34;
 
     def __init__(self, hotel: HotelManager):
+        &#34;&#34;&#34;
+        Constructor for the ConsoleHotel object. Initializes the hotel object that it will connect to.
+
+        Args:
+            hotel (HotelManager): hotel object
+        &#34;&#34;&#34;
         # Object instance of HotelManager class
         self.hotel = hotel
 
-        # Console related attributes
+        # Console related attributes, avoid having exit value as a number(interferes with options menu
         self._menu_option = {
             &#34;header&#34;: &#34;Nimbus Hotel&#34;,
-            &#34;description&#34;: &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
+            &#34;description&#34;:
+            &#34;Welcome to Nimbus Hotel&#39;s Navigation Menu.\nPlease select an option.&#34;,
             &#34;options&#34;: {
                 &#34;Hotel Info&#34;: self._print_hotel_info,
-                &#34;View all vacant rooms&#34;: self._print_all_vacant,
-                &#34;Add Booking&#34;: self._add_booking,
-                &#34;Register&#34;: self._register_user,
-                &#34;Book&#34;: self._add_booking,
-                &#34;Check-in&#34;: self._check_in,
-                &#34;Check-out&#34;: self._check_out,
+                &#34;User Menu&#34;: self._menu_user,
+                &#34;Booking Menu&#34;: self._menu_booking,
+                &#34;Room Menu&#34;: self._menu_room,
             },
             &#34;exit&#34;: &#34;#&#34;,
         }
@@ -750,16 +1857,21 @@ hotel (HotelManager): HotelManager object</p></div>
         &#34;&#34;&#34;
         # Main loop
         while True:
+            # Updates the hotels internal information
+            self.hotel._update_json()
             # Prints the menu and gets input
-            user_input = self._print_menu()
+            user_input = self._print_menu(self._menu_option)
 
-            if user_input.isdigit():  # type: ignore
-                if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
-                    # If input is a number, execute the corresponding function
-                    self._menu_option[&#34;options&#34;][
-                        list(self._menu_option[&#34;options&#34;].keys())[
-                            int(user_input)]
-                    ]()
+            if user_input.isdigit():
+                # Checks if the user input is within the range of allowed options
+                if int(user_input) in range(
+                        1,
+                        len(self._menu_option[&#34;options&#34;]) + 1):
+                    # Calls the corresponding method to call.
+                    # For example user_input = 1 will call self._print_all_vacant()
+                    self._menu_option[&#34;options&#34;][list(
+                        self._menu_option[&#34;options&#34;].keys())[int(user_input) -
+                                                             1]]()
 
             elif user_input == self._menu_option[&#34;exit&#34;]:
                 # Update json_data before exiting
@@ -787,63 +1899,157 @@ hotel (HotelManager): HotelManager object</p></div>
         return input(*args, **kwargs)
 
     @staticmethod
-    def clear_console():
+    def _clear_console():
         &#34;&#34;&#34;
         Clears the console.
         &#34;&#34;&#34;
         os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)
 
-    def _print_menu(self, noInput=False, noClear=False) -&gt; str:
-        &#34;&#34;&#34;
-        Prints the predefined menu options
+    def _menu_user(self):
+        &#34;&#34;&#34;Menu for user related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_user_option = {
+            &#34;header&#34;: &#34;User Menu&#34;,
+            &#34;description&#34;: &#34;User correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;View all users&#34;: self._print_all_users,
+                &#34;Register new user&#34;: self._register_user,
+                &#34;Edit user&#34;: self._edit_user,
+                &#34;Unregister user&#34;: self._unregister_user,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_user_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_user_option) + 1):
+                # Call the function associated with the option
+                self._menu_user_option[&#34;options&#34;][list(
+                    self._menu_user_option[&#34;options&#34;].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        Args:
-            noInput (bool, optional): Option to not prompt the user for input. Defaults to False.
+    def _menu_booking(self):
+        &#34;&#34;&#34;Menu for booking related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_booking_option = {
+            &#34;header&#34;: &#34;Booking Menu&#34;,
+            &#34;description&#34;: &#34;Booking correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;Add booking&#34;: self._add_booking,
+                &#34;Edit booking&#34;: self._edit_booking,
+                &#34;Remove booking&#34;: self._remove_booking,
+                &#34;View all bookings&#34;: self._print_all_bookings,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_booking_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_booking_option) + 1):
+                # Call the function associated with the option
+                self._menu_booking_option[&#34;options&#34;][list(
+                    self._menu_booking_option[&#34;options&#34;].keys())[
+                        int(user_input) - 1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        Returns:
-            str | None: str if user input is expected else None
-        &#34;&#34;&#34;
-        # Clear console window if user hasn&#39;t disabled the option
-        self.clear_console() if not noClear else ...
+    def _menu_room(self):
+        &#34;&#34;&#34;Menu for room related actions&#34;&#34;&#34;
+        # Menu options
+        self._menu_room_option = {
+            &#34;header&#34;: &#34;Room Menu&#34;,
+            &#34;description&#34;: &#34;Room correlated actions&#34;,
+            &#34;options&#34;: {
+                &#34;Add room&#34;: self._add_room,
+                &#34;Edit room&#34;: self._edit_room,
+                &#34;Remove room&#34;: self._remove_room,
+                &#34;View all rooms&#34;: self._print_all_rooms,
+            },
+            &#34;exit&#34;: self._menu_option[&#34;exit&#34;],
+        }
+        while True:
+            self.hotel._update_json()
+            # Print menu and get input
+            user_input = self._print_menu(self._menu_room_option)
+            # Check if user wants to exit
+            if user_input == self._menu_option[&#34;exit&#34;]:
+                break
+            # Check if user input is valid
+            if user_input.isdigit() and int(user_input) in range(
+                    1,
+                    len(self._menu_room_option) + 1):
+                # Call the function associated with the option
+                self._menu_room_option[&#34;options&#34;][list(
+                    self._menu_room_option[&#34;options&#34;].keys())[int(user_input) -
+                                                              1]]()
+            else:
+                print(&#34;Invalid input, try again.&#34;)
 
-        print(self._menu_option[&#34;header&#34;])
-        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
-        print(self._menu_option[&#34;description&#34;])
-        # Prints the menu options
-        print(&#34;-&#34; * max(len(opt) for opt in self._menu_option[&#34;options&#34;]))
-        for index, option in enumerate(self._menu_option[&#34;options&#34;]):
-            self._userPrint(f&#34;[{index}] {option}&#34;)
-
-        # Print exit option
-        self._userPrint(
-            f&#34;[{self._menu_option[&#39;exit&#39;]}] Exit or return to top level menu&#34;
-        )
-        print(&#34;&#34;)
-        # If no input is required, return None else return user input
-        if not noInput:
-            return self._userInput(&#34;Please select an option: &#34;)
-
-        # If noInput is true, returns an empty string
-        return &#34;&#34;
+    def _print_menu(self,
+                    menu: dict[str, Any],
+                    noInput=False,
+                    noClear=False) -&gt; str:
+        &#34;&#34;&#34;Prints the menu and returns the user input&#34;&#34;&#34;
+        # Print menu
+        if not noClear:
+            self._clear_console()
+        print(menu[&#34;header&#34;])
+        print(&#34;=&#34; * len(menu[&#34;header&#34;]))
+        print(menu[&#34;description&#34;])
+        print(&#34;-&#34; * 15)
+        for index, option in enumerate(menu[&#34;options&#34;]):
+            print(f&#34;[{index+1}]: {option}&#34;)
+        print(f&#34;[{menu[&#39;exit&#39;]}]: Exit or return to top level menu&#34;)
+        print()
+        # Get user input
+        if noInput:
+            return &#34;&#34;
+        return self._userInput(&#34;Please select an option: &#34;)
 
     def _print_hotel_info(self):
-        self.clear_console()
+        &#34;&#34;&#34;
+        Prints the hotel information.
+        &#34;&#34;&#34;
+        self._clear_console()
+
+        # Print menu header; hotel name
         print(self._menu_option[&#34;header&#34;])
         print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        # Prints the instance of the hotel, returns hotel information...
         print(self.hotel)
         self._userInput(&#34;Press enter to continue...&#34;)
 
     def _print_all_vacant(self):
-        self.vacant_rooms = self.hotel.filter_dict(
-            self.hotel.rooms, {&#34;state&#34;: &#34;vacant&#34;}
-        )
-        self.clear_console()
+        &#34;&#34;&#34;
+        Prints all vacant rooms.
+        &#34;&#34;&#34;
+        # Gets all rooms that are vacant.
+        self.vacant_rooms = self.hotel.filter_dict(self.hotel.rooms,
+                                                   {&#34;state&#34;: &#34;vacant&#34;})
+        self._clear_console()
         print(self._menu_option[&#34;header&#34;])
         print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
         print(f&#34;There are {len(self.vacant_rooms)} vacant rooms&#34;)
         print(&#34;-&#34; * 15)
         # Print out all room information here
         for room in self.vacant_rooms:
+            print(f&#34;Room Number:  {self.hotel.rooms.index(room)+1}&#34;)
             print(f&#34;Type: {room[&#39;name&#39;]}&#34;)
             print(f&#34;State: {room[&#39;state&#39;]}&#34;)
             print(f&#34;Price: {room[&#39;price&#39;]}c&#34;)
@@ -853,69 +2059,762 @@ hotel (HotelManager): HotelManager object</p></div>
             print(&#34;-&#34; * 15)
         self._userInput(&#34;Press enter to continue...&#34;)
 
-    def _add_booking(self):
-        while not self.hotel.is_registered(
-            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))
-        ):
-            self._userInput(
-                &#34;Invalid SSN. Press enter to try again or # to exit&#34;)
-        userRoom = self._userInput(&#34;Please enter the room number: &#34;)
-
-        if self.hotel.add_booking(userSsn, userRoom):
-            self._userPrint(&#34;Booking successful!&#34;)
-        else:
-            self._userPrint(&#34;Booking failed!&#34;)
-        self._userInput(&#34;Press enter to continue...&#34;)
-        ...
-
-    def _remove_booking(self):
-        ...
-
-    def _edit_booking(self):
-        ...
-
-    def _add_room(self):
-        ...
-
-    def _remove_room(self):
-        ...
-
     def _register_user(self):
+        &#34;&#34;&#34;
+        Registers a new user.
+        &#34;&#34;&#34;
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Register a new user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput(&#34;Enter your SSN (12 characters): &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    break
+                else:
+                    self._userPrint(
+                        &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                    )
+
+            if userSSN == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if self.hotel.is_registered(userSSN):
+                self._userPrint(&#34;User already registered&#34;)
+                break
+            elif self.hotel.been_registered(userSSN):
+                self._userPrint(
+                    &#34;You have been registered before! Do you want to autofill the following information?&#34;
+                )
+                name = self.hotel.old[userSSN][&#34;name&#34;]
+                age = self.hotel.old[userSSN][&#34;age&#34;]
+
+                autofill_msg = str(&#34;-&#34; * 7 + &#34;AUTOFILL INFORMATION&#34; + &#34;-&#34; * 7)
+                print(autofill_msg)
+                self._userPrint(f&#34;Name: {name}&#34;)
+                self._userPrint(f&#34;Age: {age}&#34;)
+                print(&#34;-&#34; * len(autofill_msg))
+
+                while True:
+                    userInput = self._userInput(&#34;(y/n): &#34;)
+                    if userInput == &#34;y&#34;:
+                        if type(result := self.hotel.register_user(
+                                userSSN, name, age)) == bool:
+                            return
+                        else:
+                            self._userPrint(&#34;Something went wrong:&#34;, result)
+                            self._userInput(
+                                &#34;Press enter to enter name and age manually...&#34;
+                            )
+                            break
+
+                    elif userInput == &#34;n&#34;:
+                        break
+                    else:
+                        self._userPrint(&#34;Invalid input&#34;)
+
+            while (userName := self._userInput(&#34;Enter your name: &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if userName:
+                    break
+                else:
+                    self._userPrint(
+                        &#34;Name is invalid, make sure its following format: Firstname Lastname&#34;
+                    )
+
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+
+            while (userAge := self._userInput(&#34;Enter your age: &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+
+                if userAge.isdigit():
+                    break
+                else:
+                    self._userPrint(
+                        &#34;Age is invalid, make sure its a number only&#34;)
+
+            if userAge == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if type(result := self.hotel.register_user(userSSN, userName,
+                                                       userAge)) == bool:
+                # Registered user if the result is a bool
+                self._userPrint(&#34;User registered&#34;)
+                self._userInput(&#34;Press enter to continue&#34;)
+                return
+            else:
+                # Prints the error message
+                self._userPrint(result)
+                self._userInput(&#34;Press enter to continue...&#34;)
+                return
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _edit_user(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            name = self.hotel.users[userSsn][&#34;name&#34;]
+            age = self.hotel.users[userSsn][&#34;age&#34;]
+            self._clear_console()
+
+            print(&#34;What to edit?&#34;)
+            print(&#34;-&#34; * 15)
+
+            self._userPrint(f&#34;SSN: {userSsn}&#34;)
+            self._userPrint(f&#34;Name: {name}&#34;)
+            self._userPrint(f&#34;Age: {age}&#34;)
+            self._userPrint(&#34;-&#34; * 15)
+            self._userPrint(&#34;[1]: Change SSN&#34;)
+            self._userPrint(&#34;[2]: Change name&#34;)
+            self._userPrint(&#34;[3]: Change age&#34;)
+            self._userPrint(&#34;[#]: Exit&#34;)
+            print()
+            userInput = self._userInput(&#34;Please select an option: &#34;)
+
+            if userInput == self._menu_option[&#34;exit&#34;]:
+                return
+
+            elif userInput == &#34;1&#34;:
+                while True:
+                    newSsn = self._userInput(&#34;Enter new SSN: &#34;)
+                    if self.hotel.is_ssn_valid(newSsn):
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                        )
+                if type(result := self.hotel.edit_user(
+                        userSsn, new_ssn=newSsn)) == bool:
+                    self._userPrint(&#34;SSN changed&#34;)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+                    return
+                else:
+                    self._userPrint(result)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+                    return
+
+            elif userInput == &#34;2&#34;:
+                while True:
+                    newName = self._userInput(&#34;Enter new name: &#34;)
+                    if newName:
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;Name is invalid, make sure its following format: Firstname Lastname OR Firstname&#34;
+                        )
+                if self.hotel.edit_user(userSsn, name=newName):
+                    self._userPrint(&#34;Name changed&#34;)
+                else:
+                    self._userPrint(&#34;Name change failed&#34;)
+
+                self._userInput(&#34;Press enter to continue...&#34;)
+
+            elif userInput == &#34;3&#34;:
+                while True:
+                    newAge = self._userInput(&#34;Enter new age: &#34;)
+                    if newAge.isdigit():
+                        break
+                    else:
+                        self._userPrint(
+                            &#34;Age is invalid, make sure its a number&#34;)
+                if self.hotel.edit_user(userSsn, age=newAge):
+                    self._userPrint(&#34;Age changed&#34;)
+                else:
+                    self._userPrint(&#34;Age change failed&#34;)
+
+                self._userInput(&#34;Press enter to continue...&#34;)
         ...
 
     def _unregister_user(self):
-        ...
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Unregister a user&#34;)
+        print(&#34;-&#34; * 15)
+        # Prompt user for input
+        while True:
+            while (userSSN :=
+                   self._userInput(&#34;Enter your SSN (12 characters): &#34;)
+                   ) != self._menu_option[&#34;exit&#34;]:
+                if self.hotel.is_ssn_valid(userSSN):
+                    # Checks if the SSN is valid
+                    self._userPrint(&#34;SSN is valid&#34;)
+                    break
+                else:
+                    self._userPrint(
+                        &#34;SSN is invalid, make sure its following format: YYYYMMDDXXXX&#34;
+                    )
+
+            if userSSN == self._menu_option[&#34;exit&#34;]:
+                break
+
+            if type(result := self.hotel.unregister_user(userSSN)) == bool:
+                # Unregistered user if the result is a bool
+                self._userPrint(&#34;User unregistered&#34;)
+            else:
+                # Prints the error message
+                self._userPrint(result)
+            self._userInput(&#34;Press enter to continue&#34;)
+            break
+
+    def _print_all_users(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All users&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all user information here
+        for index, (k, v) in enumerate(self.hotel.users.items()):
+            print(f&#34;User {index+1}:&#34;)
+            print(&#34;SSN:&#34;, k)
+            print(&#34;Name:&#34;, v[&#34;name&#34;])
+            print(&#34;Age:&#34;, v[&#34;age&#34;])
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Add a new booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        # Check if already booked:
+        if self.hotel.is_booked(userSsn):
+            self._userInput(
+                f&#34;You already have a booking. Press enter to continue&#34;)
+            return
+
+        while True:
+            self._userPrint(
+                &#34;Enter a room number or &#39;rooms&#39; to see all vacant rooms&#34;)
+            userRoom = self._userInput(&#34;Enter your choice: &#34;)
+            if userRoom == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userRoom == &#34;rooms&#34;:
+                self._print_all_vacant()
+
+            elif userRoom.isdigit() and int(userRoom) in range(
+                    1,
+                    len(self.hotel.rooms) + 1):
+                # Lowers the number by one step (index starts at 0)
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            # Prompt user if they want to add message to staff.
+            userMessage = self._userInput(
+                &#34;Do you want to add a message to the staff? (y/n): &#34;)
+            if userMessage == self._menu_option[&#34;exit&#34;]:
+                return
+            if userMessage.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        # If user wants to add message to staff, prompt for message.
+        if userMessage.lower() == &#34;y&#34;:
+            while True:
+                userMessage = self._userInput(&#34;Please enter your message: &#34;)
+                if userMessage == self._menu_option[&#34;exit&#34;]:
+                    return
+                if userMessage:
+                    break
+                else:
+                    self._userInput(
+                        f&#34;Invalid message. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+        else:
+            userMessage = &#34;&#34;
+
+        if self.hotel.add_booking(userSsn, userRoom, userMessage):
+            self._userPrint(&#34;Booking successful!&#34;)
+        else:
+            self._userPrint(
+                &#34;Booking failed! (Make sure room is vacant and its the right number)&#34;
+            )
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _remove_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Remove a booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            userUnregister = self._userInput(
+                &#34;Do you want to unregister the user? (y/n): &#34;)
+            if userUnregister == self._menu_option[&#34;exit&#34;]:
+                return
+            if userUnregister.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if userUnregister.lower() == &#34;y&#34;:
+            userUnregister = True
+        else:
+            userUnregister = False
+
+        if self.hotel.remove_booking(userSsn, userUnregister):
+            self._userPrint(&#34;Booking removed!&#34;)
+        else:
+            self._userPrint(&#34;Un-booking failed!, contact an admin&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+        return
+
+    def _edit_booking(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit a booking&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        while True:
+            booked_room = self.hotel.active[userSsn][&#34;room&#34;]
+            message = self.hotel.rooms[int(booked_room) - 1][&#34;message&#34;]
+            self._clear_console()
+
+            print(&#34;What to edit?&#34;)
+            print(&#34;-&#34; * 15)
+            self._userPrint(f&#34;You are currently booked in room {booked_room}&#34;)
+            self._userPrint(f&#34;You provided the following message: {message}&#34;)
+            print(&#34;-&#34; * 15)
+            self._userPrint(&#34;[1]: Change message&#34;)
+            self._userPrint(&#34;[2]: Change room&#34;)
+            self._userPrint(&#34;[#]: Exit&#34;)
+
+            userChoice = self._userInput(&#34;Enter your choice: &#34;)
+            if userChoice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userChoice == &#34;1&#34;:
+                print(&#34;-&#34; * 15)
+                self._userPrint(&#34;Current message:&#34;, message)
+                print(&#34;-&#34; * 15)
+                userMessage = self._userInput(&#34;New message: &#34;)
+                if userMessage == self._menu_option[&#34;exit&#34;]:
+                    return
+                if self.hotel.edit_booking(userSsn, message=userMessage):
+                    self._userPrint(&#34;Message changed!&#34;)
+                else:
+                    self._userPrint(&#34;Message change failed!&#34;)
+                    self._userInput(&#34;Press enter to continue...&#34;)
+
+            elif userChoice == &#34;2&#34;:
+                while True:
+                    print(&#34;-&#34; * 15)
+                    self._userPrint(&#34;Current room:&#34;, booked_room)
+                    self._userPrint(
+                        &#34;Enter [rooms] to see all vacant rooms to book&#34;)
+                    print(&#34;-&#34; * 15)
+                    userRoom = self._userInput(&#34;New room: &#34;)
+                    if userRoom == self._menu_option[&#34;exit&#34;]:
+                        return
+
+                    if userRoom == &#34;rooms&#34;:
+                        self._print_all_vacant()
+                        continue
+
+                    elif self.hotel.edit_booking(userSsn, new_room=userRoom):
+                        self._userPrint(&#34;Room changed!&#34;)
+                        break
+                    else:
+                        self._userPrint(&#34;Room change failed!&#34;)
+                        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _print_all_bookings(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All bookings&#34;)
+        print(&#34;-&#34; * 15)
+        # Print out all user information here
+        for index, (k, v) in enumerate(self.hotel.active.items()):
+            print(f&#34;Booking {index+1}:&#34;)
+            print(&#34;SSN:&#34;, k)
+            print(&#34;Room:&#34;, v[&#34;room&#34;])
+            print(&#34;Message:&#34;, self.hotel.rooms[int(v[&#34;room&#34;]) - 1][&#34;message&#34;])
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _add_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Add a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt the user to enter following required information
+        # name: str, price: str, capacity: str, state: str, description: str, misc: list[str]
+        while True:
+            userName = self._userInput(&#34;Please enter the name of the room: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userPrice = self._userInput(&#34;Please enter the price of the room: &#34;)
+            if userPrice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userPrice:
+                # Test if float (199.99 is allowed pricing, but isdigit() returns false)):
+                try:
+                    float(userPrice)
+                except ValueError:
+                    self._userInput(
+                        f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+                else:
+                    # On no exception
+
+                    # Checks if the price is of digits (NaN is float and etc.)
+                    if userPrice.replace(&#34;.&#34;, &#34;&#34;).isdigit():
+                        break
+                    else:
+                        self._userInput(
+                            f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                        )
+
+            else:
+                self._userInput(
+                    f&#34;Invalid price. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userCapacity = self._userInput(
+                &#34;Please enter the capacity of the room: &#34;)
+            if userCapacity == self._menu_option[&#34;exit&#34;]:
+                return
+            if userCapacity.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid capacity. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userState = self._userInput(&#34;Please enter the state of the room: &#34;)
+            if userState == self._menu_option[&#34;exit&#34;]:
+                return
+            if userState:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid state. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            userDescription = self._userInput(
+                &#34;Please enter the description of the room: &#34;)
+            if userDescription == self._menu_option[&#34;exit&#34;]:
+                return
+            if userDescription:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid description. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        userMisc = []
+        while True:
+            userInput = self._userInput(
+                &#34;Enter miscellaneous information (leave empty to continue): &#34;)
+            if userInput == self._menu_option[&#34;exit&#34;]:
+                return
+            if userInput:
+                userMisc.append(userInput)
+            else:
+                break
+
+        if self.hotel.add_room(userName, userPrice, userCapacity, userState,
+                               userDescription, userMisc):
+            self._userPrint(&#34;Room added!&#34;)
+        else:
+            self._userPrint(&#34;Room addition failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _remove_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Remove a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Print all rooms, and prompt user to enter room number, confirm with room name
+        self._userPrint(
+            &#34;All rooms will first be displayed, please note which room number for removal.&#34;
+        )
+        self._userInput(&#34;Press enter to continue...&#34;)
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput(&#34;Chose room number: &#34;)
+            if userNumber == self._menu_option[&#34;exit&#34;]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room[&#34;name&#34;]
+
+        while True:
+            userName = self._userInput(f&#34;Enter [{roomName}] to confirm: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if self.hotel.remove_room(userNumber):
+            self._userPrint(&#34;Room removed!&#34;)
+        else:
+            self._userPrint(&#34;Room removal failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
+
+    def _edit_room(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Edit a room&#34;)
+        print(&#34;-&#34; * 15)
+
+        self._userPrint(
+            &#34;All rooms will first be displayed, please note which room number for edit.&#34;
+        )
+        self._userInput(&#34;Press enter to continue...&#34;)
+        self._print_all_rooms()
+
+        while True:
+            userNumber = self._userInput(&#34;Chose room number: &#34;)
+            if userNumber == self._menu_option[&#34;exit&#34;]:
+                return
+            if userNumber.isdigit():
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room number. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        room = self.hotel.rooms[int(userNumber) - 1]
+        roomName = room[&#34;name&#34;]
+
+        while True:
+            userName = self._userInput(f&#34;Enter [{roomName}] to confirm: &#34;)
+            if userName == self._menu_option[&#34;exit&#34;]:
+                return
+            if userName == roomName:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid room name. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        while True:
+            self._clear_console()
+            print(self._menu_option[&#34;header&#34;])
+            print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+            print(&#34;Edit a room&#34;)
+            print(&#34;-&#34; * 15)
+            print(f&#34;Editing room: {userNumber} - {room[&#39;name&#39;]}&#34;)
+            print(&#34;With following current Information:&#34;)
+            print(&#34;-&#34; * 15)
+            for index, info in enumerate(room):
+                # Exclude keys, user and message
+                if info not in [&#34;user&#34;, &#34;message&#34;, &#34;state&#34;]:
+                    self._userPrint(f&#34;[{index+1}] {info}: {room[info]}&#34;)
+            self._userPrint(f&#34;[{self._menu_option[&#39;exit&#39;]}]: Exit&#34;)
+            print(&#34;-&#34; * 15)
+            print()
+
+            userChoice = self._userInput(&#34;Enter your choice: &#34;)
+            if userChoice == self._menu_option[&#34;exit&#34;]:
+                return
+
+            if userChoice.isdigit():
+                userChoice = int(userChoice) - 1
+                if userChoice in range(len(room)):
+                    userInput = self._userInput(
+                        f&#34;Enter new {list(room.keys())[userChoice]}: &#34;)
+                    # userInput = self._userInput(
+                    #     f&#34;Enter new {room[list(room.keys())[userChoice]]}: &#34;)
+                    if userInput == self._menu_option[&#34;exit&#34;]:
+                        pass
+                    else:
+                        room[list(room.keys())[userChoice]] = userInput
+                else:
+                    self._userInput(
+                        f&#34;Invalid choice. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                    )
+
+            else:
+                self._userInput(
+                    f&#34;Invalid choice. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+    def _print_all_rooms(self):
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;All Rooms&#34;)
+        print(&#34;-&#34; * 15)
+
+        for index, room in enumerate(self.hotel.rooms):
+            print(f&#34;Room: {index+1}:&#34;)
+            print(f&#34;Name: {room[&#39;name&#39;]}&#34;)
+            print(f&#34;Price: {room[&#39;price&#39;]}&#34;)
+            print(f&#34;Capacity: {room[&#39;capacity&#39;]}&#34;)
+            print(f&#34;State: {room[&#39;state&#39;]}&#34;)
+            print(f&#34;Description: {room[&#39;description&#39;]}&#34;)
+            print(f&#34;Miscellaneous: {&#39;, &#39;.join(room[&#39;misc&#39;])}&#34;)
+            print(f&#34;User: {room[&#39;user&#39;]}&#34;)
+            print(f&#34;Message: {room[&#39;message&#39;]}&#34;)
+            print(&#34;-&#34; * 15)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
 
     def _check_in(self):
-        ...
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Check in&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        if self.hotel.check_in(userSsn):
+            self._userPrint(&#34;Check in successful!&#34;)
+
+        else:
+            self._userPrint(&#34;Check in failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)
 
     def _check_out(self):
-        ...</code></pre>
+        self._clear_console()
+        print(self._menu_option[&#34;header&#34;])
+        print(&#34;=&#34; * len(self._menu_option[&#34;header&#34;]))
+        print(&#34;Check out&#34;)
+        print(&#34;-&#34; * 15)
+
+        # Prompt user for input until valid input is registered.
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput(&#34;Please enter your SSN: &#34;))):
+            if userSsn == self._menu_option[&#34;exit&#34;]:
+                return
+            self._userInput(
+                f&#34;Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+            )
+
+        # Prompt user about un-registration on checkout.
+        while True:
+            userUnregister = self._userInput(
+                &#34;Do you want to unregister the user? (y/n): &#34;)
+            if userUnregister == self._menu_option[&#34;exit&#34;]:
+                return
+            if userUnregister.lower() in [&#34;y&#34;, &#34;n&#34;]:
+                break
+            else:
+                self._userInput(
+                    f&#34;Invalid input. Press enter to try again or {self._menu_option[&#39;exit&#39;]} to exit&#34;
+                )
+
+        if userUnregister.lower() == &#34;y&#34;:
+            userUnregister = True
+        else:
+            userUnregister = False
+
+        if self.hotel.check_out(userSsn, userUnregister):
+            self._userPrint(&#34;Check out successful!&#34;)
+
+        else:
+            self._userPrint(&#34;Check out failed!&#34;)
+
+        self._userInput(&#34;Press enter to continue...&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="hotel.HotelInterface" href="#hotel.HotelInterface">HotelInterface</a></li>
 </ul>
-<h3>Static methods</h3>
-<dl>
-<dt id="hotel.ConsoleHotel.clear_console"><code class="name flex">
-<span>def <span class="ident">clear_console</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Clears the console.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def clear_console():
-    &#34;&#34;&#34;
-    Clears the console.
-    &#34;&#34;&#34;
-    os.system(&#34;cls&#34; if os.name == &#34;nt&#34; else &#34;clear&#34;)</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="hotel.ConsoleHotel.run"><code class="name flex">
@@ -935,16 +2834,21 @@ and call respective function, until opted to exit</p></div>
     &#34;&#34;&#34;
     # Main loop
     while True:
+        # Updates the hotels internal information
+        self.hotel._update_json()
         # Prints the menu and gets input
-        user_input = self._print_menu()
+        user_input = self._print_menu(self._menu_option)
 
-        if user_input.isdigit():  # type: ignore
-            if int(user_input) in range(0, len(self._menu_option[&#34;options&#34;])):
-                # If input is a number, execute the corresponding function
-                self._menu_option[&#34;options&#34;][
-                    list(self._menu_option[&#34;options&#34;].keys())[
-                        int(user_input)]
-                ]()
+        if user_input.isdigit():
+            # Checks if the user input is within the range of allowed options
+            if int(user_input) in range(
+                    1,
+                    len(self._menu_option[&#34;options&#34;]) + 1):
+                # Calls the corresponding method to call.
+                # For example user_input = 1 will call self._print_all_vacant()
+                self._menu_option[&#34;options&#34;][list(
+                    self._menu_option[&#34;options&#34;].keys())[int(user_input) -
+                                                         1]]()
 
         elif user_input == self._menu_option[&#34;exit&#34;]:
             # Update json_data before exiting
@@ -960,7 +2864,7 @@ and call respective function, until opted to exit</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
-An abstract class that predefines implementations requirements.</p>
+An abstract class that predefined implementations requirements.</p>
 <p>Initializes the hotel object that it will connect to</p>
 <p>Expected Args:
 hotel (HotelManager): HotelManager object</p></div>
@@ -970,6 +2874,10 @@ hotel (HotelManager): HotelManager object</p></div>
 </summary>
 <pre><code class="python">class GuiHotel(HotelInterface):
     # PyImgui implementation
+    # Specific branch (context manager integration by mcoding):
+    # https://github.com/pyimgui/pyimgui/pull/264
+
+    #! NOT IMPLEMENTED
     ...</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -990,7 +2898,7 @@ hotel (HotelManager): HotelManager object</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
-An abstract class that predefines implementations requirements.</p>
+An abstract class that predefined implementations requirements.</p>
 <p>Initializes the hotel object that it will connect to</p>
 <p>Expected Args:
 hotel (HotelManager): HotelManager object</p></div>
@@ -1001,7 +2909,7 @@ hotel (HotelManager): HotelManager object</p></div>
 <pre><code class="python">class HotelInterface(metaclass=ABCMeta):
     &#34;&#34;&#34;
     All classes that &#34;connect&#34; to the hotel is derived from HotelInterface.
-    An abstract class that predefines implementations requirements.
+    An abstract class that predefined implementations requirements.
     &#34;&#34;&#34;
 
     @abstractmethod
@@ -1083,38 +2991,35 @@ removing rooms, editing rooms, register users, unregister users and printing raw
     &#34;&#34;&#34;
 
     def __init__(self, filename: str = &#34;&#34;):
-        &#34;&#34;&#34;Constructor for HotelManager
+        &#34;&#34;&#34;
+        Constructor for HotelManager
 
         Args:
             filename (str, optional): Optional argument for the name of the file. Defaults to &#34;&#34;.
         &#34;&#34;&#34;
         # Unpacking and loading json_data from given path(Default is None)
-        self.json_handler = JsonHandling(filename)
+        self.json_handler: JsonHandling = JsonHandling(filename)
         self.json_data = self.json_handler.unpack_data()
 
         # Extracting or creating required structures
-        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
-        )
-        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
-        )
+        self.users = (self.json_data[&#34;users&#34;]
+                      if &#34;users&#34; in self.json_data else dict())
+        self.rooms = (self.json_data[&#34;rooms&#34;]
+                      if &#34;rooms&#34; in self.json_data else list())
         # All &#39;active&#39; bookings are stored in active
-        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
-        )
+        self.active = (self.json_data[&#34;active&#34;]
+                       if &#34;active&#34; in self.json_data else dict())
         self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()
-        # Used when packing or updating json_data
-        self._extracted = {
-            &#34;users&#34;: self.users,
-            &#34;rooms&#34;: self.rooms,
-            &#34;active&#34;: self.active,
-            &#34;old&#34;: self.old,
-        }
 
-        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking...
+        # Updates the file incase one of the values wasn&#39;t in the file
+        self._update_json()
+
+        # Type hinting for pylance, only noticeable in IDE with basic or strict type checking... Ignore
         self.json_data: dict[str, Any]
         self.users: dict[str, dict[str, str]]
         self.rooms: list[dict[str, str | list[str]]]
         self.active: dict[str, dict[str, str | bool]]
-        self.old: dict[str, int]
+        self.old: dict[str, dict[str, str]]
 
     def __str__(self):
         &#34;&#34;&#34;
@@ -1123,7 +3028,7 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         &#34;&#34;&#34;
         # Filter dict to get only vacant rooms
         vacant_room = self.filter_dict(self.rooms, {&#34;state&#34;: &#34;vacant&#34;})
-        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 }&#34;
+        return f&#34;Total bookings: {len(self.active)}\nTotal rooms: {len(self.rooms)}\nVacant rooms: {len(vacant_room)if vacant_room is not None else 0 } \nRegistered users: {len(self.users)}&#34;
 
     def register_user(self, ssn: str, name: str, age: str) -&gt; str | bool:
         &#34;&#34;&#34;
@@ -1140,14 +3045,28 @@ removing rooms, editing rooms, register users, unregister users and printing raw
             str | bool: str on failure, boolean(True) on success
         &#34;&#34;&#34;
         # Check if a user is already registered
-        if ssn in self.users:
+        if self.is_registered(ssn):
             return &#34;User with given ssn already exists&#34;
+
         # Check if age is a number
         if not age.isdigit():
             return &#34;Age must be a number&#34;
         # Else add user to self.users with ssn as the key
         self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+        self._update_json()
         return True
+
+    def been_registered(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks if a user has been registered.
+
+        Args:
+            ssn (str): string of 12 characters representing a user&#39;s social security number
+
+        Returns:
+            bool: True if user is registered, False if not
+        &#34;&#34;&#34;
+        return ssn in self.old
 
     def is_registered(self, ssn: str) -&gt; bool:
         &#34;&#34;&#34;
@@ -1161,11 +3080,71 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         &#34;&#34;&#34;
         return ssn in self.users
 
-    def unregister_user(self, ssn) -&gt; bool | str:
+    def is_ssn_valid(self, ssn: str) -&gt; bool:
+        &#34;&#34;&#34;Evaluate if ssn is valid
+
+        Args:
+            ssn (str): Social security number.
+
+        Returns:
+            bool: True on success, False otherwise
+        &#34;&#34;&#34;
+        # Removes all dashes and spaces
+        ssn = ssn.replace(&#34;-&#34;, &#34;&#34;).replace(&#34; &#34;, &#34;&#34;)
+        if ssn.isdigit():
+            if len(ssn) == 12:
+                return True
+        return False
+
+    def edit_user(self,
+                  ssn: str,
+                  name: str = &#34;&#34;,
+                  age: str = &#34;&#34;,
+                  new_ssn: str = &#34;&#34;) -&gt; bool:
+        &#34;&#34;&#34;
+        Edits a user&#39;s information.
+
+        Args:
+            ssn (str): SSN of the CURRENTLY registered user, provide new_ssn to edit this
+            name (str, optional): New name. Defaults to &#34;&#34;.
+            age (str, optional): New age. Defaults to &#34;&#34;.
+            new_ssn (str, optional): New ssn. Defaults to &#34;&#34;.
+
+        Returns:
+            bool: True on success, False otherwise
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
+        if self.is_registered(ssn):
+            # If new ssn is provided, the key must be updated.
+            if new_ssn:
+                # Changes key in self.users to new_ssn(pop returns the value hence the assignment below)
+                self.users[new_ssn] = self.users.pop(ssn)
+                # Edit booking ssn
+                if self.is_booked(ssn):
+                    self.active[new_ssn] = self.active.pop(ssn)
+                    booked_room_index = int(self.active[new_ssn][&#34;room&#34;]) - 1
+                    self.rooms[booked_room_index][&#34;user&#34;] = new_ssn
+
+                # Edit old ssn
+                if ssn in self.old:
+                    self.old[new_ssn] = self.old.pop(ssn)
+                # To not interfere with multiple changes
+                ssn = new_ssn
+            if name:
+                self.users[ssn][&#34;name&#34;] = name
+            if age:
+                self.users[ssn][&#34;age&#34;] = age
+            self._update_json()
+            return True
+        # User is not registered
+        return False
+
+    def unregister_user(self, ssn: str) -&gt; bool | str:
         &#34;&#34;&#34;
         Unregister a user from the HotelManager.
         Will return a string or boolean depending on success.
-        (Type check for the str or bool)
 
         Args:
             ssn (str): string of 12 characters representing a user&#39;s social security number
@@ -1173,12 +3152,30 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         Returns:
             str | bool: str on failure, boolean(True) on success
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return &#34;Invalid ssn&#34;
+
         # Check if a user is already registered
-        if ssn not in self.users:
+        if not self.is_registered(ssn):
             return &#34;User with given ssn does not exist&#34;
-        # Else add user to self.old and remove user from self.users with ssn as the key
-        self.old[ssn] += 1
+
+        if self.is_booked(ssn):
+            # Removes current booking, but does not unregister the user(yet)
+            self.remove_booking(ssn, False)
+        # Total registration count
+        if &#34;total registrations&#34; in self.old[ssn]:
+            total_reg = int(self.old[ssn][&#34;total registrations&#34;])
+        else:
+            total_reg = 0
+
+        total_reg += 1
+        self.old[ssn][&#34;total registrations&#34;] = str(total_reg)
+        self.old[ssn][&#34;name&#34;] = self.users[ssn][&#34;name&#34;]
+        self.old[ssn][&#34;age&#34;] = self.users[ssn][&#34;age&#34;]
+
         del self.users[ssn]
+
+        self._update_json()
         return True
 
     def check_in(self, ssn: str) -&gt; bool:
@@ -1191,12 +3188,15 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists
-        if ssn in self.users:
+        if self.is_registered(ssn):
             # Check if already booked
-            if ssn in self.active:
+            if self.is_booked(ssn):
                 # Check if not checked in
-                if not self.users[ssn][&#34;checked_in&#34;]:
+                if not self.active[ssn][&#34;checked_in&#34;]:
                     # Good to check in...
                     self.active[ssn][&#34;checked_in&#34;] = True
                     self._update_json()
@@ -1204,80 +3204,127 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         # If the controlstructure failed, returns False.
         return False
 
-    def check_out(self, ssn: str) -&gt; bool:
+    def check_out(self, ssn: str, unregister: bool) -&gt; bool:
         &#34;&#34;&#34;
         Called when user is trying to check out to hotel
 
         Args:
             ssn (str): ssn of user wanting to check out
+            unregister (bool): Boolean on whether to unregister user or not
 
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if checked in
             if self.active[ssn][&#34;checked_in&#34;]:
                 # Good to check out...
+                booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+                self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+
                 self.active[ssn][&#34;checked_in&#34;] = False
-                # Increment times stayed at the hotel
-                self.old[ssn] += 1
+
                 # Remove booking from active dict
                 del self.active[ssn]
+                if unregister:
+                    self.unregister_user(ssn)
                 # Update json_data
                 self._update_json()
                 return True
         # If the controlstructure failed, returns False.
         return False
 
-    def add_booking(self, ssn: str, room: str) -&gt; bool:
+    def add_booking(self,
+                    ssn: str,
+                    room: str,
+                    message: str = &#34;&#34;,
+                    _override_is_booked=False) -&gt; bool:
         &#34;&#34;&#34;
         Called when user is booking a room. Must be registered to add booking.
 
         Args:
             ssn (str): ssn of user\n
             room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+            message (str, optional): message from user. Defaults to &#34;&#34;.
+            _override_is_booked (bool, optional): Overrides the check for already book 
+            (use with precaution). Defaults to False.
 
         Returns:
             bool: Boolean on success or failure
         &#34;&#34;&#34;
+
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Checks if user exists and NOT already booked
-        if ssn in self.users and ssn not in self.active:
-            if room.isdigit():
-                # Convert to int and move one step back for correct indexing
-                room_index = int(room) - 1
-                # Check if room is in range
-                if 0 &lt;= room_index &lt; len(self.rooms):
-                    #  Check if room is vacant
-                    if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
-                        # Change room state to occupied
-                        self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
-                        # Add booking to active dict
-                        self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
-                        # Update json_data
-                        self._update_json()
-                        return True
+
+        if self.is_registered(ssn):
+            if not self.is_booked(ssn) or _override_is_booked:
+                if room.isdigit():
+                    # Convert to int and move one step back for correct indexing
+                    room_index = int(room) - 1
+                    # Check if room is in range
+                    if 0 &lt;= room_index &lt; len(self.rooms):
+                        #  Check if room is vacant
+                        if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                            # Change room state to occupied
+                            self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                            self.rooms[room_index][&#34;user&#34;] = ssn
+                            self.rooms[room_index][&#34;message&#34;] = message
+                            # Add booking to active dict
+                            self.active[ssn] = {
+                                &#34;room&#34;: room,
+                                &#34;checked_in&#34;: False
+                            }
+                            # Update json_data
+                            self._update_json()
+                            return True
         # If the controlstructure failed, returns False.
         return False
 
-    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+    def is_booked(self, ssn: str) -&gt; bool:
         &#34;&#34;&#34;
-        Called when user is removing a booking. Must be registered to remove booking.
+        Returns a boolean depending on whether a user is booked or not.
 
         Args:
-            ssn (str): ssn of user\n
-            room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+            ssn (str): SSN of user
 
         Returns:
-            bool: Boolean on success or failure
+            bool: True if a user is booked, False otherwise
         &#34;&#34;&#34;
+        return ssn in self.active
+
+    def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
+        &#34;&#34;&#34;
+        Called when user is trying to remove a booking. Must be registered to remove booking.
+
+        Args:
+            ssn (str): _description_
+            unregister (bool): unregister the user when removing booking
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
         # Check if user exists and is booked
-        if ssn in self.users and ssn in self.active:
+        if self.is_registered(ssn) and self.is_booked(ssn):
             # Check if not checked in
             if not self.active[ssn][&#34;checked_in&#34;]:
                 # Change room state to vacant
-                self.rooms[int(self.active[ssn][&#34;room&#34;]) -
-                           1][&#34;state&#34;] = &#34;vacant&#34;
+                booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+                # Remove rooms user and message
+                self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+                self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+                self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+
                 # Remove booking from active dict
                 del self.active[ssn]
                 if unregister:
@@ -1291,8 +3338,76 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         # If the controlstructure failed, returns False.
         return False
 
-    def edit_booking(self):
-        ...
+    def _change_room_state(self,
+                           room_number: str,
+                           state: str = &#34;vacant&#34;) -&gt; tuple[str, str] | bool:
+        &#34;&#34;&#34;
+        Manually change rooms state, private method as it is supposed to only 
+        be called when editing a booking.
+
+        Args:
+            room_number (str): Room number, (not index)
+            state (str, optional): What state (optional incase further implementation). Defaults to &#34;vacant&#34;.
+
+        Returns:
+            bool: True on success, else False
+        &#34;&#34;&#34;
+
+        if room_number.isdigit():
+            # Convert to int and move one step back for correct indexing
+            room_index = int(room_number) - 1
+            # Check if room is in range
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                # Manually change state (note it does not care about user or message):
+                self.rooms[room_index][&#34;state&#34;] = state
+                message = str(self.rooms[room_index][&#34;message&#34;])
+                ssn = str(self.rooms[room_index][&#34;user&#34;])
+
+                # Unset message and user
+                self.rooms[room_index][&#34;message&#34;] = &#34;&#34;
+                self.rooms[room_index][&#34;user&#34;] = &#34;&#34;
+
+                # Update json_data
+                self._update_json()
+                return (message, ssn)
+        return False
+
+    def edit_booking(self, ssn: str, new_room: str = &#34;&#34;, message: str = &#34;&#34;):
+        &#34;&#34;&#34;
+        Called when user is trying to edit a booking. Must be registered to edit booking.
+
+        Args:
+            ssn (str): SSN of user
+            new_room (str, optional): If wished to swap room. Defaults to &#34;&#34;.
+            message (str, optional): Messages, can be passed alone or with new_room. Defaults to &#34;&#34;.
+
+        Returns:
+            bool: True if successful, False otherwise
+        &#34;&#34;&#34;
+        if not self.is_ssn_valid(ssn):
+            return False
+
+        if self.is_registered(ssn) and self.is_booked(ssn):
+            if new_room:
+                if new_room.isdigit():
+                    old_room = str(self.active[ssn][&#34;room&#34;])
+                    # Change room state to vacant, returns message and ssn
+                    if type(result := self._change_room_state(
+                            old_room)) == tuple:
+                        old_message, old_ssn = result  # type: ignore
+                        if (self.add_booking(old_ssn,
+                                             new_room,
+                                             old_message,
+                                             _override_is_booked=True)):
+
+                            self._update_json()
+                            return True
+            elif message:
+                booked_room = int(self.active[ssn][&#34;room&#34;]) - 1
+                self.rooms[booked_room][&#34;message&#34;] = message
+                self._update_json()
+                return True
+        return False
 
     def add_room(
         self,
@@ -1319,25 +3434,77 @@ removing rooms, editing rooms, register users, unregister users and printing raw
         &#34;&#34;&#34;
         user: str = &#34;&#34;
         message: str = &#34;&#34;
-        self.rooms.append(
-            {
-                &#34;name&#34;: name,
-                &#34;price&#34;: price,
-                &#34;capacity&#34;: capacity,
-                &#34;state&#34;: state,
-                &#34;description&#34;: description,
-                &#34;misc&#34;: misc,
-                &#34;user&#34;: user,
-                &#34;message&#34;: message,
-            }
-        )
+        self.rooms.append({
+            &#34;name&#34;: name,
+            &#34;price&#34;: price,
+            &#34;capacity&#34;: capacity,
+            &#34;state&#34;: state,
+            &#34;description&#34;: description,
+            &#34;misc&#34;: misc,
+            &#34;user&#34;: user,
+            &#34;message&#34;: message,
+        })
+        self._update_json()
         return True
 
-    def remove_room(self):
-        ...
+    def remove_room(self, room_nr: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Removes a room from the hotel.
 
-    def edit_room(self):
-        ...
+        Args:
+            room_nr (str): Room nr (index in room list + 1)
+
+        Returns:
+            bool: True if operation was successful, False otherwise
+        &#34;&#34;&#34;
+        if room_nr.isdigit():
+            room_index = int(room_nr) - 1
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                del self.rooms[room_index]
+                self._update_json()
+                return True
+        return False
+
+    def edit_room(
+        self,
+        room_id: str,
+        name: str = &#34;&#34;,
+        price: str = &#34;&#34;,
+        capacity: str = &#34;&#34;,
+        state: str = &#34;&#34;,
+        description: str = &#34;&#34;,
+        misc: list[str] = [],
+    ):
+        &#34;&#34;&#34;
+        Edits a room in the hotel. Only the fields that are not empty will change.
+
+        Args:
+            room_id (_type_): Room ID (index in room list + 1)
+            name (str): Name of the room, example: JuniorSuite\n
+            price (str): Price per night, example: 19.99\n
+            capacity (str): How many can fit? example: 2\n
+            state (str): State of the room, example: vacant or occupied\n
+            description (str): A short description, who its fitted for\n
+            misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+        &#34;&#34;&#34;
+        if room_id.isdigit():
+            room_index = int(room_id) - 1
+            if 0 &lt;= room_index &lt; len(self.rooms):
+                if name:
+                    self.rooms[room_index][&#34;name&#34;] = name
+                if price:
+                    self.rooms[room_index][&#34;price&#34;] = price
+                if capacity:
+                    self.rooms[room_index][&#34;capacity&#34;] = capacity
+                if state:
+                    self.rooms[room_index][&#34;state&#34;] = state
+                if description:
+                    self.rooms[room_index][&#34;description&#34;] = description
+                if misc:
+                    self.rooms[room_index][&#34;misc&#34;] = misc
+                self._update_json()
+                return True
+        return False
 
     def filter_dict(
         self,
@@ -1375,32 +3542,34 @@ removing rooms, editing rooms, register users, unregister users and printing raw
             return data
 
     def _pretty_print(self):
-        ...
+        # Unimplemented, intended for debugging only...
+        raise NotImplementedError
 
     def _update_json(self):
         &#34;&#34;&#34;
         Updates data structure with new json_data and loads the new json_data
         &#34;&#34;&#34;
-        # Updates each dict in self.json_data
-        for key, value in self._extracted.items():
-            self.json_data.update({key: value})
+        self.json_data[&#34;rooms&#34;] = self.rooms
+        self.json_data[&#34;active&#34;] = self.active
+        self.json_data[&#34;users&#34;] = self.users
+        self.json_data[&#34;old&#34;] = self.old
 
         # Same practice as constructor
         self.json_handler.pack_data(self.json_data)
         self.json_data = self.json_handler.unpack_data()
 
-        self.users = self.json_data[&#34;users&#34;] if &#34;users&#34; in self.json_data else dict(
-        )
-        self.rooms = self.json_data[&#34;rooms&#34;] if &#34;rooms&#34; in self.json_data else list(
-        )
-        self.active = self.json_data[&#34;active&#34;] if &#34;active&#34; in self.json_data else dict(
-        )
+        self.users = (self.json_data[&#34;users&#34;]
+                      if &#34;users&#34; in self.json_data else dict())
+        self.rooms = (self.json_data[&#34;rooms&#34;]
+                      if &#34;rooms&#34; in self.json_data else list())
+        self.active = (self.json_data[&#34;active&#34;]
+                       if &#34;active&#34; in self.json_data else dict())
         self.old = self.json_data[&#34;old&#34;] if &#34;old&#34; in self.json_data else dict()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="hotel.HotelManager.add_booking"><code class="name flex">
-<span>def <span class="ident">add_booking</span></span>(<span>self, ssn: str, room: str) ‑> bool</span>
+<span>def <span class="ident">add_booking</span></span>(<span>self, ssn: str, room: str, message: str = '') ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Called when user is booking a room. Must be registered to add booking.</p>
@@ -1410,7 +3579,12 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 <dd>ssn of user</dd>
 <dt><strong><code>room</code></strong> :&ensp;<code>str</code></dt>
 <dd>room number(digits): "1", "2", "3" etc.</dd>
+<dt><strong><code>message</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>message from user. Defaults to "".</dd>
+<dt><strong><code>_override_is_booked</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Overrides the check for already book </dd>
 </dl>
+<p>(use with precaution). Defaults to False.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>bool</code></dt>
@@ -1420,39 +3594,57 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_booking(self, ssn: str, room: str) -&gt; bool:
+<pre><code class="python">def add_booking(self,
+                ssn: str,
+                room: str,
+                message: str = &#34;&#34;,
+                _override_is_booked=False) -&gt; bool:
     &#34;&#34;&#34;
     Called when user is booking a room. Must be registered to add booking.
 
     Args:
         ssn (str): ssn of user\n
         room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+        message (str, optional): message from user. Defaults to &#34;&#34;.
+        _override_is_booked (bool, optional): Overrides the check for already book 
+        (use with precaution). Defaults to False.
 
     Returns:
         bool: Boolean on success or failure
     &#34;&#34;&#34;
+
+    if not self.is_ssn_valid(ssn):
+        return False
+
     # Checks if user exists and NOT already booked
-    if ssn in self.users and ssn not in self.active:
-        if room.isdigit():
-            # Convert to int and move one step back for correct indexing
-            room_index = int(room) - 1
-            # Check if room is in range
-            if 0 &lt;= room_index &lt; len(self.rooms):
-                #  Check if room is vacant
-                if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
-                    # Change room state to occupied
-                    self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
-                    # Add booking to active dict
-                    self.active[ssn] = {&#34;room&#34;: room, &#34;checked_in&#34;: False}
-                    # Update json_data
-                    self._update_json()
-                    return True
+
+    if self.is_registered(ssn):
+        if not self.is_booked(ssn) or _override_is_booked:
+            if room.isdigit():
+                # Convert to int and move one step back for correct indexing
+                room_index = int(room) - 1
+                # Check if room is in range
+                if 0 &lt;= room_index &lt; len(self.rooms):
+                    #  Check if room is vacant
+                    if self.rooms[room_index][&#34;state&#34;] == &#34;vacant&#34;:
+                        # Change room state to occupied
+                        self.rooms[room_index][&#34;state&#34;] = &#34;occupied&#34;
+                        self.rooms[room_index][&#34;user&#34;] = ssn
+                        self.rooms[room_index][&#34;message&#34;] = message
+                        # Add booking to active dict
+                        self.active[ssn] = {
+                            &#34;room&#34;: room,
+                            &#34;checked_in&#34;: False
+                        }
+                        # Update json_data
+                        self._update_json()
+                        return True
     # If the controlstructure failed, returns False.
     return False</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.add_room"><code class="name flex">
-<span>def <span class="ident">add_room</span></span>(<span>self, name: str, price: str, capacity: str, state: str, description: str, misc: list) ‑> bool</span>
+<span>def <span class="ident">add_room</span></span>(<span>self, name: str, price: str, capacity: str, state: str, description: str, misc: list[str]) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a room to the hotel.</p>
@@ -1505,19 +3697,50 @@ removing rooms, editing rooms, register users, unregister users and printing raw
     &#34;&#34;&#34;
     user: str = &#34;&#34;
     message: str = &#34;&#34;
-    self.rooms.append(
-        {
-            &#34;name&#34;: name,
-            &#34;price&#34;: price,
-            &#34;capacity&#34;: capacity,
-            &#34;state&#34;: state,
-            &#34;description&#34;: description,
-            &#34;misc&#34;: misc,
-            &#34;user&#34;: user,
-            &#34;message&#34;: message,
-        }
-    )
+    self.rooms.append({
+        &#34;name&#34;: name,
+        &#34;price&#34;: price,
+        &#34;capacity&#34;: capacity,
+        &#34;state&#34;: state,
+        &#34;description&#34;: description,
+        &#34;misc&#34;: misc,
+        &#34;user&#34;: user,
+        &#34;message&#34;: message,
+    })
+    self._update_json()
     return True</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.been_registered"><code class="name flex">
+<span>def <span class="ident">been_registered</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if a user has been registered.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>string of 12 characters representing a user's social security number</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if user is registered, False if not</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def been_registered(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Checks if a user has been registered.
+
+    Args:
+        ssn (str): string of 12 characters representing a user&#39;s social security number
+
+    Returns:
+        bool: True if user is registered, False if not
+    &#34;&#34;&#34;
+    return ssn in self.old</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.check_in"><code class="name flex">
@@ -1549,12 +3772,15 @@ removing rooms, editing rooms, register users, unregister users and printing raw
     Returns:
         bool: Boolean on success or failure
     &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return False
+
     # Checks if user exists
-    if ssn in self.users:
+    if self.is_registered(ssn):
         # Check if already booked
-        if ssn in self.active:
+        if self.is_booked(ssn):
             # Check if not checked in
-            if not self.users[ssn][&#34;checked_in&#34;]:
+            if not self.active[ssn][&#34;checked_in&#34;]:
                 # Good to check in...
                 self.active[ssn][&#34;checked_in&#34;] = True
                 self._update_json()
@@ -1564,7 +3790,7 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 </details>
 </dd>
 <dt id="hotel.HotelManager.check_out"><code class="name flex">
-<span>def <span class="ident">check_out</span></span>(<span>self, ssn: str) ‑> bool</span>
+<span>def <span class="ident">check_out</span></span>(<span>self, ssn: str, unregister: bool) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Called when user is trying to check out to hotel</p>
@@ -1572,6 +3798,8 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 <dl>
 <dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
 <dd>ssn of user wanting to check out</dd>
+<dt><strong><code>unregister</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Boolean on whether to unregister user or not</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1582,26 +3810,36 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_out(self, ssn: str) -&gt; bool:
+<pre><code class="python">def check_out(self, ssn: str, unregister: bool) -&gt; bool:
     &#34;&#34;&#34;
     Called when user is trying to check out to hotel
 
     Args:
         ssn (str): ssn of user wanting to check out
+        unregister (bool): Boolean on whether to unregister user or not
 
     Returns:
         bool: Boolean on success or failure
     &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return False
+
     # Check if user exists and is booked
-    if ssn in self.users and ssn in self.active:
+    if self.is_registered(ssn) and self.is_booked(ssn):
         # Check if checked in
         if self.active[ssn][&#34;checked_in&#34;]:
             # Good to check out...
+            booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+            self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+            self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+            self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+
             self.active[ssn][&#34;checked_in&#34;] = False
-            # Increment times stayed at the hotel
-            self.old[ssn] += 1
+
             # Remove booking from active dict
             del self.active[ssn]
+            if unregister:
+                self.unregister_user(ssn)
             # Update json_data
             self._update_json()
             return True
@@ -1610,29 +3848,203 @@ removing rooms, editing rooms, register users, unregister users and printing raw
 </details>
 </dd>
 <dt id="hotel.HotelManager.edit_booking"><code class="name flex">
-<span>def <span class="ident">edit_booking</span></span>(<span>self)</span>
+<span>def <span class="ident">edit_booking</span></span>(<span>self, ssn: str, new_room: str = '', message: str = '')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Called when user is trying to edit a booking. Must be registered to edit booking.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSN of user</dd>
+<dt><strong><code>new_room</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>If wished to swap room. Defaults to "".</dd>
+<dt><strong><code>message</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Messages, can be passed alone or with new_room. Defaults to "".</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if successful, False otherwise</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def edit_booking(self):
-    ...</code></pre>
+<pre><code class="python">def edit_booking(self, ssn: str, new_room: str = &#34;&#34;, message: str = &#34;&#34;):
+    &#34;&#34;&#34;
+    Called when user is trying to edit a booking. Must be registered to edit booking.
+
+    Args:
+        ssn (str): SSN of user
+        new_room (str, optional): If wished to swap room. Defaults to &#34;&#34;.
+        message (str, optional): Messages, can be passed alone or with new_room. Defaults to &#34;&#34;.
+
+    Returns:
+        bool: True if successful, False otherwise
+    &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return False
+
+    if self.is_registered(ssn) and self.is_booked(ssn):
+        if new_room:
+            if new_room.isdigit():
+                old_room = str(self.active[ssn][&#34;room&#34;])
+                # Change room state to vacant, returns message and ssn
+                if type(result := self._change_room_state(
+                        old_room)) == tuple:
+                    old_message, old_ssn = result  # type: ignore
+                    if (self.add_booking(old_ssn,
+                                         new_room,
+                                         old_message,
+                                         _override_is_booked=True)):
+
+                        self._update_json()
+                        return True
+        elif message:
+            booked_room = int(self.active[ssn][&#34;room&#34;]) - 1
+            self.rooms[booked_room][&#34;message&#34;] = message
+            self._update_json()
+            return True
+    return False</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.edit_room"><code class="name flex">
-<span>def <span class="ident">edit_room</span></span>(<span>self)</span>
+<span>def <span class="ident">edit_room</span></span>(<span>self, room_id: str, name: str = '', price: str = '', capacity: str = '', state: str = '', description: str = '', misc: list[str] = [])</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Edits a room in the hotel. Only the fields that are not empty will change.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>room_id</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>Room ID (index in room list + 1)</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the room, example: JuniorSuite</dd>
+<dt><strong><code>price</code></strong> :&ensp;<code>str</code></dt>
+<dd>Price per night, example: 19.99</dd>
+<dt><strong><code>capacity</code></strong> :&ensp;<code>str</code></dt>
+<dd>How many can fit? example: 2</dd>
+<dt><strong><code>state</code></strong> :&ensp;<code>str</code></dt>
+<dd>State of the room, example: vacant or occupied</dd>
+<dt><strong><code>description</code></strong> :&ensp;<code>str</code></dt>
+<dd>A short description, who its fitted for</dd>
+<dt><strong><code>misc</code></strong> :&ensp;<code>list[str]</code></dt>
+<dd>list of additional information, example: wifi, type of bed, etc.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def edit_room(self):
-    ...</code></pre>
+<pre><code class="python">def edit_room(
+    self,
+    room_id: str,
+    name: str = &#34;&#34;,
+    price: str = &#34;&#34;,
+    capacity: str = &#34;&#34;,
+    state: str = &#34;&#34;,
+    description: str = &#34;&#34;,
+    misc: list[str] = [],
+):
+    &#34;&#34;&#34;
+    Edits a room in the hotel. Only the fields that are not empty will change.
+
+    Args:
+        room_id (_type_): Room ID (index in room list + 1)
+        name (str): Name of the room, example: JuniorSuite\n
+        price (str): Price per night, example: 19.99\n
+        capacity (str): How many can fit? example: 2\n
+        state (str): State of the room, example: vacant or occupied\n
+        description (str): A short description, who its fitted for\n
+        misc (list[str]): list of additional information, example: wifi, type of bed, etc.\n
+    &#34;&#34;&#34;
+    if room_id.isdigit():
+        room_index = int(room_id) - 1
+        if 0 &lt;= room_index &lt; len(self.rooms):
+            if name:
+                self.rooms[room_index][&#34;name&#34;] = name
+            if price:
+                self.rooms[room_index][&#34;price&#34;] = price
+            if capacity:
+                self.rooms[room_index][&#34;capacity&#34;] = capacity
+            if state:
+                self.rooms[room_index][&#34;state&#34;] = state
+            if description:
+                self.rooms[room_index][&#34;description&#34;] = description
+            if misc:
+                self.rooms[room_index][&#34;misc&#34;] = misc
+            self._update_json()
+            return True
+    return False</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.edit_user"><code class="name flex">
+<span>def <span class="ident">edit_user</span></span>(<span>self, ssn: str, name: str = '', age: str = '', new_ssn: str = '') ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Edits a user's information.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSN of the CURRENTLY registered user, provide new_ssn to edit this</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>New name. Defaults to "".</dd>
+<dt><strong><code>age</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>New age. Defaults to "".</dd>
+<dt><strong><code>new_ssn</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>New ssn. Defaults to "".</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True on success, False otherwise</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def edit_user(self,
+              ssn: str,
+              name: str = &#34;&#34;,
+              age: str = &#34;&#34;,
+              new_ssn: str = &#34;&#34;) -&gt; bool:
+    &#34;&#34;&#34;
+    Edits a user&#39;s information.
+
+    Args:
+        ssn (str): SSN of the CURRENTLY registered user, provide new_ssn to edit this
+        name (str, optional): New name. Defaults to &#34;&#34;.
+        age (str, optional): New age. Defaults to &#34;&#34;.
+        new_ssn (str, optional): New ssn. Defaults to &#34;&#34;.
+
+    Returns:
+        bool: True on success, False otherwise
+    &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return False
+
+    if self.is_registered(ssn):
+        # If new ssn is provided, the key must be updated.
+        if new_ssn:
+            # Changes key in self.users to new_ssn(pop returns the value hence the assignment below)
+            self.users[new_ssn] = self.users.pop(ssn)
+            # Edit booking ssn
+            if self.is_booked(ssn):
+                self.active[new_ssn] = self.active.pop(ssn)
+                booked_room_index = int(self.active[new_ssn][&#34;room&#34;]) - 1
+                self.rooms[booked_room_index][&#34;user&#34;] = new_ssn
+
+            # Edit old ssn
+            if ssn in self.old:
+                self.old[new_ssn] = self.old.pop(ssn)
+            # To not interfere with multiple changes
+            ssn = new_ssn
+        if name:
+            self.users[ssn][&#34;name&#34;] = name
+        if age:
+            self.users[ssn][&#34;age&#34;] = age
+        self._update_json()
+        return True
+    # User is not registered
+    return False</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.filter_dict"><code class="name flex">
@@ -1691,6 +4103,38 @@ Defaults to None.</dd>
         return data</code></pre>
 </details>
 </dd>
+<dt id="hotel.HotelManager.is_booked"><code class="name flex">
+<span>def <span class="ident">is_booked</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a boolean depending on whether a user is booked or not.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>SSN of user</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if a user is booked, False otherwise</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_booked(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Returns a boolean depending on whether a user is booked or not.
+
+    Args:
+        ssn (str): SSN of user
+
+    Returns:
+        bool: True if a user is booked, False otherwise
+    &#34;&#34;&#34;
+    return ssn in self.active</code></pre>
+</details>
+</dd>
 <dt id="hotel.HotelManager.is_registered"><code class="name flex">
 <span>def <span class="ident">is_registered</span></span>(<span>self, ssn: str) ‑> bool</span>
 </code></dt>
@@ -1721,6 +4165,42 @@ Defaults to None.</dd>
         bool: True if a user is registered, False otherwise
     &#34;&#34;&#34;
     return ssn in self.users</code></pre>
+</details>
+</dd>
+<dt id="hotel.HotelManager.is_ssn_valid"><code class="name flex">
+<span>def <span class="ident">is_ssn_valid</span></span>(<span>self, ssn: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Evaluate if ssn is valid</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
+<dd>Social security number.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True on success, False otherwise</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_ssn_valid(self, ssn: str) -&gt; bool:
+    &#34;&#34;&#34;Evaluate if ssn is valid
+
+    Args:
+        ssn (str): Social security number.
+
+    Returns:
+        bool: True on success, False otherwise
+    &#34;&#34;&#34;
+    # Removes all dashes and spaces
+    ssn = ssn.replace(&#34;-&#34;, &#34;&#34;).replace(&#34; &#34;, &#34;&#34;)
+    if ssn.isdigit():
+        if len(ssn) == 12:
+            return True
+    return False</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.register_user"><code class="name flex">
@@ -1760,13 +4240,15 @@ Will return a string or boolean depending on success.
         str | bool: str on failure, boolean(True) on success
     &#34;&#34;&#34;
     # Check if a user is already registered
-    if ssn in self.users:
+    if self.is_registered(ssn):
         return &#34;User with given ssn already exists&#34;
+
     # Check if age is a number
     if not age.isdigit():
         return &#34;Age must be a number&#34;
     # Else add user to self.users with ssn as the key
     self.users[ssn] = {&#34;name&#34;: name, &#34;age&#34;: age}
+    self._update_json()
     return True</code></pre>
 </details>
 </dd>
@@ -1774,18 +4256,18 @@ Will return a string or boolean depending on success.
 <span>def <span class="ident">remove_booking</span></span>(<span>self, ssn: str, unregister: bool) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Called when user is removing a booking. Must be registered to remove booking.</p>
+<div class="desc"><p>Called when user is trying to remove a booking. Must be registered to remove booking.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
-<dd>ssn of user</dd>
-<dt><strong><code>room</code></strong> :&ensp;<code>str</code></dt>
-<dd>room number(digits): "1", "2", "3" etc.</dd>
+<dd><em>description</em></dd>
+<dt><strong><code>unregister</code></strong> :&ensp;<code>bool</code></dt>
+<dd>unregister the user when removing booking</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>bool</code></dt>
-<dd>Boolean on success or failure</dd>
+<dd><em>description</em></dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1793,22 +4275,29 @@ Will return a string or boolean depending on success.
 </summary>
 <pre><code class="python">def remove_booking(self, ssn: str, unregister: bool) -&gt; bool:
     &#34;&#34;&#34;
-    Called when user is removing a booking. Must be registered to remove booking.
+    Called when user is trying to remove a booking. Must be registered to remove booking.
 
     Args:
-        ssn (str): ssn of user\n
-        room (str): room number(digits): &#34;1&#34;, &#34;2&#34;, &#34;3&#34; etc.
+        ssn (str): _description_
+        unregister (bool): unregister the user when removing booking
 
     Returns:
-        bool: Boolean on success or failure
+        bool: _description_
     &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return False
+
     # Check if user exists and is booked
-    if ssn in self.users and ssn in self.active:
+    if self.is_registered(ssn) and self.is_booked(ssn):
         # Check if not checked in
         if not self.active[ssn][&#34;checked_in&#34;]:
             # Change room state to vacant
-            self.rooms[int(self.active[ssn][&#34;room&#34;]) -
-                       1][&#34;state&#34;] = &#34;vacant&#34;
+            booked_room_index = int(self.active[ssn][&#34;room&#34;]) - 1
+            # Remove rooms user and message
+            self.rooms[booked_room_index][&#34;state&#34;] = &#34;vacant&#34;
+            self.rooms[booked_room_index][&#34;user&#34;] = &#34;&#34;
+            self.rooms[booked_room_index][&#34;message&#34;] = &#34;&#34;
+
             # Remove booking from active dict
             del self.active[ssn]
             if unregister:
@@ -1824,25 +4313,49 @@ Will return a string or boolean depending on success.
 </details>
 </dd>
 <dt id="hotel.HotelManager.remove_room"><code class="name flex">
-<span>def <span class="ident">remove_room</span></span>(<span>self)</span>
+<span>def <span class="ident">remove_room</span></span>(<span>self, room_nr: str) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Removes a room from the hotel.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>room_nr</code></strong> :&ensp;<code>str</code></dt>
+<dd>Room nr (index in room list + 1)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if operation was successful, False otherwise</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def remove_room(self):
-    ...</code></pre>
+<pre><code class="python">def remove_room(self, room_nr: str) -&gt; bool:
+    &#34;&#34;&#34;
+    Removes a room from the hotel.
+
+    Args:
+        room_nr (str): Room nr (index in room list + 1)
+
+    Returns:
+        bool: True if operation was successful, False otherwise
+    &#34;&#34;&#34;
+    if room_nr.isdigit():
+        room_index = int(room_nr) - 1
+        if 0 &lt;= room_index &lt; len(self.rooms):
+            del self.rooms[room_index]
+            self._update_json()
+            return True
+    return False</code></pre>
 </details>
 </dd>
 <dt id="hotel.HotelManager.unregister_user"><code class="name flex">
-<span>def <span class="ident">unregister_user</span></span>(<span>self, ssn) ‑> str | bool</span>
+<span>def <span class="ident">unregister_user</span></span>(<span>self, ssn: str) ‑> str | bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Unregister a user from the HotelManager.
-Will return a string or boolean depending on success.
-(Type check for the str or bool)</p>
+Will return a string or boolean depending on success.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ssn</code></strong> :&ensp;<code>str</code></dt>
@@ -1854,11 +4367,10 @@ Will return a string or boolean depending on success.
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unregister_user(self, ssn) -&gt; bool | str:
+<pre><code class="python">def unregister_user(self, ssn: str) -&gt; bool | str:
     &#34;&#34;&#34;
     Unregister a user from the HotelManager.
     Will return a string or boolean depending on success.
-    (Type check for the str or bool)
 
     Args:
         ssn (str): string of 12 characters representing a user&#39;s social security number
@@ -1866,12 +4378,30 @@ Will return a string or boolean depending on success.
     Returns:
         str | bool: str on failure, boolean(True) on success
     &#34;&#34;&#34;
+    if not self.is_ssn_valid(ssn):
+        return &#34;Invalid ssn&#34;
+
     # Check if a user is already registered
-    if ssn not in self.users:
+    if not self.is_registered(ssn):
         return &#34;User with given ssn does not exist&#34;
-    # Else add user to self.old and remove user from self.users with ssn as the key
-    self.old[ssn] += 1
+
+    if self.is_booked(ssn):
+        # Removes current booking, but does not unregister the user(yet)
+        self.remove_booking(ssn, False)
+    # Total registration count
+    if &#34;total registrations&#34; in self.old[ssn]:
+        total_reg = int(self.old[ssn][&#34;total registrations&#34;])
+    else:
+        total_reg = 0
+
+    total_reg += 1
+    self.old[ssn][&#34;total registrations&#34;] = str(total_reg)
+    self.old[ssn][&#34;name&#34;] = self.users[ssn][&#34;name&#34;]
+    self.old[ssn][&#34;age&#34;] = self.users[ssn][&#34;age&#34;]
+
     del self.users[ssn]
+
+    self._update_json()
     return True</code></pre>
 </details>
 </dd>
@@ -1950,7 +4480,7 @@ Will return a string or boolean depending on success.
         &#34;&#34;&#34;Setter for filename&#34;&#34;&#34;
         # Instead of raising an exception on no &#39;filename&#39; a fallback exists.
         self.__fallback = &#34;hotel.json&#34;
-        # Evaluate whetever the custom value(if given is a valid file)
+        # Evaluate whatever the custom value(if given is a valid file)
         if value:
             if value.endswith(&#34;.json&#34;):
                 self._filename = value
@@ -2112,7 +4642,7 @@ def path(self) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"><p>All classes that "connect" to the hotel is derived from HotelInterface.
-An abstract class that predefines implementations requirements.</p>
+An abstract class that predefined implementations requirements.</p>
 <p>Initializes the hotel object that it will connect to</p>
 <p>Expected Args:
 hotel (HotelManager): HotelManager object</p></div>
@@ -2122,6 +4652,8 @@ hotel (HotelManager): HotelManager object</p></div>
 </summary>
 <pre><code class="python">class WebHotel(HotelInterface):
     # Django or Flask implementation
+
+    #! NOT IMPLEMENTED
     ...</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -2151,7 +4683,6 @@ hotel (HotelManager): HotelManager object</p></div>
 <li>
 <h4><code><a title="hotel.ConsoleHotel" href="#hotel.ConsoleHotel">ConsoleHotel</a></code></h4>
 <ul class="">
-<li><code><a title="hotel.ConsoleHotel.clear_console" href="#hotel.ConsoleHotel.clear_console">clear_console</a></code></li>
 <li><code><a title="hotel.ConsoleHotel.run" href="#hotel.ConsoleHotel.run">run</a></code></li>
 </ul>
 </li>
@@ -2169,12 +4700,16 @@ hotel (HotelManager): HotelManager object</p></div>
 <ul class="two-column">
 <li><code><a title="hotel.HotelManager.add_booking" href="#hotel.HotelManager.add_booking">add_booking</a></code></li>
 <li><code><a title="hotel.HotelManager.add_room" href="#hotel.HotelManager.add_room">add_room</a></code></li>
+<li><code><a title="hotel.HotelManager.been_registered" href="#hotel.HotelManager.been_registered">been_registered</a></code></li>
 <li><code><a title="hotel.HotelManager.check_in" href="#hotel.HotelManager.check_in">check_in</a></code></li>
 <li><code><a title="hotel.HotelManager.check_out" href="#hotel.HotelManager.check_out">check_out</a></code></li>
 <li><code><a title="hotel.HotelManager.edit_booking" href="#hotel.HotelManager.edit_booking">edit_booking</a></code></li>
 <li><code><a title="hotel.HotelManager.edit_room" href="#hotel.HotelManager.edit_room">edit_room</a></code></li>
+<li><code><a title="hotel.HotelManager.edit_user" href="#hotel.HotelManager.edit_user">edit_user</a></code></li>
 <li><code><a title="hotel.HotelManager.filter_dict" href="#hotel.HotelManager.filter_dict">filter_dict</a></code></li>
+<li><code><a title="hotel.HotelManager.is_booked" href="#hotel.HotelManager.is_booked">is_booked</a></code></li>
 <li><code><a title="hotel.HotelManager.is_registered" href="#hotel.HotelManager.is_registered">is_registered</a></code></li>
+<li><code><a title="hotel.HotelManager.is_ssn_valid" href="#hotel.HotelManager.is_ssn_valid">is_ssn_valid</a></code></li>
 <li><code><a title="hotel.HotelManager.register_user" href="#hotel.HotelManager.register_user">register_user</a></code></li>
 <li><code><a title="hotel.HotelManager.remove_booking" href="#hotel.HotelManager.remove_booking">remove_booking</a></code></li>
 <li><code><a title="hotel.HotelManager.remove_room" href="#hotel.HotelManager.remove_room">remove_room</a></code></li>
