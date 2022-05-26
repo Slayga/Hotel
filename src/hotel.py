@@ -291,6 +291,9 @@ class HotelManager:
         if not self.is_registered(ssn):
             return "User with given ssn does not exist"
 
+        if self.is_booked(ssn):
+            # Removes current booking, but does not unregister the user(yet)
+            self.remove_booking(ssn, False)
         # Total registration count
         if "total registrations" in self.old[ssn]:
             total_reg = int(self.old[ssn]["total registrations"])
@@ -303,13 +306,6 @@ class HotelManager:
         self.old[ssn]["age"] = self.users[ssn]["age"]
 
         del self.users[ssn]
-
-        # If user is booked, remove from active and update room
-        if self.is_booked(ssn):
-            booked_room = int(self.active[ssn]["room"]) - 1
-            self.rooms[booked_room]["user"] = ""
-            self.rooms[booked_room]["message"] = "vacant"
-            del self.active[ssn]
 
         self._update_json()
         return True
