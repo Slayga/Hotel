@@ -1528,6 +1528,9 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _remove_room(self):
+        # If no rooms exist, return to upper menu
+        if not self.hotel.rooms:
+            return
         self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
@@ -1574,6 +1577,9 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
     def _edit_room(self):
+        # If no rooms exist, return to upper menu
+        if not self.hotel.rooms:
+            return
         self._clear_console()
         print(self._menu_option["header"])
         print("=" * len(self._menu_option["header"]))
