@@ -1052,6 +1052,72 @@ class ConsoleHotel(HotelInterface):
 
     def _edit_user(self):
         # TODO: Implement
+        # NOTE: Similar functionality as _edit_room?
+
+        self._clear_console()
+        print(self._menu_option["header"])
+        print("=" * len(self._menu_option["header"]))
+        print("Edit user")
+        print("-" * 15)
+        # Prompt user for input
+        while not self.hotel.is_registered(
+            (userSsn := self._userInput("Please enter your SSN: "))):
+            if userSsn == self._menu_option["exit"]:
+                return
+            self._userInput(
+                f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
+            )
+
+        while True:
+            name = self.hotel.users[userSsn]["name"]
+            age = self.hotel.users[userSsn]["age"]
+            self._clear_console()
+
+            print("What to edit?")
+            print("-" * 15)
+
+            self._userPrint(f"Name: {name}")
+            self._userPrint(f"Age: {age}")
+            self._userPrint("-" * 15)
+            self._userPrint("[1]: Change name")
+            self._userPrint("[2]: Change age")
+            self._userPrint("[#]: Exit")
+            print()
+            userInput = self._userInput("Please select an option: ")
+
+            if userInput == self._menu_option["exit"]:
+                return
+
+            elif userInput == "1":
+                while True:
+                    newName = self._userInput("Enter new name: ")
+                    if newName:
+                        break
+                    else:
+                        self._userPrint(
+                            "Name is invalid, make sure its following format: Firstname Lastname OR Firstname"
+                        )
+                if self.hotel.edit_user(userSsn, name=newName):
+                    self._userPrint("Name changed")
+                else:
+                    self._userPrint("Name change failed")
+
+                self._userInput("Press enter to continue...")
+
+            elif userInput == "2":
+                while True:
+                    newAge = self._userInput("Enter new age: ")
+                    if newAge.isdigit():
+                        break
+                    else:
+                        self._userPrint(
+                            "Age is invalid, make sure its a number")
+                if self.hotel.edit_user(userSsn, age=newAge):
+                    self._userPrint("Age changed")
+                else:
+                    self._userPrint("Age change failed")
+
+                self._userInput("Press enter to continue...")
         ...
 
     def _unregister_user(self):
