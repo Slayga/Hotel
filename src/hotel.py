@@ -376,7 +376,11 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
-    def add_booking(self, ssn: str, room: str, message: str = "") -> bool:
+    def add_booking(self,
+                    ssn: str,
+                    room: str,
+                    message: str = "",
+                    _override_is_booked=False) -> bool:
         """
         Called when user is booking a room. Must be registered to add booking.
 
@@ -384,6 +388,8 @@ class HotelManager:
             ssn (str): ssn of user\n
             room (str): room number(digits): "1", "2", "3" etc.
             message (str, optional): message from user. Defaults to "".
+            _override_is_booked (bool, optional): Overrides the check for already book 
+            (use with precaution). Defaults to False.
 
         Returns:
             bool: Boolean on success or failure
@@ -393,23 +399,28 @@ class HotelManager:
             return False
 
         # Checks if user exists and NOT already booked
-        if self.is_registered(ssn) and not self.is_booked(ssn):
-            if room.isdigit():
-                # Convert to int and move one step back for correct indexing
-                room_index = int(room) - 1
-                # Check if room is in range
-                if 0 <= room_index < len(self.rooms):
-                    #  Check if room is vacant
-                    if self.rooms[room_index]["state"] == "vacant":
-                        # Change room state to occupied
-                        self.rooms[room_index]["state"] = "occupied"
-                        self.rooms[room_index]["user"] = ssn
-                        self.rooms[room_index]["message"] = message
-                        # Add booking to active dict
-                        self.active[ssn] = {"room": room, "checked_in": False}
-                        # Update json_data
-                        self._update_json()
-                        return True
+
+        if self.is_registered(ssn):
+            if not self.is_booked(ssn) or _override_is_booked:
+                if room.isdigit():
+                    # Convert to int and move one step back for correct indexing
+                    room_index = int(room) - 1
+                    # Check if room is in range
+                    if 0 <= room_index < len(self.rooms):
+                        #  Check if room is vacant
+                        if self.rooms[room_index]["state"] == "vacant":
+                            # Change room state to occupied
+                            self.rooms[room_index]["state"] = "occupied"
+                            self.rooms[room_index]["user"] = ssn
+                            self.rooms[room_index]["message"] = message
+                            # Add booking to active dict
+                            self.active[ssn] = {
+                                "room": room,
+                                "checked_in": False
+                            }
+                            # Update json_data
+                            self._update_json()
+                            return True
         # If the controlstructure failed, returns False.
         return False
 
@@ -463,6 +474,40 @@ class HotelManager:
         # If the controlstructure failed, returns False.
         return False
 
+    def _change_room_state(self,
+                           room_number: str,
+                           state: str = "vacant") -> tuple[str, str] | bool:
+        """
+        Manually change rooms state, private method as it is supposed to only 
+        be called when editing a booking.
+
+        Args:
+            room_number (str): Room number, (not index)
+            state (str, optional): What state (optional incase further implementation). Defaults to "vacant".
+
+        Returns:
+            bool: True on success, else False
+        """
+
+        if room_number.isdigit():
+            # Convert to int and move one step back for correct indexing
+            room_index = int(room_number) - 1
+            # Check if room is in range
+            if 0 <= room_index < len(self.rooms):
+                # Manually change state (note it does not care about user or message):
+                self.rooms[room_index]["state"] = state
+                message = str(self.rooms[room_index]["message"])
+                ssn = str(self.rooms[room_index]["user"])
+
+                # Unset message and user
+                self.rooms[room_index]["message"] = ""
+                self.rooms[room_index]["user"] = ""
+
+                # Update json_data
+                self._update_json()
+                return (message, ssn)
+        return False
+
     def edit_booking(self, ssn: str, new_room: str = "", message: str = ""):
         """
         Called when user is trying to edit a booking. Must be registered to edit booking.
@@ -481,9 +526,18 @@ class HotelManager:
         if self.is_registered(ssn) and self.is_booked(ssn):
             if new_room:
                 if new_room.isdigit():
-                    if (self.add_booking(ssn, new_room, message)):
-                        self._update_json()
-                        return True
+                    old_room = str(self.active[ssn]["room"])
+                    # Change room state to vacant, returns message and ssn
+                    if type(result := self._change_room_state(
+                            old_room)) == tuple:
+                        old_message, old_ssn = result
+                        if (self.add_booking(old_ssn,
+                                             new_room,
+                                             old_message,
+                                             _override_is_booked=True)):
+
+                            self._update_json()
+                            return True
             elif message:
                 booked_room = int(self.active[ssn]["room"]) - 1
                 self.rooms[booked_room]["message"] = message
@@ -1088,7 +1142,6 @@ class ConsoleHotel(HotelInterface):
                     1,
                     len(self.hotel.rooms) + 1):
                 # Lowers the number by one step (index starts at 0)
-                userRoom = str(int(userRoom) - 1)
                 break
             else:
                 self._userInput(
@@ -1188,8 +1241,58 @@ class ConsoleHotel(HotelInterface):
                 f"Invalid SSN (Make sure its 12 numbers and registered). Press enter to try again or {self._menu_option['exit']} to exit"
             )
 
-        # TODO: Finish
-        ...
+        while True:
+            booked_room = self.hotel.active[userSsn]["room"]
+            message = self.hotel.rooms[int(booked_room) - 1]["message"]
+            self._clear_console()
+
+            print("What to edit?")
+            print("-" * 15)
+            self._userPrint(f"You are currently booked in room {booked_room}")
+            self._userPrint(f"You provided the following message: {message}")
+            print("-" * 15)
+            self._userPrint("[1]: Change message")
+            self._userPrint("[2]: Change room")
+            self._userPrint("[#]: Exit")
+
+            userChoice = self._userInput("Enter your choice: ")
+            if userChoice == self._menu_option["exit"]:
+                return
+
+            if userChoice == "1":
+                print("-" * 15)
+                self._userPrint("Current message:", message)
+                print("-" * 15)
+                userMessage = self._userInput("New message: ")
+                if userMessage == self._menu_option["exit"]:
+                    return
+                if self.hotel.edit_booking(userSsn, message=userMessage):
+                    self._userPrint("Message changed!")
+                else:
+                    self._userPrint("Message change failed!")
+                    self._userInput("Press enter to continue...")
+
+            elif userChoice == "2":
+                while True:
+                    print("-" * 15)
+                    self._userPrint("Current room:", booked_room)
+                    self._userPrint(
+                        "Enter [rooms] to see all vacant rooms to book")
+                    print("-" * 15)
+                    userRoom = self._userInput("New room: ")
+                    if userRoom == self._menu_option["exit"]:
+                        return
+
+                    if userRoom == "rooms":
+                        self._print_all_vacant()
+                        continue
+
+                    elif self.hotel.edit_booking(userSsn, new_room=userRoom):
+                        self._userPrint("Room changed!")
+                        break
+                    else:
+                        self._userPrint("Room change failed!")
+                        self._userInput("Press enter to continue...")
 
     def _print_all_bookings(self):
         self._clear_console()
