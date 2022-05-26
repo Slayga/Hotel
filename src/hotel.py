@@ -1734,7 +1734,10 @@ class ConsoleHotel(HotelInterface):
         self._userInput("Press enter to continue...")
 
 
-def main():
+def _main():
+    """
+    Main function. Used for testing and running the application
+    """
     # Initialize an object of the class
     while True:
         while True:
@@ -1759,4 +1762,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()
