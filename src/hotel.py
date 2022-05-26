@@ -260,7 +260,7 @@ class HotelManager:
                 # Edit booking ssn
                 if self.is_booked(ssn):
                     self.active[new_ssn] = self.active.pop(ssn)
-                    booked_room_index = int(self.active[new_ssn]["room"]) -1
+                    booked_room_index = int(self.active[new_ssn]["room"]) - 1
                     self.rooms[booked_room_index]["user"] = new_ssn
 
                 # Edit old ssn
