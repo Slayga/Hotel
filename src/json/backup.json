@@ -1,21 +1,17 @@
 {
     "users": {
-        "031105-1234": {
-            "name": "John",
-            "age": "25"
-        },
-        "030607-1234": {
-            "name": "Doe",
-            "age": "30"
+        "123456789011": {
+            "name": "Test",
+            "age": "19"
         }
     },
     "rooms": [
         {
             "name": "JuniorSuite",
             "price": "19.99",
-            "space": "4",
+            "capacity": "4",
             "state": "vacant",
-            "description": "This is a room fitted for average income earners, who wants that extra space and privacy.",
+            "description": "This is a room fitted for average income earners, who wants that extra capacity and privacy.",
             "misc": [
                 "2xDoubleBed",
                 "wifi",
@@ -23,15 +19,15 @@
                 "fridge",
                 "microwave"
             ],
-            "user": "Here the booked user will 'bind' to the room",
-            "message": "Additional message from the user that booked the room"
+            "user": "",
+            "message": ""
         },
         {
             "name": "SeniorSuite",
             "price": "29.99",
-            "space": "2",
-            "state": "occupied",
-            "description": "This is a room fitted for the most senior income earners, who wants that extra space and privacy.",
+            "capacity": "2",
+            "state": "vacant",
+            "description": "This is a room fitted for the most senior income earners, who wants that extra capacity and privacy.",
             "misc": [
                 "1xDoubleBed",
                 "wifi",
@@ -39,17 +35,21 @@
                 "fridge",
                 "microwave"
             ],
-            "user": "030607-1234",
-            "message": "Please clean between 8pm-9pm"
+            "user": "",
+            "message": ""
         }
     ],
     "active": {
-        "030607-1234": {
-            "room": "2",
+        "123456789011": {
+            "room": "1",
             "checked_in": false
         }
     },
     "old": {
-        "040501-1234": 2
+        "123456789011": {
+            "name": "TestReg",
+            "age": "19",
+            "total registrations": "12"
+        }
     }
 }
